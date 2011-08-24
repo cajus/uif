@@ -1,0 +1,14 @@
+uif for Debian
+--------------
+
+This package has been developed for a diskless router system and provides
+a mechanism to create and simplify packetfilter rules. It forces you to
+provide names for every value you use in order to make firewalls less
+confusing.
+
+There is some ldap support build in, to handle a big farm of diskles router
+configurations. Use uif(8) and information provided in /usr/share/doc/uif
+to configure the firewall fitting your needs.
+
+---
+Cajus Pollmeier <pollmeier@gonicus.de>, Sun, 24 Feb 2002 17:35:29 +0100

@@ -1,0 +1,42 @@
+# uif-1.0 Installer Makefile
+# 
+# Cajus Pollmeier <pollmeier@gonicus.de>
+# Jörg Platte     <joerg.platte@gmx.de>
+
+# Change here to install to different location
+PREFIX = ${DESTDIR}
+VERS = `sed -n "s/[^ ]* (\([0-9.]*\)-[0-9]*).*/\1/p" debian/changelog | head -1`
+
+install:
+	@echo "Installing uif script..."
+
+	@# create directories
+	install -o root -g root -m 700 -d ${PREFIX}/etc/uif
+	install -o root -g root -m 755 -d ${PREFIX}/etc/default
+	install -o root -g root -m 755 -d ${PREFIX}/etc/init.d
+	install -o root -g root -m 755 -d ${PREFIX}/etc/ldap/schema
+	install -o root -g root -m 755 -d ${PREFIX}/usr/sbin
+	install -o root -g root -m 755 -d ${PREFIX}/usr/share/doc/uif
+	install -o root -g root -m 755 -d ${PREFIX}/usr/share/man/man8
+	install -o root -g root -m 755 -d ${PREFIX}/usr/share/man/man5
+	
+	@# install files
+	install -o root -g root -m 700 uif.pl ${PREFIX}/usr/sbin/uif
+	install -o root -g root -m 600 default ${PREFIX}/etc/default/uif
+	install -o root -g root -m 600 services ${PREFIX}/etc/uif
+	install -o root -g root -m 755 uif ${PREFIX}/etc/init.d
+	install -o root -g root -m 644 uif.schema ${PREFIX}/etc/ldap/schema
+
+	@# install documentation
+	install -o root -g root -m 644 docs/uif.conf.tmpl ${PREFIX}/usr/share/doc/uif
+	install -o root -g root -m 644 docs/examples.txt ${PREFIX}/usr/share/doc/uif
+	install -o root -g root -m 644 uif.8 ${PREFIX}/usr/share/man/man8
+	install -o root -g root -m 644 uif.conf.5 ${PREFIX}/usr/share/man/man5
+
+deb:
+	@echo "Generating debian package..."
+	[ -d /tmp/uif-${VERS} ] && rm -rf /tmp/uif-${VERS} || /bin/true
+	cp -a ../uif /tmp/uif-${VERS}
+	cd /tmp/uif-${VERS} && fakeroot make -f debian/rules binary
+	rm -rf /tmp/uif-${VERS}
+

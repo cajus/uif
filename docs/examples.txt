@@ -1,0 +1,166 @@
+EXAMPLES for UIF
+================
+
+These sample configurations are fully virtual setups but may contain valid
+ip addresses.
+
+
+1) Simple router/proxy setup
+
+Imagine the following scenario with one packet filter and masquerading:
+
+                ppp0   eth0      
+internet-----------filter-------------proxy---------intranet
+        193.174.71.23 192.168.0.1  192.168.0.2   192.168.0.0/24
+
+The filter masquerades the proxy address and rejects all other internal
+traffic to the internet.
+
+Don't forget to enable forwarding (sysctl -w net.ipv4.ip_forward=1),
+respectivly adding it to /etc/sysctl.conf.
+
+
+8<---------------------------------------------------------------------
+include {
+	# include the basic service definitions
+	"/etc/uif/services"
+}
+
+service {
+	# define all valid services from the proxy into the internet
+	proxytraffic	http https ntp pop3s imaps smtp ssh ftp
+}
+
+network {
+	# define all networks and hosts
+	proxy	192.168.0.2
+	intern	192.168.0.0/24
+
+	gonicus	21.8.6.9
+	ds	129.27.18.16
+
+	# accept external ssh connections from gonicus and ds
+	sshok	ds gonicus
+}
+
+interface {
+	# define all local interfaces
+	loop	lo
+	extern	ppp0
+	intern	eth0
+}
+
+input {
+	# permit all loopback traffic
+	in+	i=loop
+
+	# accept local ssh logins
+	in+	i=intern s=intern p=ssh
+
+	# accept external ssh connections from gonicus and ds
+	in+	i=extern s=sshok  p=ssh
+
+	# accept pings
+	in+	i=extern p=ping
+
+	# reject and log all other incoming connentions
+	in-	f=log(incoming),reject
+}
+
+output {
+	# permit all loopback traffic
+	out+	o=loop
+
+	# permit all outgoing traffic to the internal network
+	out+	o=intern
+
+	# permit outgoing ntp and ssh connections
+	out+	o=extern p=ntp,ssh
+
+	# reject all and log all other outgoing connentions
+	out-	f=log(outgoing),reject
+}
+
+forward {
+	# in case of an pppoe dsl line the following line may be useful
+	# it sets the mss of every forwarded packet to a smaller value
+	fw>	o=extern
+
+	# forward previously defined proxy traffic to external hosts
+	fw+	o=extern s=proxy p=proxytraffic
+
+	# reject all and log all other outgoing connentions
+	fw-	f=log(forwarding),reject
+}
+
+masquerade {
+	# masquerade proxy traffic
+	masq+	o=extern s=proxy
+}
+--------------------------------------------------------------------->8
+
+
+2) Router doing nat and transparent proxys
+
+Imagine the following (not really usable) scenario:
+
+              eth0    eth1
+Internet---------filter------------switch
+         80.67.1.53  10.10.0.1        |
+				      +--gatekeeper 10.10.0.15
+                                      |
+				      +--[intranet]
+
+Imagine "filter" is running squid as a transparent proxy and "gatekeeper"
+is your ssh gateway to the intranet. No other connections to the intranet
+are allowed. "filter" is acting as nameserver, no additional connections
+from the inside to the outside are allowed.
+
+8<---------------------------------------------------------------------
+include {
+        # include the basic service definitions
+        "/etc/uif/services"
+}
+
+network {
+        # define all networks and hosts
+        proxy   10.10.0.1
+        intern  10.10.0.0/16
+        gate    10.10.0.5
+}
+
+interface {
+        # define all local interfaces
+        loop    lo
+        extern  eth0
+        intern  eth1
+}
+
+filter {
+        # permit all loopback traffic
+        in+     i=loop
+        out+    o=loop
+
+	# permit all outgoing traffic for "filter"
+        out+    o=intern,extern
+	
+        # accept pings
+        in+     i=extern p=ping
+
+        # accept local ssh logins, dns, http
+        in+     i=intern s=intern p=ssh,dns,http
+
+	# redirect port 80 to 10.10.0.1:3128
+	nat+    i=intern s=intern p=http D=proxy P=squid
+
+	# redirect incomming ssh connections to gatekeeper
+	nat+	i=extern p=ssh D=gatekeeper
+
+        # reject and log all other connentions
+        in-     f=log(incoming),reject
+        out-    f=log(outgoing),reject
+        fw-     f=log(forward),reject
+}
+
+--------------------------------------------------------------------->8
+

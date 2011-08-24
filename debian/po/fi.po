@@ -1,0 +1,152 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: uif\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-04 11:43+0200\n"
+"PO-Revision-Date: 2008-04-30 11:21+0200\n"
+"Last-Translator: Esko Arajärvi <edu@iki.fi>\n"
+"Language-Team: Finnish <debian-l10n-finnish@lists.debian.org>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Finnish\n"
+"X-Poedit-Country: FINLAND\n"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "don't touch"
+msgstr "manuaalinen"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "workstation"
+msgstr "työpöytä"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid "Firewall configuration method"
+msgstr "Palomuurin asetustyyppi:"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid ""
+"The firewall can be initialized using debconf, or using information you "
+"manually put into /etc/uif/uif.conf."
+msgstr ""
+"Palomuuri voidaan alustaa käyttäen debconfia tai muokkaamalla käsin "
+"tiedostoa /etc/uif/uif.conf."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Enter trusted hosts and/or networks:"
+msgstr "Luotetut koneet ja verkot:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"In workstation mode, you can specify some hosts or networks to be globally "
+"trusted. All incoming traffic coming from there will be allowed. Multiple "
+"entries have to be separate with spaces."
+msgstr ""
+"Työpöytätilassa voidaan määrittää joitain luotettavia koneita tai verkkoja. "
+"Kaikki näiltä tälle koneelle tuleva liikenne sallitaan. Useampia koneita tai "
+"verkkoja voidaan listata välilyönnein eroteltuina."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Example: 10.1.0.0/16 trust.mydomain.com 192.168.1.55"
+msgstr "Esimerkki: 10.1.0.0/16 luotettava.esimerkki.fi 192.168.1.55"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Do you want your host to be reachable via ping?"
+msgstr "Tulisiko koneen vastata pingiin?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Normally an Internet host should be reachable with pings. Choosing no here "
+"will disable pings which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Yleensä Internetissä olevien koneiden tulisi vastata pingiin. Jos tätä ei "
+"valita, pingeihin ei vastata, mikä saattaa aiheuttaa sekaannusta "
+"selvitettäessä verkko-ongelmia."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Do you want your host to react to traceroutes?"
+msgstr "Tulisiko koneen reagoida tracerouteen?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"Normally an Internet host should react to traceroutes. Choosing no here will "
+"disable this, which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Yleensä Internetissä olevien koneiden tulisi reagoida tracerouteen. Jos tätä "
+"ei valita, tracerouteen ei reagoida, mikä saattaa aiheuttaa sekaannusta "
+"selvitettäessä verkko-ongelmia."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid "Firewall for simple workstation setups"
+msgstr "Palomuuri yksinkertaisille työpöytäasennuksille"
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"Warning: This configuration provides a very simple firewall setup which is "
+"only able to trust certain hosts and configure global ping / traceroute "
+"behaviour."
+msgstr ""
+"Varoitus: Tämä asetusprosessi tuottaa erittäin yksinkertaiset "
+"palomuuriasetukset, joissa voidaan vain asettaa jotkin koneet luotetuiksi ja "
+"asettaa yleinen pingin ja tracerouten toimintatapa."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"If you need a more specific setup, use /etc/uif/uif.conf as a template and "
+"choose \"don't touch\" next time."
+msgstr ""
+"Yksityiskohtaisempia asetuksia voidaan tarvittaessa tehdä käyttäen "
+"tiedostoa /etc/uif/uif.conf pohjana. Tällöin ensi kerralla tulisi valita "
+"”manuaalinen”."
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid "Error in list of trusted hosts"
+msgstr "Virhe luotettujen koneiden listassa"
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid ""
+"Please check the hosts / networks you entered. One or more entries are not "
+"correct, contain no resolvable hosts, valid IP-addresses, valid network "
+"definitions or masks."
+msgstr ""
+"Tarkista syötetyt koneet ja verkot. Yksi tai useampi kohta sisältää nimiä, "
+"joita ei voida selvittää, epäkelpoja IP-osoitteita tai virheellisiä "
+"verkkomääritteitä tai -peitteitä."
+
+#~ msgid "don't touch, workstation"
+#~ msgstr "manuaalinen, työpöytä"

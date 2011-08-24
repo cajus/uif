@@ -1,0 +1,163 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: uif\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-04 11:43+0200\n"
+"PO-Revision-Date: 2008-05-05 22:21+0200\n"
+"Last-Translator: Miroslav Kure <kurem@debian.cz>\n"
+"Language-Team: Czech <debian-l10n-czech@lists.debian.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "don't touch"
+msgstr "ponechat"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "workstation"
+msgstr "pracovní stanice"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid "Firewall configuration method"
+msgstr "Způsob nastavení firewallu"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid ""
+"The firewall can be initialized using debconf, or using information you "
+"manually put into /etc/uif/uif.conf."
+msgstr ""
+"Firewall může být nastaven buď přes debconf nebo ruční úpravou souboru /etc/"
+"uif/uif.conf."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Enter trusted hosts and/or networks:"
+msgstr "Zadejte důvěryhodné počítače a/nebo sítě:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"In workstation mode, you can specify some hosts or networks to be globally "
+"trusted. All incoming traffic coming from there will be allowed. Multiple "
+"entries have to be separate with spaces."
+msgstr ""
+"V režimu pracovní stanice můžete zadat některé počítače nebo sítě, kterým "
+"důvěřujete. Veškerý příchozí provoz z těchto míst bude povolen. Jednotlivé "
+"položky oddělte mezerami."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Example: 10.1.0.0/16 trust.mydomain.com 192.168.1.55"
+msgstr "Příklad: 10.1.0.0/16 verim.sve.domene.cz 192.168.1.55"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Do you want your host to be reachable via ping?"
+msgstr "Chcete, aby byl počítač dosažitelný přes ping?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Normally an Internet host should be reachable with pings. Choosing no here "
+"will disable pings which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Normálně by všechny počítače na Internetu měly být dostupné přes ping. Pokud "
+"zde odpovíte ne, pingy zakážete, což vás může zmást později při analýze "
+"síťových problémů."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Do you want your host to react to traceroutes?"
+msgstr "Chcete, aby počítač odpovídal na „sledovače cesty“?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"Normally an Internet host should react to traceroutes. Choosing no here will "
+"disable this, which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Normálně by všechny počítače na Internetu měly odpovídat na požadavky o "
+"sledování cesty (traceroute). Pokud zde odpovíte ne, váš počítač nebude "
+"odpovídat na tyto požadavky, ovšem později vás to může zmást při analýze "
+"síťových problémů."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid "Firewall for simple workstation setups"
+msgstr "Jednoduchý firewall pro pracovní stanice"
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"Warning: This configuration provides a very simple firewall setup which is "
+"only able to trust certain hosts and configure global ping / traceroute "
+"behaviour."
+msgstr ""
+"Varování: toto nastavení poskytuje velmi jednoduchý firewall, který umí "
+"pouze důvěřovat určitým počítačům a dokáže globálně změnit chování ohledně "
+"ping / traceroute požadavků."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"If you need a more specific setup, use /etc/uif/uif.conf as a template and "
+"choose \"don't touch\" next time."
+msgstr ""
+"Potřebujete-li přesnější nastavení, použijte soubor /etc/uif/uif.conf jako "
+"vzor a příště vyberte možnost „ponechat“."
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid "Error in list of trusted hosts"
+msgstr "Chyba v seznamu důvěryhodných počítačů"
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid ""
+"Please check the hosts / networks you entered. One or more entries are not "
+"correct, contain no resolvable hosts, valid IP-addresses, valid network "
+"definitions or masks."
+msgstr ""
+"Prosíme, zkontrolujte seznam zadaných počítačů / sítí. Jeden nebo více "
+"záznamů nejsou správné, neobsahují přeložitelné jméno, platnou IP adresu, "
+"platnou definici sítě nebo masky."
+
+#~ msgid "don't touch, workstation"
+#~ msgstr "ponechat, pracovní stanice"

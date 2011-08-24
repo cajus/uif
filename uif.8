@@ -1,0 +1,134 @@
+.\"  -*- nroff -*-
+.TH UIF 8 "February 25th, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.Dd May 24, 2002
+.Dt UIF 8
+.Os
+.ds operating-system UIF(8)
+.Sh NAME
+.Nm uif
+.Nd Tool for generating optimized packetfilter rules
+.Sh SYNOPSIS
+.Nm uif
+.Op Fl dptW
+.Op Fl b Ar base
+.Op Fl c Ar config_file
+.Op Fl C Ar config_file
+.Op Fl D Ar bind_dn
+.Op Fl r Ar ruleset
+.Op Fl R Ar ruleset
+.Op Fl s Ar server
+.Op Fl T Ar time
+.Op Fl w Ar password
+.Sh DESCRIPTION
+.Pp
+This manual page documents  the
+.Nm
+command. It is used to generate optimized
+.Xr iptables 8
+packetfilter rules, using a simple description file specified
+by the user. Generated rules are provided in 
+.Xr iptables-save 8
+style.
+.Nm
+can be used to read or write rulesets from or to LDAP servers in your
+network, which provides a global storing mechanism. (LDAP support is
+currently broken, note that you need to include the uif.schema to your
+slapd configuration in order to use it.)
+.Pp
+.Xr uif.conf 5
+provides an easy way to specify rules, without exact
+knowledge of the iptables syntax. It provides groups and aliases to make your
+packetfilter human readable.
+.Pp
+Keep in mind that 
+.Nm uif
+is intended to assist you when designing firewalls, but will not
+tell you what to filter.
+.Sh Options
+The options are as follows:
+.Bl -tag -width Ds
+.It Fl b Ar base
+Specify the base to act on when using LDAP based firewall configuration.
+.Nm
+will look in the subtree
+.Ar ou=filter, ou=sysconfig, base
+for your rulesets.
+.It Fl c Ar config_file
+This option specifies the configuration file to be read by
+.Nm \.
+See
+.Xr uif.conf 5
+for detailed informations on the fileformat. It defaults to
+.Ar /etc/uif/uif.conf.
+.It Fl C Ar config_file
+When reading configuration data from other sources than specified with
+.Ar \-c 
+you may want to convert this information into a textual configuration
+file. This options writes the parsed config back to the file specified by
+.Ar config_file.
+.It Fl d
+Clears all firewall rules immediatly.
+.It Fl D Ar bind_dn
+If a special account is needed to bind to the LDAP database, the account
+dn can be specified at this point. Note: you should use this when writing
+an existing configuration to the LDAP. Reading the configuration may be
+done with an anonymous bind.
+.It Fl p
+Prints rules specified in the configuration to stdout. This option is
+mainly used for debugging the rule simplifier.
+.It Fl r Ar ruleset
+Specifies the name of the ruleset to load from the LDAP database. Remember
+to use the
+.Ar \-b
+option to set the base. Rulesets are stored using the following dn:
+.Ar cn=name, ou=rulesets, ou=filter, ou=sysconfig, base,
+where name will be replaced by the ruleset specified.
+.It Fl R Ar ruleset
+Specifies the name of the ruleset to write to the LDAP database. This option
+can be used to convert i.e. a textual configuration to a LDAP based ruleset.
+Like using
+.Ar \-r
+you've to specify the LDAP base to use. Target is
+.Ar cn=name, ou=rulesets, ou=filter, ou=sysconfig, base,
+where name will be replaced by the ruleset specified.
+.It Fl s Ar server
+This option specified the LDAP server to be used.
+.It Fl t
+This option is used to validate the packetfilter configuration without applying
+any rules.  Mainly used for debugging.
+.It Fl T Ar time
+When changing your packetfiltering rules remotely, it is
+usefull to have a test option. Specify this one to apply
+your rules for a period of time (in seconds). After that the original
+rules will be restored.
+.It Fl w Ar password
+When connecting to the LDAP server, you may need to 
+authenticate via passwords. If you really need to
+specify a password, use this option, otherwise use
+.Ar \-W
+and enter it interactivly.
+.It Fl W
+Activate interactive password query for LDAP authentication.
+.El
+.Pp
+.Nm
+is meant to leave the packetfilter rules in a defined state,
+so if something went wrong during the initialisation, or
+.Nm
+is aborted by the user, the rules that were active before
+starting will be restored.
+.Pp
+Normally you will not need to call this binary directly. Use
+the init script instead, since it does the most common steps
+for you.
+.Sh FILES
+Configuration files are located in /etc/uif.
+.Sh SEE ALSO
+uif.conf(5)
+iptables(8)
+.Pp
+.Sh AUTHOR
+This manual page was written by Cajus Pollmeier <pollmeier@gonicus.de> and
+Jörg Platte <joerg.platte@gmx.de>, for the Debian GNU/Linux system (but may
+be used by others).

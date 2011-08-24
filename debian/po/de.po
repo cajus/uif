@@ -1,0 +1,155 @@
+# Translation of openldap debconf templates to German
+# Copyright (C) Cajus Pollmeier <cajus@debian.org>, 2003.
+# Copyright (C) Helge Kreutzmann <debian@helgefjell.de>, 2008.
+# This file is distributed under the same license as the openldap package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: uif 1.0.5-4\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-04 11:43+0200\n"
+"PO-Revision-Date: 2008-04-28 23:12+0200\n"
+"Last-Translator: Cajus Pollmeier <cajus@debian.org>\n"
+"Language-Team: de <debian-l10n-german@lists.debian.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-15\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "don't touch"
+msgstr "nicht ändern"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "workstation"
+msgstr "Arbeitsstation"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid "Firewall configuration method"
+msgstr "Firewall Konfigurationsmethode"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid ""
+"The firewall can be initialized using debconf, or using information you "
+"manually put into /etc/uif/uif.conf."
+msgstr ""
+"Die Firewall kann entweder über Debconf, oder manuell über die "
+"Konfigurationsdatei /etc/uif/uif.conf eingestellt werden."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Enter trusted hosts and/or networks:"
+msgstr "Eingabe der vertrauenswürdigen Rechner / Netze:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"In workstation mode, you can specify some hosts or networks to be globally "
+"trusted. All incoming traffic coming from there will be allowed. Multiple "
+"entries have to be separate with spaces."
+msgstr ""
+"Im »Arbeitsstation«-Modus kann eine Liste von Rechnern oder Netzen angegeben "
+"werden, die als vertrauenswürdig angesehen werden. Diese haben dann "
+"kompletten Zugriff auf die Arbeitsstation. Mehrere Einträge sind durch ein "
+"Leerzeichen zu trennen."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Example: 10.1.0.0/16 trust.mydomain.com 192.168.1.55"
+msgstr "Beispiel: 10.1.0.0/16 trust.mydomain.com 192.168.1.55"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Do you want your host to be reachable via ping?"
+msgstr "Soll der Rechner via ping erreichbar sein?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Normally an Internet host should be reachable with pings. Choosing no here "
+"will disable pings which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Normalerweise sollte ein Rechner im Netz via ping erreichbar sein. Falls Sie "
+"dies ausschalten möchten, beachten Sie dies bei der Suche nach Netzproblemen."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Do you want your host to react to traceroutes?"
+msgstr "Soll der Rechner traceroutes beantworten?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"Normally an Internet host should react to traceroutes. Choosing no here will "
+"disable this, which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Normalerweise sollte ein Rechner im Netz auf traceroutes reagieren. Falls "
+"Sie dies ausschalten möchten, beachten Sie dies bei der Suche nach "
+"Netzproblemen."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid "Firewall for simple workstation setups"
+msgstr "Firewall für einfache Arbeitsstationen"
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"Warning: This configuration provides a very simple firewall setup which is "
+"only able to trust certain hosts and configure global ping / traceroute "
+"behaviour."
+msgstr ""
+"Achtung: Diese Konfiguration stellt eine recht einfache Firewall zur "
+"Verfügung. Beachten Sie, dass dieses Vorgehen keine gut geplante Firewall "
+"ersetzen kann und nur die Möglichkeit bietet, einzelnen Rechnern/Netzen "
+"einen kompletten Zugriff zu gewähren."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"If you need a more specific setup, use /etc/uif/uif.conf as a template and "
+"choose \"don't touch\" next time."
+msgstr ""
+"Falls ein spezielleres Setup gewünscht ist, sollten Sie die Datei /etc/uif/"
+"uif.conf als Vorlage und beim nächsten Mal »nicht ändern« wählen."
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid "Error in list of trusted hosts"
+msgstr "Fehler in der Liste der vertrauenswürdigen Rechnern"
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid ""
+"Please check the hosts / networks you entered. One or more entries are not "
+"correct, contain no resolvable hosts, valid IP-addresses, valid network "
+"definitions or masks."
+msgstr ""
+"Überprüfen Sie bitte Ihre Eingaben. Ein oder mehrer Einträge enthalten "
+"entweder einen nicht auflösbaren Rechnernamen, eine ungültige Netz-/IP-"
+"Adresse oder Netzmaske."
+
+#~ msgid "don't touch, workstation"
+#~ msgstr "nicht ändern, Arbeitsstation"

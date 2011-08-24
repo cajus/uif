@@ -1,0 +1,69 @@
+## UIF 1.0 sample services file
+#  (C) 2002, Cajus Pollmeier <pollmeier@gonicus.de>
+#            Jörg Platte <jplatte@gmx.net>
+
+service {
+	# ICMP & Routing
+	traceroute 	udp(32769:65535/33434:33523)
+	ping		icmp(echo-request)
+	pong		icmp(echo-reply)
+	noroute		icmp(destination-unreachable)
+	hostunreach	icmp(host-unreachable)
+	ttlexeed	icmp(ttl-exceeded)
+	routeradv       icmp(router-advertisement)
+	routersoli      icmp(router-solicitation)
+	sourceq         icmp(source-quench)
+	
+	# Most common services you may want to filter
+	ftp		tcp(/21)
+	ssh		tcp(/22)
+	telnet		tcp(/23)
+	smtp		tcp(/25)
+	whois		tcp(/43)
+	dns		tcp(/53) udp(/53)
+	bootp		tcp(68/67) udp(68/67)
+	http		tcp(/80)
+	pop3		tcp(/110)
+	sunrpc		udp(/111) tcp(/111)
+	ident		tcp(/113)
+	ntp		udp(/123)
+	nntp		tcp(/119)
+        smb             tcp(/137:139) udp(/137:139) tcp(/445) udp(/445)
+	imap		tcp(/143)
+	xdmcp		udp(/177)
+	ldap		tcp(/389)
+	https		tcp(/443)
+	ssmtp		tcp(/465)
+	syslog		udp(/514)
+	route		udp(/520) icmp(9)
+	uucp		tcp(/540)
+	real		tcp(/554)
+        ipp             tcp(/631) udp(/631)
+	mount		udp(/635)
+	imaps		tcp(/993)
+	pop3s		tcp(/995)
+	nfs		udp(/2049) tcp(/2049)
+	cvspserver	tcp(/2401)
+	squid		tcp(/3128)
+	x11		tcp(/6000:6063)
+	proxy		tcp(/8080)
+	dhis		udp(/58800)
+
+        # ipsec
+	ipsec           esp(/) udp(/500)
+
+	# some proprietary protocols
+	arkeia		tcp(/617)
+	pcanywhere	udp(/5632) tcp(/5631)
+        msterminal	tcp(/3389) udp(/3389)
+
+	# some protocols
+	igmp		igmp()
+	pim		pim()
+	tcp		tcp(0:65535/0:65535)
+	udp		udp(0:65535/0:65535)
+
+	# some useful definitions
+	lowports	udp(/1:1023) tcp(/1:1023)
+	highports	udp(/1024:65535) tcp(/1024:65535)
+}

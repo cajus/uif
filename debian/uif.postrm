@@ -1,0 +1,9 @@
+#!/bin/sh -e
+
+if [ "$1" = purge ]; then
+	update-rc.d -f uif remove > /dev/null
+fi
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,155 @@
+# Vietnamese translation for UIF.
+# Copyright © 2008 Free Software Foundation, Inc.
+# Clytie Siddall <clytie@riverland.net.au>, 2005-2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: uif 1.0.5-4.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-05-04 11:43+0200\n"
+"PO-Revision-Date: 2008-05-06 20:16+0930\n"
+"Last-Translator: Clytie Siddall <clytie@riverland.net.au>\n"
+"Language-Team: Vietnamese <vi-VN@googlegroups.com>\n"
+"Language: vi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: LocFactoryEditor 1.7b3\n"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "don't touch"
+msgstr "đừng làm gì"
+
+#. Type: select
+#. Choices
+#: ../templates:1001
+msgid "workstation"
+msgstr "máy trạm"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid "Firewall configuration method"
+msgstr "Phương pháp cấu hình bức tường lửa"
+
+#. Type: select
+#. Description
+#: ../templates:1002
+msgid ""
+"The firewall can be initialized using debconf, or using information you "
+"manually put into /etc/uif/uif.conf."
+msgstr ""
+"Có thể sơ khởi bức tường lửa dùng debconf, hoặc dùng thông tin bạn tự ghi "
+"vào tập tin « /etc/uif/uif.conf »."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Enter trusted hosts and/or networks:"
+msgstr "Nhập các máy/mạng đáng tin:"
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid ""
+"In workstation mode, you can specify some hosts or networks to be globally "
+"trusted. All incoming traffic coming from there will be allowed. Multiple "
+"entries have to be separate with spaces."
+msgstr ""
+"Trong chế độ máy trạm, bạn có thể xác định một số máy hay mạng sẽ được tin "
+"cây toàn cục. Sau đó thì tất cả giao thông đến từ đó sẽ được phép. Nhiều mục "
+"phải định giới bằng dấu cách."
+
+#. Type: string
+#. Description
+#: ../templates:2001
+msgid "Example: 10.1.0.0/16 trust.mydomain.com 192.168.1.55"
+msgstr "Ví dụ : 10.1.0.0/16 people.vnoss.org 192.168.1.55"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid "Do you want your host to be reachable via ping?"
+msgstr "Bạn có muốn cho tín hiệu ping tới máy của mình không?"
+
+#. Type: boolean
+#. Description
+#: ../templates:3001
+msgid ""
+"Normally an Internet host should be reachable with pings. Choosing no here "
+"will disable pings which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Bình thường, một máy Internet nên cho tín hiệu ping tới được. Không bật tùy "
+"chọn này thì tắt nhận tín hiệu ping mà có thể gây ra tình trạng lộn xộn khi "
+"phân tích vấn đề chạy mạng."
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid "Do you want your host to react to traceroutes?"
+msgstr "Bạn có muốn máy này đáp ứng việc tìm đường không?"
+
+#. Type: boolean
+#. Description
+#: ../templates:4001
+msgid ""
+"Normally an Internet host should react to traceroutes. Choosing no here will "
+"disable this, which might be somewhat confusing when analyzing network "
+"problems."
+msgstr ""
+"Bình thường, một máy Internet nên đáp ứng tiến trình tìm đường (traceroute). "
+"Không bật tùy chọn này thì tắt khả năng này, mà có thể gây ra tình trạng lộn "
+"xộn khi phân tích vấn đề chạy mạng."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid "Firewall for simple workstation setups"
+msgstr "Bức tường lửa cho thiết lập máy trạm đơn giản"
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"Warning: This configuration provides a very simple firewall setup which is "
+"only able to trust certain hosts and configure global ping / traceroute "
+"behaviour."
+msgstr ""
+"Cảnh báo : cấu hình này cung cấp một thiết lập bức tường lửa rất đơn giản mà "
+"chỉ có khả năng tin cây một số máy nào đó, và cấu hình ứng xử ping/tìm đường "
+"toàn cục."
+
+#. Type: note
+#. Description
+#: ../templates:5001
+msgid ""
+"If you need a more specific setup, use /etc/uif/uif.conf as a template and "
+"choose \"don't touch\" next time."
+msgstr ""
+"Nếu bạn cần thiết lập đặc biệt hơn, hãy dùng tập tin cấu hình « /etc/uif/uif."
+"conf » làm mẫu, và chọn « Đừng làm gì » lần kế tiếp."
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid "Error in list of trusted hosts"
+msgstr "Gặp lỗi trong danh sách các máy đáng tin."
+
+#. Type: error
+#. Description
+#: ../templates:6001
+msgid ""
+"Please check the hosts / networks you entered. One or more entries are not "
+"correct, contain no resolvable hosts, valid IP-addresses, valid network "
+"definitions or masks."
+msgstr ""
+"Hãy kiểm tra xem bạn đã nhập các máy/mạng đúng. Một hay nhiều mục nhập không "
+"phải là đúng, không chứa máy có thể quyết định, địa chỉ IP hợp lệ, lời xác "
+"định mạng hợp lệ hay mặt nạ."
+
+#~ msgid "don't touch, workstation"
+#~ msgstr "đừng làm gì, máy trạm"

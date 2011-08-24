@@ -1,0 +1,49 @@
+Template: uif/conf_method
+Type: select
+__Choices: don't touch, workstation
+Default: don't touch
+_Description: Firewall configuration method
+ The firewall can be initialized using debconf, or using information
+ you manually put into /etc/uif/uif.conf.
+
+Template: uif/trusted
+Type: string
+_Description: Enter trusted hosts and/or networks:
+ In workstation mode, you can specify some hosts or networks to be
+ globally trusted. All incoming traffic coming from there will be
+ allowed. Multiple entries have to be separate with spaces.
+ .
+ Example: 10.1.0.0/16 trust.mydomain.com 192.168.1.55
+
+Template: uif/pings
+Type: boolean
+Default: true
+_Description: Do you want your host to be reachable via ping?
+ Normally an Internet host should be reachable with pings. Choosing no here
+ will disable pings which might be somewhat confusing when analyzing
+ network problems.
+
+Template: uif/traceroute
+Type: boolean
+Default: true
+_Description: Do you want your host to react to traceroutes?
+ Normally an Internet host should react to traceroutes. Choosing no here
+ will disable this, which might be somewhat confusing when analyzing
+ network problems.
+
+Template: uif/workstation
+Type: note
+_Description: Firewall for simple workstation setups
+ Warning: This configuration provides a very simple firewall setup which is
+ only able to trust certain hosts and configure global ping / traceroute
+ behaviour.
+ .
+ If you need a more specific setup, use /etc/uif/uif.conf as a template and
+ choose "don't touch" next time.
+
+Template: uif/error
+Type: error
+_Description: Error in list of trusted hosts
+ Please check the hosts / networks you entered. One or more entries are not
+ correct, contain no resolvable hosts, valid IP-addresses, valid network
+ definitions or masks.

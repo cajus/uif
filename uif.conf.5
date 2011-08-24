@@ -1,0 +1,216 @@
+.\"  -*- nroff -*-
+.TH UIF.CONF 5 "May 24th, 2002"
+.\" Please adjust this date whenever revising the manpage.
+.Dd May 24, 2002
+.Dt UIF.CONF 5
+.Os
+.ds operating-system UIF.CONF(5)
+.Sh NAME
+.Nm uif.conf
+.Nd Tool for generating optimized packetfilter rules
+.ds Default configuration file for uif
+.Sh DESCRIPTION
+First of all, the syntax of this configuration file is far from being
+perfect. If you've got some better ideas just drop me a line...
+.Ar /etc/uif/uif.conf
+is the default configuration file for
+.Xr uif 8 .
+This file may contain several sections and comments. Each
+section begins with the section name and the left curly brace and ends with
+the right curly brace in a single line. A comment starts with a hash mark
+.Cm (#)
+at the beginning of a line.
+.Pp
+Blank lines are silently ignored. The following sections are valid:
+.Cm include, sysconfig, service, network, interface, marker, filter, nat, input, output, forward, masquerade
+and 
+.Cm stateless.  
+.Pp
+The sections 
+.Cm service, network, marker
+and 
+.Cm interface
+have all a very similar syntax.
+Each line starts with an identifier followed by one or more blanks and one
+or more section specific entries or defined identifiers separated by blanks.
+A valid identifier is case sensitive and consists of letters, digits,
+underscores and hyphens.
+.Pp
+If two or more identifiers in one section are equal, the corresponding
+entries are merged to the first identifier. Hence, it's not possible to
+overwrite perviously defined identifiers. As a result the order of the
+section entries is irrelevant and it's possible to define a section more
+than once.
+.Ss include section
+Include other configuration files. Each line in this section, enclosed in
+quotation marks ("), must be a valid filename. The contents of this file are
+added to the actual configuration file and each file should contain at least
+one section (a comment only file is not really useful...).
+.Ss sysconfig section
+Set some global settings. Each line in this section starts with one of the
+following identifiers followed by one or more blanks and the desired value:
+.Cm LogLevel, LogPrefix, LogLimit, LogBurst, Limit, Burst
+and
+.Cm AccountPrefix.
+If there are multiple definitions of one entry the last definition is stored.
+.Bl -tag -width Ds
+.It Cm LogLevel
+A valid default log priority (see 
+.Xr syslog.conf 5)
+.It Cm LogPrefix
+The default log prefix. Each iptables logmessage starts with this prefix. 
+.It Cm LogLimit
+The default limit value for logmessages (see 
+.Xr iptables 8)
+.It Cm LogBurst
+The default burst value for logmessages (see
+.Xr iptables 8) 
+.It Cm Limit
+The default limit value (see 
+.Xr iptables 8)
+.It Cm Burst
+The default burst value (see 
+.Xr iptables 8) 
+.It Cm AccountPrefix
+The default prefix for accounting chains. 
+.Pp
+.El
+.Ss service section
+This section defines all needed services. A service
+description starts with the
+protocol (see 
+.Xr protocols 5)
+followed by parameters in parenthesis. Most
+protocols don't need any parameters. The only exceptions are tcp, udp and
+icmp. The tcp and udp parameter defines the source and destionation
+port(-range). The source and destination ports are separated by a slash (/)
+and portranges are separated by a colon (eg. tcp(123:333/99): tcp protocol,
+source-portrange 123-333, destination port 99). Empty source or destination
+ports are expanded to 1:65535. The icmp protocol parameter must be a valid
+icmp type (see iptables -p icmp --help).
+.Ss network section
+This section defines all needed networks and hosts. A network description
+starts with a valid IPv4 address (dotted quad), an optional netmask in cidr
+notation (number of bits) or an optional MAC-address (with a prefixed equal
+sign (=). Some valid entries are: 127.0.0.1 127.0.0.0/8
+192.168.0.1=00:00:00:00:00:FF.
+.Ss interface section
+This section defines all needed (physical and bridged) interfaces (eg. eth0, lo, ppp0).
+.Ss marker section
+This section defines all needed numerical (decimal) values for packet
+marking purposes.
+.Ss filter, nat, input, output, forward, masquerade and stateless sections
+Due to better partitioning of the packetfilter, rules can be split into
+these sections. Internally they are equivalent and contain all
+rules. As an exception to all other sections the order of entries in
+these sections is important. 
+.Pp
+The default policy for the chains INPUT, OUTPUT and FORWARD is DROP (see
+.Xr iptables 8)
+and it's not possible to change this.
+.Pp
+Each line in in this section begins with 
+.Cm in, out, fw, nat, masq, slin, slout
+or 
+.Cm slfw
+followed by '+', '-' or a mark identifier enclosed in curly braces (or, in
+case of fw followed by '>').  The identifiers
+.Cm in, out 
+and
+.Cm fw
+define rules for incoming, outgoing and forwarded
+IP-packets. Each packet with an INVALID state (see 
+.Xr iptables 8)
+is matched by
+.Cm slin, slout
+and
+.Cm slfw.
+The lines starting with
+.Cm nat
+and
+.Cm masq
+define rules to modify the source
+or destination address or the destination port.
+.Pp
+The plus and minus signs specify the type of the rule: '+' accepts matching
+packets and '-' drops them. As a special case the identifier out and fw
+accept the greater than (>) sign to modify the MSS depending on the PMTU
+(see
+.Xr iptables 8) 
+.Pp
+A very basic ruleset may look like this:
+.Cm out+
+.Pp
+This allows every outgoing traffic and rejects all incoming connections
+(because of the default policy).
+.Pp
+To be more specific, each line may contain several parameters. Each
+parameter starts with a single character followed by an equal sign (=) and
+one or more previously defined identifiers (in the corresponding sections)
+separated by commas. The following parameters are valid:
+.Bl -tag -width Ds
+.It Cm s
+The source address or network.
+.It Cm d
+The destination address or network.
+.It Cm i
+The input interface.
+.It Cm o
+The output interface.
+.It Cm pi
+The physical input interface (only useful when used with bridged interfaces).
+.It Cm po
+The physical output interface (only useful when used with bridged interfaces).
+.It Cm p
+The service description (protocol).
+.It Cm m
+The mark field associated with a packet.
+.It Cm S
+The the new source address in nat rules.
+.It Cm D
+The the new destination address in nat rules.
+.It Cm P
+The the new service description in nat rules. This is only valid with tcp or
+udp packets.
+.It Cm f
+This parameter sets some 'flags'. A flag definition starts with the flag
+identifier and optional parameters in parenthesis. Valid flags are:
+.Pp
+.Cm log
+- Logs matching packages to syslog. The given parameter is included in the log
+entry. The number of logged packets and the loglevel can be set in the
+sysconfig section.
+.Pp
+.Cm reject
+- Only valid in DROP rules. This is used to send back an error packet in
+response to the matched packet. The default behaviour is a packet with set
+RST flag on tcp connections and a destination-unreachable icmp packet in
+every other case. Valid parameters are listed in
+.Xr iptables 8
+in the REJECT section.
+.Pp
+.Cm account
+- Create an accounting chain for all matching packages and possible responses.
+The optional parameter is a part of the name of the chain.
+.Pp
+.Cm limit
+- Limits the number of matching packets. The default values are set in the
+sysconfig section. Other values can be defined with the optional parameter.
+The first entry sets a new limit and the second parameter (separated by a
+comma (,)) sets the burst value (see Limit and Burst in sysconfig section). 
+.El
+It's possible to invert the identifier of one of following parameters - if it
+expands to ecactly one object - by prepending a exclamation mark (!): 
+.Cm s, d, i, o, p
+(eg.: s=!local p=!http).
+.Sh FILES
+Configuration files are located in /etc/uif. There is a sample configuration
+in
+.Ar /usr/share/doc/uif/uif.conf.tmpl.gz.
+.Sh SEE ALSO
+iptables(8)
+uif(8)
+.Sh AUTHOR
+This manual page was written by Jörg Platte <joerg.platte@gmx.de> and
+Cajus Pollmeier <pollmeier@gonicus.de>, for the Debian GNU/Linux system
+(but may be used by others).

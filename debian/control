@@ -1,0 +1,17 @@
+Source: uif
+Section: net
+Priority: optional
+Maintainer: Cajus Pollmeier <cajus@debian.org>
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 7), po-debconf
+
+Package: uif
+Architecture: all
+Depends: ${perl:Depends},${misc:Depends},libnetaddr-ip-perl (>= 3.0),libnet-ldap-perl,iptables,bsdutils (>=2.11u)
+Suggests: fwlogwatch
+Conflicts: knetfilter, firewall-easy, shorewall, fiaif
+Description: Advanced iptables-firewall script
+ Complete package to create and simplify iptables packetfilter
+ rules using perl. It was developed for a diskless router
+ system that can store its configurations in regular files or
+ ldap databases.

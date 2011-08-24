@@ -1,0 +1,178 @@
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.1 NAME 'UIFdevice'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.2 NAME 'UIFinDevice'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.3 NAME 'UIFoutDevice'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.4 NAME 'UIFtype'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE)
+	
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.5 NAME 'UIFsource'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.6 NAME 'UIFdest'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.7 NAME 'UIFservice'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.8 NAME 'UIFtransSource'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.9 NAME 'UIFtransDest'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.10 NAME 'UIFtransService'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.11 NAME 'UIFprotocol'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.12 NAME 'UIFflag'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.13 NAME 'UIFnetwork'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.14 NAME 'UIFlist'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.15 NAME 'UIFdisabled'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.16 NAME 'UIFid'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.17 NAME 'UIFcomment'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26
+	SINGLE-VALUE)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.18 NAME 'UIFsysCtlEntry'
+	DESC 'Keep SysCtl values'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.19 NAME 'UIFlogLevel'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.20 NAME 'UIFlogPrefix'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.21 NAME 'UIFlogLimit'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.22 NAME 'UIFlogBurst'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.23 NAME 'UIFaccountPrefix'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.24 NAME 'UIFmark'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+	
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.25 NAME 'UIFlimit'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+	
+attributetype ( 1.3.6.1.4.1.10098.1.1.1.26 NAME 'UIFburst'
+	DESC 'Firewall definitions'
+	EQUALITY caseIgnoreMatch
+	SUBSTR caseExactIA5Match
+	SYNTAX 1.3.6.1.4.1.1466.115.121.1.26)
+	
+objectclass (1.3.6.1.4.1.10098.1.2.1.1 NAME 'UIFrule'
+	DESC 'Firewall rule definition' SUP top AUXILIARY
+	MUST ( cn $ UIFtype )
+	MAY ( UIFdevice $ UIFinDevice $ UIFoutDevice $ UIFsource $ UIFdest $ UIFservice $ UIFprotocol $
+	      UIFflag $ UIFid $ UIFcomment $ UIFtransSource $ UIFtransDest $ UIFtransService $ UIFmark )) 
+
+objectclass (1.3.6.1.4.1.10098.1.2.1.2 NAME 'UIFgroup'
+	DESC 'Firewall group definition' SUP top AUXILIARY
+	MUST ( cn )
+	MAY ( UIFnetwork $ UIFmark $ UIFdevice $ UIFservice $ UIFid $ UIFcomment ))
+
+objectclass (1.3.6.1.4.1.10098.1.2.1.3 NAME 'UIFruleSet'
+	DESC 'Firewall ruleset definition' SUP top AUXILIARY
+	MUST ( cn )
+	MAY ( UIFlist $ UIFdisabled $ UIFid $ UIFcomment $ UIFlogLevel $ UIFlogPrefix $ UIFlogLimit $
+	      UIFlogBurst $ UIFburst $ UIFlimit $ UIFaccountPrefix ))
+
+objectclass (1.3.6.1.4.1.10098.1.2.1.4 NAME 'UIFsysCtl'
+	DESC 'Objectclass to keep complete SysCtl Information'
+	MUST ( cn )
+	MAY ( UIFsysCtlEntry ))

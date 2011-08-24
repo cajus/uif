@@ -1,0 +1,149 @@
+#! /bin/bash
+### BEGIN INIT INFO
+# Provides:          uif
+# Required-Start:    $network $syslog $remote_fs
+# Required-Stop:     $network $syslog $remote_fs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start the firewall defined in /etc/uif/uif.conf.
+### END INIT INFO
+#
+# Version:      @(#)/etc/init.d/uif  1.0.0  21-Feb-2002  pollmeier@gonicus.de
+#
+
+# RedHat specific settings - ignore for real systems ---------------------------
+# chkconfig: - 60 95
+# description: provides iptables packet filtering
+
+PATH=/usr/sbin:/sbin:$PATH
+UIF=/usr/sbin/uif
+
+# Include firewall defaults if available
+if [ -f /etc/default/uif ] ; then
+	. /etc/default/uif
+fi
+
+[ -z "$OPTIONS" ] && OPTIONS="-c /etc/uif/uif.conf"
+
+# Binaries installed?
+if [ ! -f /sbin/iptables ]; then
+	echo "uif: iptables not found - aborting"
+	exit 1
+fi
+
+# uif installed? Without this script makes no sense...
+[ -f $UIF ] || exit 1
+
+
+# As the name says. If the kernel supports modules, it'll try to load
+# the ones listed in "MODULES".
+load_modules() {
+	[ -f /proc/modules ] || return
+        LIST=`/sbin/lsmod|awk '!/Module/ {print $1}'`
+
+        for mod in $MODULES; do
+            echo $LIST | grep -q $mod || modprobe $mod || /bin/true
+        done
+}
+
+
+case "$1" in
+
+start)
+        echo -n "Starting uif: modules, "
+	logger "Starting uif"
+        [ -f /proc/modules ] && load_modules
+		
+        echo -n "rules: "
+        EMSG=`$UIF $OPTIONS 2>&1`
+        if [ $? -eq 0 ]; then
+		echo ok.
+                exit 0
+        fi
+	
+        echo "failed. Old rules have been restored."
+	logger "Starting uif failed: $EMSG"
+
+	[ -n "$MAILTO" ] && \
+	echo -e "Hi. This is your firewall script - which has failed" \
+	        "to execute in a proper way.\nHere is the error message:\n" \
+		"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
+		
+	echo -e "Error message: $EMSG\n"
+	exit 1
+        ;;
+
+stop)
+        echo -n "Stopping uif: "
+	logger "Stopping uif"
+        $UIF -d
+        echo ok.
+        ;;
+
+print)
+	echo "Printing rules based on your current configuration"
+	$UIF $OPTIONS -pt
+	;;
+
+test)
+        echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
+	trap 'echo "aborted, rules restored"; exit 0' SIGINT
+        load_modules
+
+	echo -n "rules - active, waiting - "
+        EMSG=`$UIF -T $TIMEOUT $OPTIONS`
+        if [ $? -eq 0 ]; then
+                echo ok
+                exit 0
+        fi
+        echo failed
+	echo -e "Error message: $EMSG\n"
+        ;;
+
+status)
+	if [ "`id -u`" != "0" ]; then
+		echo "Can't retrieve status information. You need to be root."
+		exit 1
+	fi
+	
+	# Simple rule listing
+	echo -e "\nRule listing:\n"
+        iptables-save | sed "/^#/d"
+
+	# Show accounting data
+	if [ -n "$ACCOUNTPREFIX" ]; then
+		echo -e "\n\nCurrent accounting information:\n"
+		iptables -vnx -L 2>&1 | sed "/pkts/d" | sed -ne "/^Chain $ACCOUNTPREFIX/N" -e "s/\n/ /p" | \
+			sed "s/[ ][ ]*/ /g" | awk '{ print $2"\t"$6" Bytes"; }'
+	fi
+	
+	# Show last 10 policy violations
+	if [ -n "$LOGPREFIX" ]; then
+		echo -e "\n\nLast 10 policy violations:"
+		dmesg | grep "`hostname`.* $LOGPREFIX .*:" 2> /dev/null | tail -n 10
+	fi
+
+	echo -e "\n\n"
+        ;;
+
+
+restart|reload|force-reload)
+        $0 start
+        ;;
+
+flush)
+	echo -n "Flushing packet counters: "
+	iptables -Z &> /dev/null
+	if [ $? -eq 0 ]; then
+		echo ok
+	else
+		echo failed
+	fi
+	;;
+
+*)
+        echo "Usage: $0 {start|stop|status|restart|reload|flush|print}"
+        exit 1
+esac
+
+exit 0

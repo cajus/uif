@@ -1,0 +1,18 @@
+README for uif
+==============
+
+
+DOCUMENTATION
+
+Please have a look at the man pages for uif(8) and uif.conf(5). There
+are example configurations in the docs/ directory.
+
+
+BUGS/WISHLIST
+
+If you've found a bug, or have suggestions for future versions
+of uif, you may send a mail to <uif-feedback@lug.mfh-iserlohn.de>.
+Someone will get back to you then...
+
+Have fun,
+-Jörg Platte, Cajus Pollmeier

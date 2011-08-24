@@ -1,0 +1,68 @@
+#!/usr/bin/make -f
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# This is the debhelper compatability version to use.
+package=uif
+version=$(shell dpkg-parsechangelog | sed -n -e '/^Version:/s/^Version: //p')
+tmp=`pwd`/debian/$(package)
+
+build:
+	dh_testdir
+	touch build
+
+clean:
+	dh_testdir
+	dh_testroot
+	-rm -f build
+	-rm -f `find . -name "*~"`
+	-rm -rf debian/tmp debian/files* debian/*.debhelper core debian/uif
+	-rm -rf debian/uif.substvars
+	debconf-updatepo
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_prep
+	#dh_installdirs usr/sbin etc/init.d etc/default etc/ldap/schema etc/uif usr/share/doc
+	dh_installdirs usr/sbin usr/share/doc
+
+	$(MAKE) install DESTDIR=$(tmp)
+
+binary-arch:  build install
+
+binary-indep: build install
+#       dh_testversion
+	dh_testdir
+	dh_testroot
+	dh_installdebconf
+	dh_installdocs
+#       dh_installexamples
+#       dh_installmenu
+#       dh_installemacsen
+#       dh_installpam
+#       dh_installinit
+#       dh_installcron
+	dh_installman
+#       dh_installinfo
+#       dh_undocumented
+	dh_installchangelogs
+#       dh_link
+#       dh_strip
+	dh_compress
+	dh_fixperms
+# You may want to make some executables suid here.
+#       dh_suidregister
+#       dh_makeshlibs
+	dh_installdeb
+	dh_perl
+#       dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install

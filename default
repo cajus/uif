@@ -1,0 +1,28 @@
+## Debian firewall package standard values
+#  See "man 8 uif" for details.
+
+# the iptables loglevel
+LOGLEVEL="debug"
+
+# prefix for all logged incidents 
+LOGPREFIX="FW"
+
+# iptables log specific options
+LOGLIMIT="20/minute"
+LOGBURST="5"
+
+# iptables limit specific options
+LIMIT="20/minute"
+BURST="5"
+
+# firewall testing timeout
+TIMEOUT=30
+
+# specify modules to load before startup
+MODULES="ip_conntrack_ftp"
+
+# who should get the mails when the script fails
+MAILTO="root"
+
+# prefix for accounting rules
+ACCOUNTPREFIX="ACC_"
