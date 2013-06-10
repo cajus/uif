@@ -27,6 +27,7 @@ clean:
 	-rm -rf debian/tmp debian/files* debian/*.debhelper core debian/uif
 	-rm -rf debian/uif.substvars
 	debconf-updatepo
+	dh_clean
 
 install: build
 	dh_testdir

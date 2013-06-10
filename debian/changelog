@@ -5,6 +5,8 @@ uif (1.0.7-0) UNRELEASED; urgency=low
     + Make LDAP dependency optional.
   * /debian/control:
     + Add fields: Vcs-Git, Vcs-Browser.
+  * /debian/rules:
+    + Run dh_clean in clean stanza.
   * /debian/source/format: 3.0 (quilt).
   * Lintian issues fixed:
     + W: uif source: debian-rules-missing-recommended-target build-arch.
