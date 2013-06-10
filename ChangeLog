@@ -1,8 +1,11 @@
 uif (1.0.7-0) UNRELEASED; urgency=low
 
-  [ Mike Gabriel ]
+  [ Alex Owen ]
   * New upstream version (1.0.7):
-    + Make LDAP dependency optional.
+    - Fix "uif uses deprecated position of ! to negate rules".
+    - Make LDAP dependency optional.
+
+  [ Mike Gabriel ]
   * /debian/control:
     + Add fields: Vcs-Git, Vcs-Browser.
   * /debian/rules:
@@ -15,9 +18,6 @@ uif (1.0.7-0) UNRELEASED; urgency=low
   * Bumped Standards: field to: 3.9.4 (after above changes).
 
   [ Gregor Herrmann ]
-  * Fix "uif uses deprecated position of ! to negate rules":
-    patch uif.pl to put '!' before the parameters.
-    Thanks to Alex Owen for the bug report and the initial patch.
   * Fix "New Japanese translation": add ja.po, thanks to victory.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 14 Jan 2013 20:48:18 +0100
