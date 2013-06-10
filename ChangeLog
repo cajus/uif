@@ -1,6 +1,8 @@
 uif (1.0.8-0) UNRELEASED; urgency=low
 
-  * Continue development...
+  * New upstream version (1.0.8):
+    - uif.pl: convert umlaut to UTF-8, fix FSF address.
+    - Fix hyphens and spelling errors in man pages.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 11 Jun 2013 00:11:30 +0200
 
