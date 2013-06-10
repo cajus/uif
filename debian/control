@@ -19,6 +19,7 @@ Depends:
  bsdutils (>=2.11u),
 Suggests:
  fwlogwatch,
+ uif-ldap,
 Conflicts:
  knetfilter,
  firewall-easy,
@@ -31,7 +32,6 @@ Description: Advanced iptables-firewall script
  ldap databases.
  .
  This package provides uif with LDAP support not enabled.
-
 
 Package: uif-ldap
 Architecture: all
