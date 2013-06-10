@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
 
-# Copyright (C) 2002  Jörg Platte <joergplatte@gmx.de>
+# Copyright (C) 2002  JÃ¶rg Platte <joergplatte@gmx.de>
 #                 and Cajus Pollmeier <pollmeier@gonicus.de>
 #
 # This program is free software; you can redistribute it and/or modify
