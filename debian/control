@@ -31,7 +31,7 @@ Description: Advanced iptables-firewall script
  system that can store its configurations in regular files or
  ldap databases.
  .
- This package provides uif with LDAP support not enabled.
+ This package provides the non-LDAP version of uif.
 
 Package: uif-ldap
 Architecture: all
