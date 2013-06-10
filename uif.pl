@@ -984,14 +984,14 @@ sub genRuleDump {
 				}
 				my $range;
 				foreach $range (@{$$rule{"\u$proto"}[2]}) {
-					push (@protocol, "-p $proto -m $proto --sport $not $range");
+					push (@protocol, "-p $proto -m $proto $not --sport $range");
 				}
 				foreach $range (@{$$rule{"\u$proto"}[3]}) {
-					push (@protocol, "-p $proto -m $proto --dport $not $range");
+					push (@protocol, "-p $proto -m $proto $not --dport $range");
 				}
 				foreach $range (@{$$rule{"\u$proto"}[4]}) {
 					$range =~ /^(.+)\/(.+)$/;
-					push (@protocol, "-p $proto -m $proto --sport $not $1 --dport $not $2");
+					push (@protocol, "-p $proto -m $proto $not --sport $1 $not --dport $2");
 				}
 			}
 		}
@@ -999,16 +999,16 @@ sub genRuleDump {
 			my $type;
 			foreach $type (@{$$rule{'ICMP'}}) {
 				if ($type eq 'all') {
-					push (@protocol, "-p $not icmp");
+					push (@protocol, "$not -p icmp");
 				} else {
-					push (@protocol, "-p icmp -m icmp --icmp-type $not $type");
+					push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
 				}
 			}
 		}
 		if (exists($$rule{'OtherProtocols'})) {
 			my $proto;
 			foreach $proto (@{$$rule{'OtherProtocols'}}) {
-				push (@protocol, "-p $not $proto");
+				push (@protocol, "$not -p $proto");
 			}
 		}
 		if (exists($$rule{'Source'})) {
@@ -1020,10 +1020,10 @@ sub genRuleDump {
 			my $source;
 			foreach $source (@{$$rule{'Source'}}) {
 				if ($source =~ /(.+)=(.+)/ && ($$rule{'Table'} eq 'filter')) {
-					push (@source, "-s $not $1 -m mac --mac-source $not $2");
+					push (@source, "$not -s $1 -m mac $not --mac-source $2");
 				} else {
 					$source =~ /([^=]+)/;
-					push (@source, "-s $not $1");
+					push (@source, "$not -s $1");
 				}
 			}
 		}
@@ -1036,7 +1036,7 @@ sub genRuleDump {
 			my $destination;
 			foreach $destination (@{$$rule{'Destination'}}) {
 				$destination =~ /([^=]+)/;
-				push (@destination, "-d $not $1");
+				push (@destination, "$not -d $1");
 			}
 		}
 		if (exists($$rule{'TranslatedSource'})) {
@@ -1093,7 +1093,7 @@ sub genRuleDump {
 			}
 			my $input;
 			foreach $input (@{$$rule{'InputInterface'}}) {
-				push (@inputinterface, "-i $not $input");
+				push (@inputinterface, "$not -i $input");
 			}
 		}
 		if (exists($$rule{'OutputInterface'})) {
@@ -1104,7 +1104,7 @@ sub genRuleDump {
 			}
 			my $output;
 			foreach $output (@{$$rule{'OutputInterface'}}) {
-				push (@outputinterface, "-o $not $output");
+				push (@outputinterface, "$not -o $output");
 			}
 		}
 		if (exists($$rule{'PhysicalInputInterface'})) {
@@ -1115,7 +1115,7 @@ sub genRuleDump {
 			}
 			my $input;
 			foreach $input (@{$$rule{'PhysicalInputInterface'}}) {
-				push (@physicalinputinterface, "-m physdev --physdev-in $not $input");
+				push (@physicalinputinterface, "-m physdev $not --physdev-in $input");
 			}
 		}
 		if (exists($$rule{'PhysicalOutputInterface'})) {
@@ -1126,7 +1126,7 @@ sub genRuleDump {
 			}
 			my $output;
 			foreach $output (@{$$rule{'PhysicalOutputInterface'}}) {
-				push (@physicaloutputinterface, "-m physdev --physdev-out $not $output");
+				push (@physicaloutputinterface, "-m physdev $not --physdev-out $output");
 			}
 		}
 		if (exists($$rule{'MarkMatch'})) {

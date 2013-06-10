@@ -1,3 +1,36 @@
+uif (1.0.6-3) unstable; urgency=low
+
+  * Add closure for WNPP orphanage bug (Closes: #706290). New maintainer of uif
+    is Mike Gabriel <sunweaver@debian.org>.
+
+ -- Mike Gabriel <sunweaver@debian.org>  Mon, 29 Apr 2013 08:05:06 +0200
+
+uif (1.0.6-2) unstable; urgency=low
+
+  * New maintainer: Mike Gabriel <sunweaver@debian.org>.
+  * /debian/control:
+    + Add fields: Vcs-Git, Vcs-Browser.
+  * /debian/source/format: 3.0 (quilt).
+  * Lintian issues fixed:
+    + W: uif source: debian-rules-missing-recommended-target build-arch.
+    + W. uif source: debian-rules-missing-recommended-target build-indep.
+    + W: uif source: stray-translated-debconf-templates templates.de.
+  * Bumped Standards: field to: 3.9.4 (after above changes).
+
+ -- Mike Gabriel <sunweaver@debian.org>  Mon, 29 Apr 2013 00:43:33 +0200
+
+uif (1.0.6-1.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix "uif uses deprecated position of ! to negate rules":
+    patch uif.pl to put '!' before the parameters.
+    Thanks to Alex Owen for the bug report and the initial patch.
+    (Closes: #683312)
+  * Fix "New Japanese translation": add ja.po, thanks to victory.
+    (Closes: #692838)
+
+ -- gregor herrmann <gregoa@debian.org>  Mon, 14 Jan 2013 20:48:18 +0100
+
 uif (1.0.6-1) unstable; urgency=low
 
   * New upstream version.

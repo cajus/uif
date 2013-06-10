@@ -10,7 +10,12 @@ package=uif
 version=$(shell dpkg-parsechangelog | sed -n -e '/^Version:/s/^Version: //p')
 tmp=`pwd`/debian/$(package)
 
-build:
+build: build-arch build-indep
+
+build-arch:
+# Nothing to do here...
+
+build-indep:
 	dh_testdir
 	touch build
 
