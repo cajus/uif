@@ -1,0 +1,258 @@
+uif (1.0.7-0) UNRELEASED; urgency=low
+
+  [ Mike Gabriel ]
+  * New upstream version (1.0.7):
+    + Make LDAP dependency optional.
+  * /debian/control:
+    + Add fields: Vcs-Git, Vcs-Browser.
+  * /debian/rules:
+    + Run dh_clean in clean stanza.
+  * /debian/source/format: 3.0 (quilt).
+  * Lintian issues fixed:
+    + W: uif source: debian-rules-missing-recommended-target build-arch.
+    + W. uif source: debian-rules-missing-recommended-target build-indep.
+    + W: uif source: stray-translated-debconf-templates templates.de.
+  * Bumped Standards: field to: 3.9.4 (after above changes).
+
+  [ Gregor Herrmann ]
+  * Fix "uif uses deprecated position of ! to negate rules":
+    patch uif.pl to put '!' before the parameters.
+    Thanks to Alex Owen for the bug report and the initial patch.
+  * Fix "New Japanese translation": add ja.po, thanks to victory.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 14 Jan 2013 20:48:18 +0100
+
+uif (1.0.6-1) unstable; urgency=low
+
+  * New upstream version.
+  * Fix incompatibility with new conntrack modules.
+  * Fix pending l10n issues. Debconf translations:
+    - Danish. Closes: #590000
+  * Fix rate limiting issue. Closes: #514993
+  * Made alias interfaces valid interfaces. Closes: #496751
+
+ -- Cajus Pollmeier <cajus@debian.org>  Mon, 25 Jul 2011 17:28:09 +0200
+
+uif (1.0.5-4.3) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Bump debhelper compatibility to 7
+  * As a consequence, replace obsoleted "dh_clean -k" calls by "dh_prep"
+  * Explicitly use 1.0 as source format
+  * Fix spelling error ("informations") in README.Debian
+  * Drop useless debian/templates.de file
+  * Fix pending l10n issues. Debconf translations:
+    - Spanish (Francisco Javier Cuadrado).  Closes: #513352
+
+ -- Christian Perrier <bubulle@debian.org>  Tue, 04 May 2010 07:35:54 +0200
+
+uif (1.0.5-4.2) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fix pending l10n issues. Debconf translations:
+    - Swedish. Closes: #492183
+    - Italian. Closes: #503763
+  * Remove stray debconf translation debian/templates.de. Superseded by
+    the regular translation debian/po/de.po for ages.
+
+ -- Christian Perrier <bubulle@debian.org>  Thu, 30 Oct 2008 07:35:35 +0100
+
+uif (1.0.5-4.1) unstable; urgency=low
+
+  * Non-maintainer upload to fix pending l10n issues.
+  * Add debconf-updatepo to the clean target. Closes: #469254
+  * Remove useless debian/templates.de file
+  * Fix typos in debconf templates. Closes: #323959
+  * Remove extra spaces in debconf templates in various places
+  * Remove overzealous exclamation mark in debconf templates
+  * Turn one note into error
+  * Debconf translations:
+    - Portuguese. Closes: #414056
+    - French. Closes: #471541
+    - German
+    - Finnish. Closes: #478669
+  * Basque. Closes: #479450
+  * Portuguese. Closes: #479627
+  * Czech. Closes: #479630
+  * Vietnamese. Closes: #479746
+  * Galician. Closes: #479834
+  * Russian. Closes: #480252
+  * [Lintian] Move po-debconf and debhelper to Build-Depends as they're
+    used in the clean target
+  * [Lintian] Set debhelper compatibility level in debian/compat, not
+    debian/rules
+
+ -- Christian Perrier <bubulle@debian.org>  Sat, 19 Apr 2008 20:08:36 +0200
+
+uif (1.0.5-4) unstable; urgency=low
+
+  * Added LSB formatted dependency info (Closes:#469112)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Mon, 03 Mar 2008 08:57:11 +0100
+
+uif (1.0.5-3.1) unstable; urgency=low
+
+  * Non-maintainer upload to fix the pending l10n issues.
+  * Debconf translations:
+    - German corrected. Closes: #313873
+    - Vietnamese. Closes: #323958
+
+ -- Christian Perrier <bubulle@debian.org>  Thu,  8 Feb 2007 18:28:36 +0100
+
+uif (1.0.5-3) unstable; urgency=low
+
+  * Adjusted command line parameter for tail (Closes:#301414) 
+
+ -- Cajus Pollmeier <cajus@debian.org>  Fri, 15 Apr 2005 16:01:09 +0200
+
+uif (1.0.5-2) unstable; urgency=low
+
+  * Added Czech debconf translation contributed by Miroslav Kure
+    (Closes:#287541)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Sun,  2 Jan 2005 10:27:28 +0100
+
+uif (1.0.5-1) unstable; urgency=low
+
+  * New upstream release (Closes:#262363)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Sat, 31 Jul 2004 09:28:11 +0200
+
+uif (1.0.4-10) unstable; urgency=low
+
+  * Added catalan debconf translation (Closes:#248756)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Fri, 14 May 2004 11:43:59 +0200
+
+uif (1.0.4-9) unstable; urgency=low
+
+  * Made init script return an error code if setting the rules failes
+  * Do not try to simplify a group of networks when definitions
+    contain mac addresses
+
+ -- Cajus Pollmeier <cajus@debian.org>  Fri, 23 Apr 2004 18:20:27 +0200
+
+uif (1.0.4-8) unstable; urgency=low
+
+  * Fixed regex in uif which had problems to parse new /etc/protocols
+
+ -- Cajus Pollmeier <cajus@debian.org>  Thu, 19 Feb 2004 07:12:48 +0100
+
+uif (1.0.4-7) unstable; urgency=low
+
+  * Added conflicts to other firewalls (Closes: #223359)
+  * Updated contributed configuration
+
+ -- Cajus Pollmeier <cajus@debian.org>  Sat, 13 Dec 2003 20:42:09 +0100
+
+uif (1.0.4-6) unstable; urgency=low
+
+  * Included french translation done by Michel Grentzinger
+    (Closes: #200673)
+
+ -- Cajus Pollmeier <cajus@debian.org>  Thu, 10 Jul 2003 07:30:12 +0200
+
+uif (1.0.4-5) unstable; urgency=low
+
+  * Converted debconf dialogs to support the new gettext aware
+    translations. (Closes: #199834)
+  * Fixed two little translation bugs for the german i18n
+
+ -- Cajus Pollmeier <cajus@debian.org>  Thu,  3 Jul 2003 20:18:27 +0200
+
+uif (1.0.4-4) unstable; urgency=low
+
+  * Fixed problem when specifying multiple portranges
+  * Added extra checks just in case the kernel has no module support
+  * Updated standards-version
+
+ -- Cajus Pollmeier <cajus@debian.org>  Mon, 30 Dec 2002 14:16:52 +0100
+
+uif (1.0.4-3) unstable; urgency=low
+
+  * Initial Debian release (Closes: #170565) 
+
+ -- Cajus Pollmeier <cajus@debian.org>  Mon, 25 Nov 2002 16:59:16 +0100
+
+uif (1.0.4-2) unstable; urgency=low
+
+  * removed debugging output
+
+ -- Joerg Platte <jplatte@jako.ping.de>  Tue,  8 Oct 2002 08:34:00 +0200
+
+uif (1.0.4-1) unstable; urgency=low
+
+  * new upstream release fixes mark problems
+
+ -- Joerg Platte <jplatte@jako.ping.de>  Wed, 14 Aug 2002 11:15:00 +0200
+
+uif (1.0.3-1) unstable; urgency=low
+
+  * new upstream release
+
+ -- Cajus Pollmeier <pollmeier@gonicus.de>  Thu, 18 Jul 2002 22:37:38 +0200
+
+uif (1.0.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Added mark support
+  * Added dhis service
+  * cosmetical changes
+
+ -- Joerg Platte <jplatte@jako.ping.de>  Thu, 18 Jul 2002 20:39:58 +0200
+
+uif (1.0.1-5) unstable; urgency=low
+
+  * fixed init script
+
+ -- Cajus Pollmeier <c.pollmeier@gmx.net>  Sun, 30 Jun 2002 20:25:15 +0200
+
+uif (1.0.1-4) unstable; urgency=low
+
+  * uif depends on bsdutils, added to control
+
+ -- Cajus Pollmeier <c.pollmeier@gmx.net>  Mon, 10 Jun 2002 10:34:31 +0200
+
+uif (1.0.1-3) unstable; urgency=low
+
+  * Followed lintians suggestions...
+  * Fixed typo in uif.prerm
+
+ -- Cajus Pollmeier <c.pollmeier@gmx.net>  Fri, 31 May 2002 11:19:57 +0200
+
+uif (1.0.1-2) unstable; urgency=low
+
+  * Fixed uif.prerm to update cleanly
+
+ -- Cajus Pollmeier <pollmeier@gonicus.de>  Mon, 27 May 2002 10:44:56 +0200
+
+uif (1.0.1-1) unstable; urgency=low
+
+  * Updated documentation, added more examples
+  * Fixed README to not contain "blahfasel"
+
+ -- Cajus Pollmeier <pollmeier@gonicus.de>  Sun, 26 May 2002 21:50:21 +0200
+
+uif (1.0.0-3) unstable; urgency=low
+
+  * fixed typo in uif.pl
+
+ -- Joerg Platte <jplatte@jako.ping.de>  Sun, 26 May 2002 12:11:21 +0200
+
+uif (1.0.0-2) unstable; urgency=low
+
+  * NMU :-)
+  * manpage update
+  * added documentation: examples.txt
+
+ -- Joerg Platte <jplatte@jako.ping.de>  Sun, 26 May 2002 11:15:49 +0200
+
+uif (1.0.0-1) unstable; urgency=low
+
+  * Initial release.
+
+ -- Cajus Pollmeier <pollmeier@gonicus.de>  Sun, 24 Feb 2002 17:35:29 +0200
+
+Local variables:
+mode: debian-changelog
+End:
