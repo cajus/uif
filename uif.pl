@@ -29,6 +29,8 @@ use NetAddr::IP;
 my $SignalCatched=0;
 
 my $configfile="/etc/uif/uif.conf";
+my $configfile6="/etc/uif/uif6.conf";
+my $ipv6=0;
 
 my @mapping = (	[ 'n', 'uifid', 'Name' ],
 		[ 's', 'uifsource', 'Source'],
@@ -117,6 +119,24 @@ sub readConfig {
 				} else {
 					die "invalid line in section include: $line\n";
 				}
+			} elsif ($state eq 'INCLUDE6') {
+			    if ($ipv6) {
+				if ($line =~ /^\s*\"(.+)\"$/) {
+					my $file = $1;
+					readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+				} else {
+					die "invalid line in section include6: $line\n";
+				}
+			    }
+			} elsif ($state eq 'INCLUDE4') {
+			    if ($ipv6) {} else {
+				if ($line =~ /^\s*\"(.+)\"$/) {
+					my $file = $1;
+					readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+				} else {
+					die "invalid line in section include4: $line\n";
+				}
+			    }
 			} elsif ($state eq 'NETWORK') {
 				if ($line =~ /^\s*([a-zA-Z0-9_-]+)\s+(.*)$/) {
 					$$Networks{$1}.="$2 ";
@@ -1000,9 +1020,17 @@ sub genRuleDump {
 			my $type;
 			foreach $type (@{$$rule{'ICMP'}}) {
 				if ($type eq 'all') {
-					push (@protocol, "$not -p icmp");
+                                   if ($ipv6) { 
+                                       push (@protocol, "$not -p icmpv6");
+                                   } else {
+                                       push (@protocol, "$not -p icmp");
+                                   }
 				} else {
-					push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
+                                   if ($ipv6) { 
+                                       push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
+                                   } else {
+                                       push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
+                                   }
 				}
 			}
 		}
@@ -1225,9 +1253,10 @@ sub genRuleDump {
 			}			
 		}
 	}
-
+	
 	my $entry;
 	foreach $entry (qw(mangle filter nat)) {
+		if ($entry eq "nat" && $ipv6 == 1) {next};  
 		my $chain;
 		push (@$Listing, "*$entry");
 		if ($entry eq 'filter') {
@@ -1245,13 +1274,21 @@ sub genRuleDump {
 				push (@$Listing, "-A STATE$_ -m state --state INVALID -j STATELESS$_");
 				push (@$Listing, "-A STATE$_ -j ACCOUNTING$_");
 				push (@$Listing, "-A STATE$_ -m state --state ESTABLISHED,RELATED -j ACCEPT");
+		            if ($ipv6) {
+				push (@$Listing, "-A STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
+		            } else {
 				push (@$Listing, "-A STATE$_ -m state ! --state NEW -j STATENOTNEW");
+		            }
 				push (@$Listing, "-A STATELESS$_ -j ACCOUNTINGSTATELESS$_");
 			}
 			push (@$Listing, "-A STATENOTNEW -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \"  --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
 			push (@$Listing, "-A STATENOTNEW -j DROP");
 			push (@$Listing, "-A MYREJECT -m tcp -p tcp -j REJECT --reject-with tcp-reset");
+		    if ($ipv6) {
+			push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp6-port-unreachable");
+		    } else {
 			push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp-port-unreachable");
+		    }
 		} elsif ($entry eq 'nat') {
 			$table=\@nat;
 			$chains=\%nat;
@@ -1302,8 +1339,11 @@ sub applyRules {
 	my $error;
 
 	@$Listing=map { $_."\n" } @$Listing;
-
+    if ($ipv6) {
+	open (IPT, '/sbin/ip6tables-save|');
+    } else {
 	open (IPT, '/sbin/iptables-save|');
+    }
 	@oldrules = <IPT>;
 	close (IPT);
 
@@ -1312,7 +1352,11 @@ sub applyRules {
 	$SIG{'QUIT'} = 'signalCatcher';
 	$SIG{'TERM'} = 'signalCatcher';
 
+    if ($ipv6) {
+	open (IPT, '|/sbin/ip6tables-restore');
+    } else {
 	open (IPT, '|/sbin/iptables-restore');
+    }
 	print IPT @$Listing;
 	close (IPT);
 	$error=$?;
@@ -1321,7 +1365,11 @@ sub applyRules {
 		sleep $timeout;
 	}
 	if ($timeout || $SignalCatched || $error) {
+	    if ($ipv6) {
+		open (IPT, '|/sbin/ip6tables-restore');
+	    } else {
 		open (IPT, '|/sbin/iptables-restore');
+	    }
 		print IPT @oldrules;
 		close (IPT);
 		if ($SignalCatched) {
@@ -1393,8 +1441,10 @@ sub readCommandLine {
 		$Sysconfig{'AccountPrefix'}='ACC_';
 	}
 	my %opt;
-	getopts('c:tpds:b:r:T:C:R:D:w:W', \%opt) || uifUsg ();
+	getopts('6c:tpds:b:r:T:C:R:D:w:W', \%opt) || uifUsg ();
 	
+	$ipv6 = 1 if $opt{'6'};
+	$configfile=$configfile6 if $opt{'6'};
 	$configfile = $opt{'c'} if $opt{'c'};
 	$test = 1 if $opt{'t'};
 	$print = 1 if $opt{'p'};
@@ -1435,6 +1485,14 @@ sub readCommandLine {
 		print "password: ";
 		$ldappassword=<STDIN>;
 		chomp($ldappassword);
+	}
+	
+	if ($ipv6) {
+		if (exists($ENV{'LOGPREFIX6'})) {
+			$Sysconfig{'LogPrefix'}=$ENV{'LOGPREFIX6'};
+		} else {
+			$Sysconfig{'LogPrefix'}='FW6';
+		}
 	}
 
 	if ($readldap || $writeldap) {
@@ -1490,11 +1548,13 @@ sub clearAllRules {
 	push (@$Listing, ":PREROUTING ACCEPT [0:0]");
 	push (@$Listing, ":OUTPUT ACCEPT [0:0]");
 	push (@$Listing, "COMMIT");
+    if ($ipv6) {} else {
 	push (@$Listing, "*nat");
 	push (@$Listing, ":PREROUTING ACCEPT [0:0]");
 	push (@$Listing, ":POSTROUTING ACCEPT [0:0]");
 	push (@$Listing, ":OUTPUT ACCEPT [0:0]");
 	push (@$Listing, "COMMIT");
+    }	
 	push (@$Listing, "*filter");
 	push (@$Listing, ":INPUT ACCEPT [0:0]");
 	push (@$Listing, ":OUTPUT ACCEPT [0:0]");
@@ -1503,8 +1563,9 @@ sub clearAllRules {
 }
 
 sub uifUsg {
-	print "usage: $0 [-c configfile] [-t] [-p] [-d] [-s server] [-b base] [-r ruleset] [-R ruleset] [-D <bind dn>] [-W] [-w <password>] [-T time] [-C configfile]\n";
-	print "-c  read <configfile> instead of $configfile\n";
+	print "usage: $0 [-6] [-c configfile] [-t] [-p] [-d] [-s server] [-b base] [-r ruleset] [-R ruleset] [-D <bind dn>] [-W] [-w <password>] [-T time] [-C configfile]\n";
+	print "-6  ipv6 mode default config $configfile6\n";
+	print "-c  read <configfile> instead of $configfile (or in ipv6 mode $configfile6)\n";
 	print "-t  test rules\n";
 	print "-p  print rules to stdout\n";
 	print "-d  disable firewall (clear all rules)\n";

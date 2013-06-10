@@ -22,7 +22,7 @@ the right curly brace in a single line. A comment starts with a hash mark
 at the beginning of a line.
 .Pp
 Blank lines are silently ignored. The following sections are valid:
-.Cm include, sysconfig, service, network, interface, marker, filter, nat, input, output, forward, masquerade
+.Cm include, include4, include6, sysconfig, service, network, interface, marker, filter, nat, input, output, forward, masquerade
 and 
 .Cm stateless.  
 .Pp
@@ -46,6 +46,12 @@ Include other configuration files. Each line in this section, enclosed in
 quotation marks ("), must be a valid filename. The contents of this file are
 added to the actual configuration file and each file should contain at least
 one section (a comment only file is not really useful...).
+.Ss include4 section
+Include other configuration files but ONLY in ipv4 mode (WITHOUT -6 switch to uif).
+Otherwise equivilant to the include section above.
+.Ss include6 section
+Include other configuration files but ONLY in ipv6 mode (WITH -6 switch to uif).
+Otherwise equivilant to the include section above.
 .Ss sysconfig section
 Set some global settings. Each line in this section starts with one of the
 following identifiers followed by one or more blanks and the desired value:

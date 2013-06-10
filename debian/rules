@@ -25,6 +25,7 @@ clean:
 	-rm -f build
 	-rm -f `find . -name "*~"`
 	-rm -rf debian/tmp debian/files* debian/*.debhelper core debian/uif
+	-rm -rf debian/*.debhelper.log
 	-rm -rf debian/uif.substvars
 	debconf-updatepo
 	dh_clean

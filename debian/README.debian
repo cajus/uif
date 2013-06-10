@@ -12,3 +12,48 @@ to configure the firewall fitting your needs.
 
 ---
 Cajus Pollmeier <pollmeier@gonicus.de>, Sun, 24 Feb 2002 17:35:29 +0100
+---
+
+This version of uif includes a patch by Alex Owen so it can also produce 
+IPv6 firewall rules. The debian init script can, by setting IPV6MODE=1 
+in /etc/default/uif, be made to install the ipv4 rules from 
+/etc/uif/uif.conf and the ipv6 rules from /etc/uif/uif6.conf.
+
+Judicious use of the include and include4 and include6 sections of the 
+config files can mean that the ipv6 and ipv4 rules can be identical 
+except for includeing a network section with ipv4 definitions and ipv6 
+definitions respectivly.
+
+uif6.conf can be a sym-link to uif.conf or contain:
+--uif6.conf--
+include {
+    "/etc/uif/uif.conf"
+}
+-------------
+
+uif.conf can then be used for a single set of rules but can include 
+different network definitions as needed:
+--uif.conf--
+#include common services 
+include {
+    "/etc/uif/services"
+}
+# in ipv4 mode include ipv4 network definitions
+include4 {
+    "/etc/uif/networks4"
+}
+#In ipv6 mode include ipv6 network defnintions
+include6 {
+    "/etc/uif/networks6"
+}
+#common filter block for both ipv4 and ipv6 
+filter {
+
+  #Put your firewall rules here
+
+}
+------------
+
+---
+Alex Owen <r.alex.owen@gmail.com>, Sun, 15 Jul 2012 14:41:22 +0100
+---

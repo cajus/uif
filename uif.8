@@ -10,6 +10,7 @@
 .Nd Tool for generating optimized packetfilter rules
 .Sh SYNOPSIS
 .Nm uif
+.Op Fl 6
 .Op Fl dptW
 .Op Fl b Ar base
 .Op Fl c Ar config_file
@@ -48,6 +49,15 @@ tell you what to filter.
 .Sh Options
 The options are as follows:
 .Bl -tag -width Ds
+.It Fl 6
+Turn on IPv6 mode so as to manipulate ip6tables rules. 
+Default configuration file is changed to
+.Ar /etc/uif/uif6.conf
+see 
+.Ar \-c 
+below. It should be noted that nat rules are silently ignored if 
+.Ar \-6
+is used.
 .It Fl b Ar base
 Specify the base to act on when using LDAP based firewall configuration.
 .Nm
