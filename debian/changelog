@@ -1,6 +1,8 @@
 uif (1.0.7-0) UNRELEASED; urgency=low
 
   [ Mike Gabriel ]
+  * New upstream version (1.0.7):
+    + Make LDAP dependency optional.
   * /debian/control:
     + Add fields: Vcs-Git, Vcs-Browser.
   * /debian/source/format: 3.0 (quilt).

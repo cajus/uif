@@ -21,7 +21,8 @@
 # found in the file /usr/share/common-licenses/GPL.
 
 use strict;
-use Net::LDAP;
+my $LDAPENABLED = eval "use Net::LDAP; 1" ? '1' : '0';
+
 use Getopt::Std;
 use NetAddr::IP;
 
@@ -1437,6 +1438,7 @@ sub readCommandLine {
 	}
 
 	if ($readldap || $writeldap) {
+		if ($LDAPENABLED == 0) { die "To use LDAP fatures be sure to install Net::LDAP from debain package libnet-ldap-perl" } ;
 		$ldap = Net::LDAP->new($ldapserver) or die "$@";
 		if ($ldapbinddn && ($ldappassword eq "")) {
 			$mesg=$ldap->bind(	$ldapbinddn);

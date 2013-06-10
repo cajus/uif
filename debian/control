@@ -14,11 +14,11 @@ Architecture: all
 Depends:
  ${perl:Depends},
  ${misc:Depends},libnetaddr-ip-perl (>= 3.0),
- libnet-ldap-perl,
  iptables,
  bsdutils (>=2.11u),
 Suggests:
  fwlogwatch,
+ libnet-ldap-perl,
 Conflicts:
  knetfilter,
  firewall-easy,
