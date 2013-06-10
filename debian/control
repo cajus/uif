@@ -1,7 +1,7 @@
 Source: uif
 Section: net
 Priority: optional
-Maintainer: Mike Gabriel <sunweaver@debian.org>
+Maintainer: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 Standards-Version: 3.9.4
 Build-Depends:
  debhelper (>= 7),
