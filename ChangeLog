@@ -6,6 +6,8 @@ uif (1.0.7-0) UNRELEASED; urgency=low
     - Make LDAP dependency optional.
 
   [ Mike Gabriel ]
+  * New upstream version (1.0.7):
+    - Provide a default (nothing-in/all-out) uif.conf.
   * /debian/control:
     + Add fields: Vcs-Git, Vcs-Browser.
   * /debian/rules:
