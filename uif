@@ -5,7 +5,8 @@
 # Required-Stop:     $network $syslog $remote_fs
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: Start the firewall defined in /etc/uif/uif.conf.
+# Short-Description: Universal Internet Firewall
+# Description:       Start the firewall defined in /etc/uif/uif.conf.
 ### END INIT INFO
 #
 # Version:      @(#)/etc/init.d/uif  1.0.0  21-Feb-2002  pollmeier@gonicus.de
