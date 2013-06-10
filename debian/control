@@ -8,6 +8,7 @@ Build-Depends:
  po-debconf,
 Vcs-Git: git://git.debian.org/collab-maint/uif.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/uif.git;a=summary
+Homepage: https://github.com/cajus/uif
 
 Package: uif
 Architecture: all
@@ -40,7 +41,7 @@ Depends:
  ${misc:Depends},
  uif (= ${binary:Version} ),
  libnet-ldap-perl,
-Description: Advanced iptables-firewall script
+Description: Advanced iptables-firewall script (LDAP support)
  Complete package to create and simplify iptables packetfilter
  rules using perl. It was developed for a diskless router
  system that can store its configurations in regular files or

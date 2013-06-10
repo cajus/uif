@@ -1,8 +1,39 @@
-Copyright (C) 2002  Jörg Platte <jplatte@gmx.net>
-       and Cajus Pollmeier <pollmeier@gonicus.de>
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: uif
+Upstream-Contact: Cajus Pollmeier <uif@naasa.net>
+Source: https://github.com/cajus/uif
 
-Copyright: GPL2
+Files: *
+Copyright:
+ 2002, Jörg Platte <jplatte@gmx.net>
+ 2002, Cajus Pollmeier <pollmeier@gonicus.de>
+License: GPL-2+
 
-This code is released under the terms of the GPLv2 license.
+Files: /debian/*
+Copyright:
+ 2002, Jörg Platte <jplatte@gmx.net>
+ 2002-2012, Cajus Pollmeier <pollmeier@gonicus.de>
+ 2002-2013, Mike Gabriel <sunweaver@debian.org>
+License: GPL-2+
 
-See /usr/share/common-licenses/GPL-2 for the full license.
+License: GPL-2+
+ This program is free software; you can redistribute it
+ and/or modify it under the terms of the GNU General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later
+ version.
+ .
+ This program is distributed in the hope that it will be
+ useful, but WITHOUT ANY WARRANTY; without even the implied
+ warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ PURPOSE.  See the GNU General Public License for more
+ details.
+ .
+ You should have received a copy of the GNU General Public
+ License along with this package; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+ Boston, MA  02110-1301 USA
+ .
+ On Debian systems, the full text of the GNU General Public
+ License version 2 can be found in the file
+ `/usr/share/common-licenses/GPL-2'.
