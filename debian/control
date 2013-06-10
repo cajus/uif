@@ -13,12 +13,12 @@ Package: uif
 Architecture: all
 Depends:
  ${perl:Depends},
- ${misc:Depends},libnetaddr-ip-perl (>= 3.0),
+ ${misc:Depends},
+ libnetaddr-ip-perl (>= 3.0),
  iptables,
  bsdutils (>=2.11u),
 Suggests:
  fwlogwatch,
- libnet-ldap-perl,
 Conflicts:
  knetfilter,
  firewall-easy,
@@ -29,3 +29,22 @@ Description: Advanced iptables-firewall script
  rules using perl. It was developed for a diskless router
  system that can store its configurations in regular files or
  ldap databases.
+ .
+ This package provides uif with LDAP support not enabled.
+
+
+Package: uif-ldap
+Architecture: all
+Depends:
+ ${perl:Depends},
+ ${misc:Depends},
+ uif (= ${binary:Version} ),
+ libnet-ldap-perl,
+Description: Advanced iptables-firewall script
+ Complete package to create and simplify iptables packetfilter
+ rules using perl. It was developed for a diskless router
+ system that can store its configurations in regular files or
+ ldap databases.
+ .
+ This package enables LDAP support in uif and provides an LDAP
+ schema file for storing uif rules in LDAP.

@@ -8,7 +8,7 @@
 # This is the debhelper compatability version to use.
 package=uif
 version=$(shell dpkg-parsechangelog | sed -n -e '/^Version:/s/^Version: //p')
-tmp=`pwd`/debian/$(package)
+tmp=`pwd`/debian/tmp
 
 build: build-arch build-indep
 
@@ -37,6 +37,9 @@ install: build
 	dh_installdirs usr/sbin usr/share/doc
 
 	$(MAKE) install DESTDIR=$(tmp)
+
+	dh_install
+	rm -rf $(tmp)/../$(package)/etc/ldap
 
 binary-arch:  build install
 
