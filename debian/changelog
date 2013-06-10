@@ -18,7 +18,7 @@ uif (1.0.7-0) UNRELEASED; urgency=low
     Thanks to Alex Owen for the bug report and the initial patch.
   * Fix "New Japanese translation": add ja.po, thanks to victory.
 
- -- gregor herrmann <gregoa@debian.org>  Mon, 14 Jan 2013 20:48:18 +0100
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 14 Jan 2013 20:48:18 +0100
 
 uif (1.0.6-1) unstable; urgency=low
 
