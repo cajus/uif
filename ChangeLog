@@ -1,4 +1,4 @@
-uif (1.0.7-0) UNRELEASED; urgency=low
+uif (1.0.7-0) unstable; urgency=low
 
   [ Alex Owen ]
   * New upstream version (1.0.7):
@@ -22,7 +22,7 @@ uif (1.0.7-0) UNRELEASED; urgency=low
   [ Gregor Herrmann ]
   * Fix "New Japanese translation": add ja.po, thanks to victory.
 
- -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 14 Jan 2013 20:48:18 +0100
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Mon, 10 Jun 2013 23:38:59 +0200
 
 uif (1.0.6-1) unstable; urgency=low
 
