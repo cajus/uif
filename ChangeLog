@@ -1,6 +1,8 @@
-uif (1.0.9-0) UNRELEASED; urgency=low
+uif (1.1.0-0) UNRELEASED; urgency=low
 
-  * Continue development...
+  * New upstream version (1.1.0):
+    - Add IPv6 support. Thanks to Alex Owen for providing the initial
+      patch.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 11 Jun 2013 00:30:25 +0200
 
