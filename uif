@@ -80,7 +80,7 @@ start)
 		echo ok.
 	fi
 	if [ $IPV6MODE = 1 ] ; then
-		echo -n "ipv6 rules: "
+		echo -n "IPv6 rules: "
 		EMSG=`$UIF -6 $OPTIONS 2>&1`
 		if [ $? -ne 0 ]; then
 
@@ -88,7 +88,7 @@ start)
 			logger "Starting uif failed: $EMSG"
 
 			[ -n "$MAILTO" ] && \
-			echo -e "Hi. This is your ipv6 firewall script - which has failed" \
+			echo -e "Hi. This is your IPv6 firewall script - which has failed" \
 			"to execute in a proper way.\nHere is the error message:\n" \
 			"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
 
@@ -104,12 +104,12 @@ stop)
 	echo -n "Stopping uif: "
 	logger "Stopping uif"
 	if [ $IPV6MODE = 1 ] ; then
-		echo -n "ipv4: "
+		echo -n "IPv4: "
 	fi
 	$UIF -d
 	if [ $IPV6MODE = 1 ] ; then
 		echo ok.
-		echo -n "Stopping uif: ipv6: "
+		echo -n "Stopping uif: IPv6: "
 		$UIF -6 -d
 	fi
 	echo ok.
@@ -148,7 +148,7 @@ test6)
 		trap 'echo "aborted, rules restored"; exit 0' SIGINT
 		load_modules
 
-		echo -n "ipv6 rules - active, waiting - "
+		echo -n "IPv6 rules - active, waiting - "
 		EMSG=`$UIF -6 -T $TIMEOUT $OPTIONS`
 		if [ $? -eq 0 ]; then
 			echo ok
