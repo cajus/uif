@@ -12,6 +12,8 @@ uif (1.1.0-0) UNRELEASED; urgency=low
     + Leaving clean-up to dh_clean.
   * /debian/*.docs:
     + Install README* files into bin:packages.
+  * /debian/rules:
+    + Run dh_link during install.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 11 Jun 2013 00:30:25 +0200
 

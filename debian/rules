@@ -37,6 +37,7 @@ install: build
 	$(MAKE) install DESTDIR=$(tmp)
 
 	dh_install
+	dh_link
 	rm -rf $(tmp)/../$(package)/etc/ldap
 
 binary-arch:  build install
