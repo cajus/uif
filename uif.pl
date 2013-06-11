@@ -120,23 +120,23 @@ sub readConfig {
 					die "invalid line in section include: $line\n";
 				}
 			} elsif ($state eq 'INCLUDE6') {
-			    if ($ipv6) {
-				if ($line =~ /^\s*\"(.+)\"$/) {
-					my $file = $1;
-					readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
-				} else {
-					die "invalid line in section include6: $line\n";
+				if ($ipv6) {
+					if ($line =~ /^\s*\"(.+)\"$/) {
+						my $file = $1;
+						readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+					} else {
+						die "invalid line in section include6: $line\n";
+					}
 				}
-			    }
 			} elsif ($state eq 'INCLUDE4') {
-			    if ($ipv6) {} else {
-				if ($line =~ /^\s*\"(.+)\"$/) {
-					my $file = $1;
-					readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
-				} else {
-					die "invalid line in section include4: $line\n";
+				if ($ipv6) {} else {
+					if ($line =~ /^\s*\"(.+)\"$/) {
+						my $file = $1;
+						readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+					} else {
+						die "invalid line in section include4: $line\n";
+					}
 				}
-			    }
 			} elsif ($state eq 'NETWORK') {
 				if ($line =~ /^\s*([a-zA-Z0-9_-]+)\s+(.*)$/) {
 					$$Networks{$1}.="$2 ";
@@ -411,12 +411,12 @@ sub toRange {
 		}
 	} else {
 		die "invalid $proto service: $range:\n$rule\n";
-	}	
+	}
 }
 
 sub validateData {
 	my ($Networks, $Services, $Interfaces, $Protocols, $Rules, $Sysconfig, $Marker) = @_;
-	
+
 	validateSysconfig $Sysconfig;
 
 	my $key;
@@ -439,7 +439,7 @@ sub validateData {
 		$$Marker{$key} = resolveHashentries($$Marker{$key}, $Marker);
 	}
 
-## marken auf plausibilitÑt prÅfen
+## marken auf plausibilit√§t pr√ºfen
 
 	my $rule;
 	foreach $rule (@$Rules) {
@@ -667,7 +667,7 @@ sub validateData {
 						my @destinationrange;
 						my @sourcedestination;
 						my %other;
-						my $service; 
+						my $service;
 						foreach $service (split (/\s+/, $protocols{"$serviceprefix$proto"})) {
 							$service eq '' && next;
 							if ($service  =~ /^([^\/]*)\/([^\/]*)$/) {
@@ -832,7 +832,7 @@ sub validateData {
 					} else {
 						$$rule{'Reject'}=1;
 					}
-				} elsif ($flag =~ /^account(\((.+)\)|)$/) { 
+				} elsif ($flag =~ /^account(\((.+)\)|)$/) {
 					if ($$rule{'Table'} eq 'nat') {
 						die "can't use accounting with nat:\n$$rule{'Rule'}\n";
 					}
@@ -849,7 +849,7 @@ sub validateData {
 					} else {
 						$$rule{'Reject'}='default';
 					}
-				} elsif ($flag =~ /^limit(\((.*)\)|)$/) { 
+				} elsif ($flag =~ /^limit(\((.*)\)|)$/) {
 					if ($$rule{'Action'} eq 'DROP') {
 						die "limiting packets in reject/drop rule makes no sense:\n$$rule{'Rule'}\n";
 					}
@@ -862,7 +862,7 @@ sub validateData {
 							if (checkLimit $1) {
 								$$rule{'Limit'}=$1;
 								if ($2) {
-									# no need to check burst since it 
+									# no need to check burst since it
 									# is guaranteed to be either empty
 									# or digits only (plus leading colon).
 									# Empty results in other part of if
@@ -952,7 +952,7 @@ sub genRuleDump {
 				}
 			} else {
 				$action="-j MYREJECT";
-				
+
 			}
 			$logaction="REJECT";
 		} elsif ($$rule{'Action'} eq "TCPMSS") {
@@ -1020,17 +1020,17 @@ sub genRuleDump {
 			my $type;
 			foreach $type (@{$$rule{'ICMP'}}) {
 				if ($type eq 'all') {
-                                   if ($ipv6) { 
-                                       push (@protocol, "$not -p icmpv6");
-                                   } else {
-                                       push (@protocol, "$not -p icmp");
-                                   }
+					if ($ipv6) {
+						push (@protocol, "$not -p icmpv6");
+					} else {
+						push (@protocol, "$not -p icmp");
+					}
 				} else {
-                                   if ($ipv6) { 
-                                       push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
-                                   } else {
-                                       push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
-                                   }
+					if ($ipv6) {
+						push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
+					} else {
+						push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
+					}
 				}
 			}
 		}
@@ -1175,7 +1175,7 @@ sub genRuleDump {
 				$logid=$name;
 			}
 			push (@$table, "-A $chain -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
-			push (@$table, "-A $chain $action"); 
+			push (@$table, "-A $chain $action");
 			$action="-j $chain";
 		}
 		if (exists($$rule{'Accounting'})) {
@@ -1250,13 +1250,13 @@ sub genRuleDump {
 				$type="-A ${id}_$level";
 				$$chains{"${id}_$level"}=1;
 				$level++;
-			}			
+			}
 		}
 	}
-	
+
 	my $entry;
 	foreach $entry (qw(mangle filter nat)) {
-		if ($entry eq "nat" && $ipv6 == 1) {next};  
+		if ($entry eq "nat" && $ipv6 == 1) {next};
 		my $chain;
 		push (@$Listing, "*$entry");
 		if ($entry eq 'filter') {
@@ -1274,21 +1274,21 @@ sub genRuleDump {
 				push (@$Listing, "-A STATE$_ -m state --state INVALID -j STATELESS$_");
 				push (@$Listing, "-A STATE$_ -j ACCOUNTING$_");
 				push (@$Listing, "-A STATE$_ -m state --state ESTABLISHED,RELATED -j ACCEPT");
-		            if ($ipv6) {
-				push (@$Listing, "-A STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
-		            } else {
-				push (@$Listing, "-A STATE$_ -m state ! --state NEW -j STATENOTNEW");
-		            }
+				if ($ipv6) {
+					push (@$Listing, "-A STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
+				} else {
+					push (@$Listing, "-A STATE$_ -m state ! --state NEW -j STATENOTNEW");
+				}
 				push (@$Listing, "-A STATELESS$_ -j ACCOUNTINGSTATELESS$_");
 			}
 			push (@$Listing, "-A STATENOTNEW -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \"  --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
 			push (@$Listing, "-A STATENOTNEW -j DROP");
 			push (@$Listing, "-A MYREJECT -m tcp -p tcp -j REJECT --reject-with tcp-reset");
-		    if ($ipv6) {
-			push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp6-port-unreachable");
-		    } else {
-			push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp-port-unreachable");
-		    }
+			if ($ipv6) {
+				push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp6-port-unreachable");
+			} else {
+				push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp-port-unreachable");
+			}
 		} elsif ($entry eq 'nat') {
 			$table=\@nat;
 			$chains=\%nat;
@@ -1339,11 +1339,11 @@ sub applyRules {
 	my $error;
 
 	@$Listing=map { $_."\n" } @$Listing;
-    if ($ipv6) {
-	open (IPT, '/sbin/ip6tables-save|');
-    } else {
-	open (IPT, '/sbin/iptables-save|');
-    }
+	if ($ipv6) {
+		open (IPT, '/sbin/ip6tables-save|');
+	} else {
+		open (IPT, '/sbin/iptables-save|');
+	}
 	@oldrules = <IPT>;
 	close (IPT);
 
@@ -1352,11 +1352,11 @@ sub applyRules {
 	$SIG{'QUIT'} = 'signalCatcher';
 	$SIG{'TERM'} = 'signalCatcher';
 
-    if ($ipv6) {
-	open (IPT, '|/sbin/ip6tables-restore');
-    } else {
-	open (IPT, '|/sbin/iptables-restore');
-    }
+	if ($ipv6) {
+		open (IPT, '|/sbin/ip6tables-restore');
+	} else {
+		open (IPT, '|/sbin/iptables-restore');
+	}
 	print IPT @$Listing;
 	close (IPT);
 	$error=$?;
@@ -1365,11 +1365,11 @@ sub applyRules {
 		sleep $timeout;
 	}
 	if ($timeout || $SignalCatched || $error) {
-	    if ($ipv6) {
-		open (IPT, '|/sbin/ip6tables-restore');
-	    } else {
-		open (IPT, '|/sbin/iptables-restore');
-	    }
+		if ($ipv6) {
+			open (IPT, '|/sbin/ip6tables-restore');
+		} else {
+			open (IPT, '|/sbin/iptables-restore');
+		}
 		print IPT @oldrules;
 		close (IPT);
 		if ($SignalCatched) {
@@ -1417,7 +1417,7 @@ sub readCommandLine {
 	}
 	if (exists($ENV{'LOGLEVEL'})) {
 		$Sysconfig{'LogLevel'}=$ENV{'LOGLEVEL'};
-	} else { 
+	} else {
 		$Sysconfig{'LogLevel'}='debug';
 	}
 	if (exists($ENV{'LOGPREFIX'})) {
@@ -1442,7 +1442,7 @@ sub readCommandLine {
 	}
 	my %opt;
 	getopts('6c:tpds:b:r:T:C:R:D:w:W', \%opt) || uifUsg ();
-	
+
 	$ipv6 = 1 if $opt{'6'};
 	$configfile=$configfile6 if $opt{'6'};
 	$configfile = $opt{'c'} if $opt{'c'};
@@ -1486,7 +1486,7 @@ sub readCommandLine {
 		$ldappassword=<STDIN>;
 		chomp($ldappassword);
 	}
-	
+
 	if ($ipv6) {
 		if (exists($ENV{'LOGPREFIX6'})) {
 			$Sysconfig{'LogPrefix'}=$ENV{'LOGPREFIX6'};
@@ -1548,13 +1548,13 @@ sub clearAllRules {
 	push (@$Listing, ":PREROUTING ACCEPT [0:0]");
 	push (@$Listing, ":OUTPUT ACCEPT [0:0]");
 	push (@$Listing, "COMMIT");
-    if ($ipv6) {} else {
-	push (@$Listing, "*nat");
-	push (@$Listing, ":PREROUTING ACCEPT [0:0]");
-	push (@$Listing, ":POSTROUTING ACCEPT [0:0]");
-	push (@$Listing, ":OUTPUT ACCEPT [0:0]");
-	push (@$Listing, "COMMIT");
-    }	
+	if ($ipv6) {} else {
+		push (@$Listing, "*nat");
+		push (@$Listing, ":PREROUTING ACCEPT [0:0]");
+		push (@$Listing, ":POSTROUTING ACCEPT [0:0]");
+		push (@$Listing, ":OUTPUT ACCEPT [0:0]");
+		push (@$Listing, "COMMIT");
+	}
 	push (@$Listing, "*filter");
 	push (@$Listing, ":INPUT ACCEPT [0:0]");
 	push (@$Listing, ":OUTPUT ACCEPT [0:0]");
@@ -1745,7 +1745,7 @@ sub readLdap {
 		my $arrayref = $$result{$entry};
 		my $name = @{$$arrayref{'cn'}}[0];
 		if (exists($fwruleset{$name})) {
-			my $type=@{$$arrayref{'uiftype'}}[0]; 
+			my $type=@{$$arrayref{'uiftype'}}[0];
 			my %temphash;
 			$temphash{'Id'} = $name;
 			if ($type =~ /^\s*(\w+([-+|>]|{\w+}))$/) {
@@ -1762,7 +1762,7 @@ sub readLdap {
 					}
 				}
 			}
-			$$Rules[$fwruleset{$name}]=\%temphash;	
+			$$Rules[$fwruleset{$name}]=\%temphash;
 		}
 	}
 }
@@ -1829,7 +1829,7 @@ sub writeLdap {
 			push (@ruleset, $$Sysconfig{$syskeys});
 		}
 		addLdap ($ldap, "cn=$writeldapruleset,ou=RuleSets,ou=Filter,ou=Sysconfig,$ldapbase", \@ruleset);
-	}	
+	}
 	my $network;
 	foreach $network (keys (%$Networks)) {
 		my $counter="";
