@@ -1,7 +1,7 @@
-# uif-1.0 Installer Makefile
-# 
+# uif-1.1.x Installer Makefile
+#
 # Cajus Pollmeier <pollmeier@gonicus.de>
-# Jörg Platte     <joerg.platte@gmx.de>
+# JÃ¶rg Platte     <joerg.platte@gmx.de>
 
 # Change here to install to different location
 PREFIX = ${DESTDIR}
