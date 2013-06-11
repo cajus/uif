@@ -47,129 +47,129 @@ fi
 # the ones listed in "MODULES".
 load_modules() {
 	[ -f /proc/modules ] || return
-        LIST=`/sbin/lsmod|awk '!/Module/ {print $1}'`
+	LIST=`/sbin/lsmod|awk '!/Module/ {print $1}'`
 
-        for mod in $MODULES; do
-            echo $LIST | grep -q $mod || modprobe $mod || /bin/true
-        done
+	for mod in $MODULES; do
+		echo $LIST | grep -q $mod || modprobe $mod || /bin/true
+	done
 }
 
 
 case "$1" in
 
 start)
-        echo -n "Starting uif: modules, "
+	echo -n "Starting uif: modules, "
 	logger "Starting uif"
-        [ -f /proc/modules ] && load_modules
+	[ -f /proc/modules ] && load_modules
 		
-        echo -n "rules: "
-        EMSG=`$UIF $OPTIONS 2>&1`
-        if [ $? -ne 0 ]; then
-	
-        	echo "failed. Old rules have been restored."
+	echo -n "rules: "
+	EMSG=`$UIF $OPTIONS 2>&1`
+	if [ $? -ne 0 ]; then
+
+		echo "failed. Old rules have been restored."
 		logger "Starting uif failed: $EMSG"
 
 		[ -n "$MAILTO" ] && \
 		echo -e "Hi. This is your firewall script - which has failed" \
-	        "to execute in a proper way.\nHere is the error message:\n" \
+		"to execute in a proper way.\nHere is the error message:\n" \
 		"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
-		
+
 		echo -e "Error message: $EMSG\n"
 		exit 1
 	else
 		echo ok.
-        fi
-	if [ $IPV6MODE = 1 ] ; then
-            echo -n "ipv6 rules: "
-            EMSG=`$UIF -6 $OPTIONS 2>&1`
-            if [ $? -ne 0 ]; then
-	
-        	echo "failed. Old rules have been restored."
-		logger "Starting uif failed: $EMSG"
-
-		[ -n "$MAILTO" ] && \
-		echo -e "Hi. This is your ipv6 firewall script - which has failed" \
-	        "to execute in a proper way.\nHere is the error message:\n" \
-		"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
-		
-		echo -e "Error message: $EMSG\n"
-		exit 1
-	    else
-		echo ok.
-            fi
 	fi
-        ;;
+	if [ $IPV6MODE = 1 ] ; then
+		echo -n "ipv6 rules: "
+		EMSG=`$UIF -6 $OPTIONS 2>&1`
+		if [ $? -ne 0 ]; then
+
+			echo "failed. Old rules have been restored."
+			logger "Starting uif failed: $EMSG"
+
+			[ -n "$MAILTO" ] && \
+			echo -e "Hi. This is your ipv6 firewall script - which has failed" \
+			"to execute in a proper way.\nHere is the error message:\n" \
+			"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
+
+			echo -e "Error message: $EMSG\n"
+			exit 1
+		else
+			echo ok.
+		fi
+	fi
+	;;
 
 stop)
-        echo -n "Stopping uif: "
+	echo -n "Stopping uif: "
 	logger "Stopping uif"
-        if [ $IPV6MODE = 1 ] ; then
+	if [ $IPV6MODE = 1 ] ; then
 		echo -n "ipv4: "
 	fi
-        $UIF -d
+	$UIF -d
 	if [ $IPV6MODE = 1 ] ; then
 		echo ok.
 		echo -n "Stopping uif: ipv6: "
-        	$UIF -6 -d
+		$UIF -6 -d
 	fi
-        echo ok.
-        ;;
+	echo ok.
+	;;
 
 print)
 	echo "Printing rules based on your current configuration"
 	$UIF $OPTIONS -pt
 	if [ $IPV6MODE = 1 ] ; then
-	    $UIF -6 $OPTIONS -pt
-        fi
+		$UIF -6 $OPTIONS -pt
+	fi
 
 	;;
 
 test)
-        if [ $IPV6MODE = 1 ] ; then
+	if [ $IPV6MODE = 1 ] ; then
 		echo -n "IPv4 Test: "
 	fi
-        echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
+	echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
 	trap 'echo "aborted, rules restored"; exit 0' SIGINT
-        load_modules
+	load_modules
 
 	echo -n "rules - active, waiting - "
-        EMSG=`$UIF -T $TIMEOUT $OPTIONS`
-        if [ $? -eq 0 ]; then
-                echo ok
-                exit 0
-        fi
-        echo failed
+	EMSG=`$UIF -T $TIMEOUT $OPTIONS`
+	if [ $? -eq 0 ]; then
+		echo ok
+		exit 0
+	fi
+	echo failed
 	echo -e "Error message: $EMSG\n"
-        ;;
+	;;
 test6)
-    if [ $IPV6MODE = 1 ] ; then
-	echo -n "IPv6 Test: "
-        echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
-	trap 'echo "aborted, rules restored"; exit 0' SIGINT
-        load_modules
+	if [ $IPV6MODE = 1 ] ; then
+		echo -n "IPv6 Test: "
+		echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
+		trap 'echo "aborted, rules restored"; exit 0' SIGINT
+		load_modules
 
-	echo -n "ipv6 rules - active, waiting - "
-        EMSG=`$UIF -6 -T $TIMEOUT $OPTIONS`
-        if [ $? -eq 0 ]; then
-                echo ok
-                exit 0
-        fi
-        echo failed
+		echo -n "ipv6 rules - active, waiting - "
+		EMSG=`$UIF -6 -T $TIMEOUT $OPTIONS`
+		if [ $? -eq 0 ]; then
+			echo ok
+			exit 0
+		fi
+		echo failed
 	echo -e "Error message: $EMSG\n"
-    fi
-        ;;
+	fi
+	;;
 
 status)
 	if [ "`id -u`" != "0" ]; then
 		echo "Can't retrieve status information. You need to be root."
 		exit 1
 	fi
-    	if [ $IPV6MODE = 1 ] ; then
+	if [ $IPV6MODE = 1 ] ; then
 		echo "IPv4 STATUS:"
 	fi
 	# Simple rule listing
 	echo -e "\nRule listing:\n"
-        iptables-save | sed "/^#/d"
+	iptables-save | sed "/^#/d"
 
 	# Show accounting data
 	if [ -n "$ACCOUNTPREFIX" ]; then
@@ -177,36 +177,36 @@ status)
 		iptables -vnx -L 2>&1 | sed "/pkts/d" | sed -ne "/^Chain $ACCOUNTPREFIX/N" -e "s/\n/ /p" | \
 			sed "s/[ ][ ]*/ /g" | awk '{ print $2"\t"$6" Bytes"; }'
 	fi
-    if [ $IPV6MODE = 1 ] ; then
-        echo "IPv6 STATUS:"
-	# Simple rule listing
-	echo -e "\nRule listing:\n"
-        ip6tables-save | sed "/^#/d"
+	if [ $IPV6MODE = 1 ] ; then
+		echo "IPv6 STATUS:"
+		# Simple rule listing
+		echo -e "\nRule listing:\n"
+		ip6tables-save | sed "/^#/d"
 
-	# Show accounting data
-	if [ -n "$ACCOUNTPREFIX" ]; then
-		echo -e "\n\nCurrent accounting information:\n"
-		ip6tables -vnx -L 2>&1 | sed "/pkts/d" | sed -ne "/^Chain $ACCOUNTPREFIX/N" -e "s/\n/ /p" | \
-			sed "s/[ ][ ]*/ /g" | awk '{ print $2"\t"$6" Bytes"; }'
+		# Show accounting data
+		if [ -n "$ACCOUNTPREFIX" ]; then
+			echo -e "\n\nCurrent accounting information:\n"
+			ip6tables -vnx -L 2>&1 | sed "/pkts/d" | sed -ne "/^Chain $ACCOUNTPREFIX/N" -e "s/\n/ /p" | \
+			    sed "s/[ ][ ]*/ /g" | awk '{ print $2"\t"$6" Bytes"; }'
+		fi
 	fi
-    fi
 	# Show last 10 policy violations
 	if [ -n "$LOGPREFIX" ]; then
-    	    if [ $IPV6MODE = 1 ] ; then
-		echo -e "\n\nLast 10 policy violations (IPv4 & IPv6 combined):"
-	    else
-		echo -e "\n\nLast 10 policy violations:"
-	    fi
+		if [ $IPV6MODE = 1 ] ; then
+			echo -e "\n\nLast 10 policy violations (IPv4 & IPv6 combined):"
+		else
+			echo -e "\n\nLast 10 policy violations:"
+		fi
 		dmesg | grep "`hostname`.* $LOGPREFIX .*:" 2> /dev/null | tail -n 10
 	fi
 
 	echo -e "\n\n"
-        ;;
+	;;
 
 
 restart|reload|force-reload)
-        $0 start
-        ;;
+	$0 start
+	;;
 
 flush)
 	echo -n "Flushing packet counters: "
@@ -216,21 +216,21 @@ flush)
 	else
 		echo failed
 	fi
-    if [ $IPV6MODE = 1 ] ; then
-	echo -n "Flushing IPv6 packet counters: "
-	ip6tables -Z &> /dev/null
-	if [ $? -eq 0 ]; then
-		echo ok
-	else
-		echo failed
+	if [ $IPV6MODE = 1 ] ; then
+		echo -n "Flushing IPv6 packet counters: "
+		ip6tables -Z &> /dev/null
+		if [ $? -eq 0 ]; then
+			echo ok
+		else
+			echo failed
+		fi
 	fi
-    fi
 
 	;;
 
 *)
-        echo "Usage: $0 {start|stop|status|restart|reload|flush|print}"
-        exit 1
+	echo "Usage: $0 {start|stop|status|restart|reload|flush|print}"
+	exit 1
 esac
 
 exit 0
