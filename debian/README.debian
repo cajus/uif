@@ -10,10 +10,6 @@ There is some ldap support build in, to handle a big farm of diskles router
 configurations. Use uif(8) and information provided in /usr/share/doc/uif
 to configure the firewall fitting your needs.
 
-To enable LDAP support on Debian, make sure to install the add-on package
-uif-ldap.
-
 ---
 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>, Tue, 11 Jun 2013 22:50:12 +0200
 Cajus Pollmeier <pollmeier@gonicus.de>, Sun, 24 Feb 2002 17:35:29 +0100
----

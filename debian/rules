@@ -24,6 +24,8 @@ clean:
 	dh_testroot
 	-rm -f build
 	-rm -f `find . -name "*~"`
+	-rm -rf debian/tmp debian/files* debian/*.debhelper core debian/uif
+	-rm -rf debian/uif.substvars
 	debconf-updatepo
 	dh_clean
 
@@ -31,14 +33,11 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	#dh_installdirs usr/sbin etc/init.d etc/default etc/ldap/schema etc/uif usr/share/doc
 	dh_installdirs usr/sbin usr/share/doc
 
 	$(MAKE) install DESTDIR=$(tmp)
 
 	dh_install
-	dh_link
-	rm -rf $(tmp)/../$(package)/etc/ldap
 
 binary-arch:  build install
 

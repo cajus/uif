@@ -8,6 +8,9 @@ uif (1.1.0-0) UNRELEASED; urgency=low
   * New upstream version (1.1.0):
     - Update README, mention issue trackers.
     - Create README.IPv6 as upstream file.
+  * /debian/control:
+    + Drop separate package uif-ldap again.
+      Sync in packaging folder from Debian.
   * /debian/rules:
     + Leaving clean-up to dh_clean.
   * /debian/*.docs:
