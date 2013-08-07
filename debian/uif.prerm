@@ -4,7 +4,7 @@ set -e
 
 # only stop firewall when uif is going to be removed
 if [ "$1" = "remove" -o "$1" = "deconfigure" ]; then
-  invoke-rc.d uif stop
+	invoke-rc.d uif stop
 else
 	echo "Please restart uif manually using /etc/init.d/uif restart"
 fi
