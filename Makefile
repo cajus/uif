@@ -25,6 +25,8 @@ install:
 	install -o root -g root -m 600 default ${PREFIX}/etc/default/uif
 	install -o root -g root -m 600 services ${PREFIX}/etc/uif
 	if [ ! -e ${PREFIX}/etc/uif/uif.conf ]; then install -o root -g root -m 600 uif.conf ${PREFIX}/etc/uif; fi
+	if [ ! -e ${PREFIX}/etc/uif/uif-ipv4-networks.inc ]; then install -o root -g root -m 600 uif-ipv4-networks.inc ${PREFIX}/etc/uif; fi
+	if [ ! -e ${PREFIX}/etc/uif/uif-ipv6-networks.inc ]; then install -o root -g root -m 600 uif-ipv6-networks.inc ${PREFIX}/etc/uif; fi
 	install -o root -g root -m 755 uif ${PREFIX}/etc/init.d
 	install -o root -g root -m 644 uif.schema ${PREFIX}/etc/ldap/schema
 

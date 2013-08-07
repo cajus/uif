@@ -8,6 +8,9 @@ uif (1.1.0-0) UNRELEASED; urgency=low
   * New upstream version (1.1.0):
     - Update README, mention issue trackers.
     - Create README.IPv6 as upstream file.
+    - Provide IPv4/IPv6 capable set of default configuration
+      files. Rename example files to denote that they show
+      IPv4-only examples.
   * /debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.
