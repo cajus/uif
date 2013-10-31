@@ -11,6 +11,8 @@ uif (1.1.0-0) UNRELEASED; urgency=low
     - Provide IPv4/IPv6 capable set of default configuration
       files. Rename example files to denote that they show
       IPv4-only examples.
+    - Init script: be more explicit on whether init script actions
+      are IPv4 or IPv6 actions.
   * /debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.

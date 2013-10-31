@@ -61,12 +61,12 @@ start)
 	echo -n "Starting uif: modules, "
 	logger "Starting uif"
 	[ -f /proc/modules ] && load_modules
-		
-	echo -n "rules: "
+
+	echo -n "IPv4 rules: "
 	EMSG=`$UIF $OPTIONS 2>&1`
 	if [ $? -ne 0 ]; then
 
-		echo "failed. Old rules have been restored."
+		echo "failed. Old IPv4 rules have been restored."
 		logger "Starting uif failed: $EMSG"
 
 		[ -n "$MAILTO" ] && \
@@ -84,7 +84,7 @@ start)
 		EMSG=`$UIF -6 $OPTIONS 2>&1`
 		if [ $? -ne 0 ]; then
 
-			echo "failed. Old rules have been restored."
+			echo "failed. Old IPv6 rules have been restored."
 			logger "Starting uif failed: $EMSG"
 
 			[ -n "$MAILTO" ] && \
@@ -124,15 +124,15 @@ print)
 
 	;;
 
-test)
+test|test4)
 	if [ $IPV6MODE = 1 ] ; then
 		echo -n "IPv4 Test: "
 	fi
-	echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
-	trap 'echo "aborted, rules restored"; exit 0' SIGINT
+	echo -n "Activating IPv4 ruleset for $TIMEOUT seconds: modules, "
+	trap 'echo "aborted, IPv4 rules restored"; exit 0' SIGINT
 	load_modules
 
-	echo -n "rules - active, waiting - "
+	echo -n "IPv4 rules - active, waiting - "
 	EMSG=`$UIF -T $TIMEOUT $OPTIONS`
 	if [ $? -eq 0 ]; then
 		echo ok
@@ -144,8 +144,8 @@ test)
 test6)
 	if [ $IPV6MODE = 1 ] ; then
 		echo -n "IPv6 Test: "
-		echo -n "Activating ruleset for $TIMEOUT seconds: modules, "
-		trap 'echo "aborted, rules restored"; exit 0' SIGINT
+		echo -n "Activating IPv6 ruleset for $TIMEOUT seconds: modules, "
+		trap 'echo "aborted, IPv6 rules restored"; exit 0' SIGINT
 		load_modules
 
 		echo -n "IPv6 rules - active, waiting - "
@@ -195,7 +195,7 @@ status)
 		if [ $IPV6MODE = 1 ] ; then
 			echo -e "\n\nLast 10 policy violations (IPv4 & IPv6 combined):"
 		else
-			echo -e "\n\nLast 10 policy violations:"
+			echo -e "\n\nLast 10 policy violations (IPv4 only):"
 		fi
 		dmesg | grep "`hostname`.* $LOGPREFIX .*:" 2> /dev/null | tail -n 10
 	fi
@@ -209,7 +209,7 @@ restart|reload|force-reload)
 	;;
 
 flush)
-	echo -n "Flushing packet counters: "
+	echo -n "Flushing IPv4 packet counters: "
 	iptables -Z &> /dev/null
 	if [ $? -eq 0 ]; then
 		echo ok
