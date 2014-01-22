@@ -48,6 +48,15 @@ filter {
 }
 ------------
 
+As an addition it is possible to append "(4)" or "(6)" to network names in filtering
+rules (e.g.: "in+ s=trusted(4)"). This limits the application of this rule to the
+specified IP protocol version only.
+
+This can be especially helpful, if some of your network names only exist for one IP
+protocol version but not for the other.
+
+
 ---
 Alex Owen <r.alex.owen@gmail.com>, Sun, 15 Jul 2012 14:41:22 +0100
+Mike Gabriel <mike.gabriel@das-netzwerkteam.de>, Wed, 22 Jan 2014 13:50:01 +0100
 ---

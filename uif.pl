@@ -536,6 +536,20 @@ sub validateData {
 						$$rule{"${hashentry}-not"} = 1;
 					}
 					$position=$2;
+
+					# support IPv4-only/IPv6-only rules
+					if ($position =~ /^.*\((.+)\)$/) {
+						my $only_proto = $1;
+						$position =~ s/\((.+)\)$//;
+						if (($ipv6) && ($only_proto eq "4")) {
+							print "IPv6 setup: Skipping IPv4-only rule for network \"$position\"\n";
+							next;
+						} elsif ((! $ipv6) && ($only_proto eq "6")) {
+							print "IPv4 setup: Skipping IPv6-only rule for network \"$position\"\n";
+							next;
+						}
+					}
+
 					if (exists($$Networks{$position})) {
 						my $network;
 						foreach $network (split (/\s+/, $$Networks{$position})) {
