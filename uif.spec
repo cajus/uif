@@ -1,17 +1,23 @@
 Summary: Tool for generating optimized packetfilter rules under GPL
 Name: uif
-Version: 1.02
+Version: 1.1.0
 Release: 1
 License: GPL
 Group: System
-Source: http://lug.mfh-iserlohn.de/uif/uif-current.tar.bz2
-URL: http://lug.mfh-iserlohn.de/uif/
+Source: https://github.com/cajus/uif/archive/%{version}.zip
+URL: https://github.com/cajus/uif
 Prereq: perl perl-netaddr-ip perl-ldap iptables
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 
 %description
-UIF is used to generate optimized iptables(8) packetfilter rules, using a simple description file
-specified by the user. Generated rules are provided in iptables-save(8) style.  uif can be used to read or write rulesets from or to LDAP servers in your network, which provides a global storing mechanism. (LDAP support is currently broken, note that you need to include the uif.schema to your slapd configuration in order to use it.)
+UIF is used to generate optimized iptables(8) packetfilter rules, using a
+simple description file specified by the user.
+
+Generated rules are provided in iptables-save(8) style.
+
+uif can be used to read or write rulesets from or to LDAP servers in your
+network, which provides a global storing mechanism. (Note that you need to
+include the uif.schema to your slapd configuration in order to use it.)
 
 %prep
 %setup -q -n %{name}
@@ -46,3 +52,6 @@ rm -rf %{_builddir}/%{buildsubdir}
 %changelog
 * Thu Jun 13 2002 Andreas Almstadt <almstadt@GONICUS.de>
  - first build
+
+* Wed Jan 22 2014 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+ - update version, update download source and project URL
