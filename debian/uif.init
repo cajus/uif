@@ -112,7 +112,7 @@ stop)
 	fi
 	$UIF -d
 	if [ $IPV6MODE = 1 ] ; then
-		log_progress_msg "IPv"
+		log_progress_msg "IPv6"
 		$UIF -6 -d
 	fi
 	log_end_msg 0
