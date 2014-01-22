@@ -2,7 +2,7 @@ Source: uif
 Section: net
 Priority: optional
 Maintainer: Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Build-Depends:
  debhelper (>= 7),
  po-debconf,

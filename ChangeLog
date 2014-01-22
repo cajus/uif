@@ -25,6 +25,7 @@ uif (1.1.0-0) UNRELEASED; urgency=low
   * debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.
+    + Bump Standards: to 3.9.5. No changes needed.
   * debian/rules:
     + Leaving clean-up to dh_clean.
   * debian/*.docs:
