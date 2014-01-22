@@ -1,6 +1,6 @@
 ## UIF 1.0 sample services file
 #  (C) 2002, Cajus Pollmeier <pollmeier@gonicus.de>
-#            Jörg Platte <jplatte@gmx.net>
+#            JÃ¶rg Platte <jplatte@gmx.net>
 
 service {
 	# ICMP & Routing
