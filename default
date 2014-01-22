@@ -30,4 +30,4 @@ ACCOUNTPREFIX="ACC_"
 # IPV6MODE can be set to 0 or 1. By default it is 0
 # If set to 1 then both an IPv4 and an IPv6 firewall will be started
 # Uncomment below to enable the IPV6MODE
-#IPV6MODE=1
+IPV6MODE=1

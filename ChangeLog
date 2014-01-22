@@ -21,6 +21,7 @@ uif (1.1.0-0) UNRELEASED; urgency=low
     - Keep lines in README below 80 characters.
     - Add /me and Alex Owen as copyright holders.
     - Support filtering rules that apply to IPv4/IPv6 only.
+    - Enable IPv6 support by default.
   * /debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.
