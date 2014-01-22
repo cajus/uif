@@ -2,7 +2,7 @@
 #  See "man 8 uif" for details.
 
 # the iptables loglevel
-LOGLEVEL="debug"
+LOGLEVEL="crit"
 
 # prefix for all logged incidents 
 LOGPREFIX="FW"
