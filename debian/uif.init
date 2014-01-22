@@ -67,7 +67,6 @@ start)
 	log_progress_msg "IPv4-rules"
 	EMSG=`$UIF $OPTIONS 2>&1`
 	RET4=$?
-	log_end_msg $RET
 	if [ $RET4 -ne 0 ]; then
 
 		logger "Starting uif failed: $EMSG"
@@ -77,6 +76,8 @@ start)
 		"to execute in a proper way.\nHere is the error message:\n" \
 		"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
 
+		log_end_msg $RET4
+		echo
 		echo -e "Error message: $EMSG\n"
 		exit 1
 	fi
@@ -86,7 +87,6 @@ start)
 		RET6=$?
 		if [ $RET6 -ne 0 ]; then
 
-			echo "failed. Old IPv6 rules have been restored."
 			logger "Starting uif failed: $EMSG"
 
 			[ -n "$MAILTO" ] && \
@@ -94,6 +94,8 @@ start)
 			"to execute in a proper way.\nHere is the error message:\n" \
 			"\n$EMSG\n\nPlease fix to be sure..." | mail -s "Firewall script failure" $MAILTO
 
+			log_end_msg $RET6
+			echo
 			echo -e "Error message: $EMSG\n"
 			exit 1
 		fi
