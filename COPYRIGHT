@@ -1,5 +1,6 @@
-Copyright (C) 2002  Jörg Platte <jplatte@gmx.net>
-       and Cajus Pollmeier <pollmeier@gonicus.de>
+Copyright (C) 2002-2014 Jörg Platte <jplatte@gmx.net>
+Copyright (C) 2002-2014 Cajus Pollmeier <pollmeier@gonicus.de>
+Copyright (C) 2013-2014 Mike Gabriel <mike.gabriel@das-netzwerteam.de>
 
  This program is free software; you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -13,7 +14,7 @@ Copyright (C) 2002  Jörg Platte <jplatte@gmx.net>
 
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
- Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 On Debian GNU/Linux systems, a copy of the GNU General Public License may be
-found in the file /usr/share/common-licenses/GPL.
+found in the file /usr/share/common-licenses/GPL-2.
