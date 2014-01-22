@@ -34,6 +34,10 @@ uif (1.1.0-0) UNRELEASED; urgency=low
   * debian/uif.postinst:
     + Adapt Debianic configuration of workstation profile to IPv6
       capabilities. Enable IPv6 by default, as well, on Debian systems.
+  * debian/uif.init:
+    + Provide an LSB compliant init script for Debian.
+  * debian/uif.install:
+    + Don't install upstream's init script on Debian system.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 11 Jun 2013 00:30:25 +0200
 
