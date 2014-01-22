@@ -22,14 +22,14 @@ uif (1.1.0-0) UNRELEASED; urgency=low
     - Add /me and Alex Owen as copyright holders.
     - Support filtering rules that apply to IPv4/IPv6 only.
     - Enable IPv6 support by default.
-  * /debian/control:
+  * debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.
-  * /debian/rules:
+  * debian/rules:
     + Leaving clean-up to dh_clean.
-  * /debian/*.docs:
+  * debian/*.docs:
     + Install README* files into bin:packages.
-  * /debian/rules:
+  * debian/rules:
     + Run dh_link during install.
   * debian/uif.postinst:
     + Adapt Debianic configuration of workstation profile to IPv6
@@ -55,11 +55,11 @@ uif (1.0.7-0) unstable; urgency=low
   [ Mike Gabriel ]
   * New upstream version (1.0.7):
     - Provide a default (nothing-in/all-out) uif.conf.
-  * /debian/control:
+  * debian/control:
     + Add fields: Vcs-Git, Vcs-Browser.
-  * /debian/rules:
+  * debian/rules:
     + Run dh_clean in clean stanza.
-  * /debian/source/format: 3.0 (quilt).
+  * debian/source/format: 3.0 (quilt).
   * Lintian issues fixed:
     + W: uif source: debian-rules-missing-recommended-target build-arch.
     + W. uif source: debian-rules-missing-recommended-target build-indep.
