@@ -1,0 +1,2 @@
+# false-positive... the "service" key word occurs inside a quoted text block
+uif: maintainer-script-should-not-use-service postinst:161

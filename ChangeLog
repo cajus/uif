@@ -7,6 +7,8 @@ uif (1.1.1-0) UNRELEASED; urgency=low
     - Default log level for iptables: crit (not debug).
   * debian/rules:
     + Add get-orig-source rule.
+    + Install lintian overrides. Override issue false-positive issue
+      maintainer-script-should-not-use-service.
   * debian/uif.init:
     + Leave reporting startup failures to init-functions.
     + Beautify init script when failures occur.
