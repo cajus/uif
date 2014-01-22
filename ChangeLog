@@ -17,6 +17,7 @@ uif (1.1.0-0) UNRELEASED; urgency=low
       FSF address.
     - Update upstream download source in INSTALL file. Mark Net::LDAP as
       optional dependency.
+    - Drop deb: rule vom Makefile.
   * /debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.
