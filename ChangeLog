@@ -1,8 +1,10 @@
 uif (1.1.1-0) UNRELEASED; urgency=low
 
-  * Continue development...
+  * New upstream version (1.1.1):
+    - Fix typos and mal-used minus signs in uif.conf.5 man page.
   * debian/rules:
     + Add get-orig-source rule.
+  * 
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Wed, 22 Jan 2014 15:06:11 +0100
 
