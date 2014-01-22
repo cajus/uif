@@ -1,3 +1,11 @@
+uif (1.1.1-0) UNRELEASED; urgency=low
+
+  * Continue development...
+  * debian/rules:
+    + Add get-orig-source rule.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Wed, 22 Jan 2014 15:06:11 +0100
+
 uif (1.1.0-0) unstable; urgency=low
 
   [ Alex Owen ]
