@@ -1,6 +1,8 @@
 uif (1.1.1-0) UNRELEASED; urgency=low
 
   * New upstream version (1.1.1):
+    - Make sure that hostnames resolve to IPv6 addresses when
+      setting up the IPv6 filtering rules.
     - Fix typos and mal-used minus signs in uif.conf.5 man page.
     - Default log level for iptables: crit (not debug).
   * debian/rules:

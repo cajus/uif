@@ -288,13 +288,21 @@ sub simplifyNetworks {
 		foreach (@networks) {
 			my $ip;
 			if ($_ =~ /(^[^=]+)=([^=]+)$/ ) {
-				$ip=new NetAddr::IP ($1) || die "not a valid network: $1\n";
+				if ($ipv6) {
+					$ip=NetAddr::IP->new6($1) || die "not a valid network: $1\n";
+				} else {
+					$ip=NetAddr::IP->new($1) || die "not a valid network: $1\n";
+				}
 				if (!exists($macs{$ip})) {
 					$macs{$ip}=[];
 				}
 				push (@{$macs{$ip}}, $2);
 			} else {
-				$ip=new NetAddr::IP ($_) || die "not a valid network: $_\n";
+				if ($ipv6) {
+					$ip=NetAddr::IP->new6($_) || die "not a valid network: $1\n";
+				} else {
+					$ip=NetAddr::IP->new($_) || die "not a valid network: $1\n";
+				}
 				$onlymacs=0;
 			}
 			push(@netobjects, $ip);
