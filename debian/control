@@ -6,7 +6,7 @@ Standards-Version: 3.9.5
 Build-Depends:
  debhelper (>= 7),
  po-debconf,
-Vcs-Git: git://git.debian.org/collab-maint/uif.git
+Vcs-Git: git://anonscm.debian.org/collab-maint/uif.git
 Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/uif.git;a=summary
 Homepage: https://github.com/cajus/uif
 

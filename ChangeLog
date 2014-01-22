@@ -5,6 +5,8 @@ uif (1.1.1-0) UNRELEASED; urgency=low
       setting up the IPv6 filtering rules.
     - Fix typos and mal-used minus signs in uif.conf.5 man page.
     - Default log level for iptables: crit (not debug).
+  * debian/control:
+    + Alioth-canonicalize Vcs-Git: field.
   * debian/rules:
     + Add get-orig-source rule.
     + Install lintian overrides. Override issue false-positive issue
