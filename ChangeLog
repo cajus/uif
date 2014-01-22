@@ -31,6 +31,9 @@ uif (1.1.0-0) UNRELEASED; urgency=low
     + Install README* files into bin:packages.
   * /debian/rules:
     + Run dh_link during install.
+  * debian/uif.postinst:
+    + Adapt Debianic configuration of workstation profile to IPv6
+      capabilities. Enable IPv6 by default, as well, on Debian systems.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 11 Jun 2013 00:30:25 +0200
 
