@@ -15,6 +15,8 @@ uif (1.1.0-0) UNRELEASED; urgency=low
       are IPv4 or IPv6 actions.
     - Update COPYRIGHT file. Add /me as copyright co-holder and update
       FSF address.
+    - Update upstream download source in INSTALL file. Mark Net::LDAP as
+      optional dependency.
   * /debian/control:
     + Drop separate package uif-ldap again.
       Sync in packaging folder from Debian.

@@ -5,11 +5,11 @@ This file contains some quick installation hints for
 the uif package.
 
 Download:
- You can get the newest version at http://lug.mfh-iserlohn.de/uif.
+ You can get the newest version at https://github.com/cajus/uif.
 
 Dependencies:
  In order to use the script, you need iptables, perl,
- NetAddr::IP (>=3.0) and Net::LDAP.
+ NetAddr::IP (>=3.0) and optionally Net::LDAP.
 
 Build:
  Well - there's nothing to build. Just change the PREFIX on top of
