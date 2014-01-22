@@ -31,3 +31,4 @@ ACCOUNTPREFIX="ACC_"
 # If set to 1 then both an IPv4 and an IPv6 firewall will be started
 # Uncomment below to enable the IPV6MODE
 IPV6MODE=1
+
