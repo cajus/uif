@@ -5,8 +5,6 @@ set -e
 # Source debconf library.
 . /usr/share/debconf/confmodule
 
-#DEBHELPER#
-
 # We exit unless the package is being configured
 case "$1" in
         abort*upgrade)         exit 0;;
@@ -261,7 +259,6 @@ esac
 chmod 600 /etc/uif/uif.conf
 chmod 600 /etc/uif/uif-ipv*-networks.inc
 
-update-rc.d uif defaults 10 99 > /dev/null
-echo "You can start your firewall via \"/etc/init.d/uif start\"."
+#DEBHELPER#
 
 exit 0

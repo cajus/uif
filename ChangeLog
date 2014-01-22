@@ -35,6 +35,8 @@ uif (1.1.0-0) UNRELEASED; urgency=low
   * debian/uif.postinst:
     + Adapt Debianic configuration of workstation profile to IPv6
       capabilities. Enable IPv6 by default, as well, on Debian systems.
+    + Calls of update-rc.d are now handled by debhelper. Add #DEBHELPER#
+      macro after the new uif configuration has been created.
   * debian/uif.init:
     + Provide an LSB compliant init script for Debian.
   * debian/uif.install:
