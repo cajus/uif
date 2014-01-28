@@ -58,6 +58,8 @@ service {
 	nfs		udp(/2049) tcp(/2049)
 	cvspserver	tcp(/2401)
 	squid		tcp(/3128)
+	rdp		tcp(/3389)
+	vnc-support	tcp(/5500:5509)
 	x11		tcp(/6000:6063)
 	proxy		tcp(/8080)
 	dhis		udp(/58800)

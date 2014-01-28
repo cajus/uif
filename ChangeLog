@@ -2,6 +2,7 @@ uif (1.1.2-1) UNRELEASED; urgency=low
 
   * New upstream version (1.1.2):
     - Provide new protocol: ipv6-icmp. Rework ICMP types in services file.
+    - Add services "rdp" and "vnc-support" to services file.
 
  -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 28 Jan 2014 23:31:56 +0100
 
