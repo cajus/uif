@@ -6,16 +6,27 @@
 
 service {
 	# ICMP & Routing
-	traceroute 	udp(32769:65535/33434:33523)
-	ping		icmp(echo-request)
-	pong		icmp(echo-reply)
-	noroute		icmp(destination-unreachable)
-	hostunreach	icmp(host-unreachable)
-	ttlexeed	icmp(ttl-exceeded)
-	routeradv       icmp(router-advertisement)
-	routersoli      icmp(router-solicitation)
-	sourceq         icmp(source-quench)
-	
+	traceroute	udp(32769:65535/33434:33523)
+
+	# ICMP protocol: IPv4 and IPv6 ICMP types
+	ping			icmp(echo-request) ipv6-icmp(echo-request)
+	pong			icmp(echo-reply) ipv6-icmp(echo-reply)
+	noroute			icmp(destination-unreachable) ipv6-icmp(destination-unreachable)
+	routeradv		icmp(router-advertisement) ipv6-icmp(router-advertisement)
+	routersoli		icmp(router-solicitation) ipv6-icmp(router-solicitation)
+
+	# ICMP protocol: IPv4-only ICMP types
+	hostunreach		icmp(host-unreachable)
+	ttlexeed		icmp(ttl-exceeded)
+	sourceq			icmp(source-quench)
+
+	# ICMP protocol: IPv6-only ICMP types
+	packettoobig		ipv6-icmp(packet-too-big)
+	timeexceeded		ipv6-icmp(time-exceeded)
+	parameterprob		ipv6-icmp(parameter-problem)
+	neighboradv		ipv6-icmp(neighbor-advertisement)
+	neighborsoli		ipv6-icmp(neighbor-solicitation)
+
 	# Most common services you may want to filter
 	ftp		tcp(/21)
 	ssh		tcp(/22)

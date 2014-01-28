@@ -812,6 +812,21 @@ sub validateData {
 					$$rule{"${serviceprefix}ICMP"}=\@array;
 					delete $protocols{"${serviceprefix}icmp"};
 				}
+				if (exists($protocols{"${serviceprefix}ipv6-icmp"})) {
+					if ($serviceprefix ne '') {
+						die "can't use ipv6-icmp nat target:\n$$rule{'Rule'}\n";
+					}
+					my %icmp6hash;
+					my $message;
+					foreach $message (split (/\s+/, $protocols{"${serviceprefix}ipv6-icmp"})) {
+# message validation missing
+						$message eq '' && next;
+						$icmp6hash{$message}=1;
+					}
+					my @array = keys (%icmp6hash);
+					$$rule{"${serviceprefix}ICMP6"}=\@array;
+					delete $protocols{"${serviceprefix}ipv6-icmp"};
+				}
 				if (keys (%protocols)) {
 					if ($serviceprefix ne '') {
 						die "you can use tcp and udp based nat targets only:\n$$rule{'Rule'}\n";
@@ -846,7 +861,7 @@ sub validateData {
 							die "invalid reject parameter: $param:\n$$rule{'Rule'}\n";
 						}
 						if ($param eq 'tcp-reset') {
-							if (exists($$rule{'OtherProtocols'}) || exists($$rule{'ICMP'}) || exists($$rule{'Udp'})) {
+							if (exists($$rule{'OtherProtocols'}) || exists($$rule{'ICMP'}) || exists($$rule{'ICMP6'}) || exists($$rule{'Udp'})) {
 								die "can't use tcp-reset with other protocols than tcp:\n$$rule{'Rule'}\n";
 							}
 							unless (exists($$rule{'Tcp'})) {
@@ -1040,21 +1055,23 @@ sub genRuleDump {
 				}
 			}
 		}
-		if (exists($$rule{'ICMP'})) {
+		if (exists($$rule{'ICMP'}) && (! $ipv6)) {
 			my $type;
 			foreach $type (@{$$rule{'ICMP'}}) {
 				if ($type eq 'all') {
-					if ($ipv6) {
-						push (@protocol, "$not -p icmpv6");
-					} else {
-						push (@protocol, "$not -p icmp");
-					}
+					push (@protocol, "$not -p icmp");
 				} else {
-					if ($ipv6) {
-						push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
-					} else {
-						push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
-					}
+					push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
+				}
+			}
+		}
+		if (exists($$rule{'ICMP6'}) and ($ipv6)) {
+			my $type;
+			foreach $type (@{$$rule{'ICMP6'}}) {
+				if ($type eq 'all') {
+					push (@protocol, "$not -p icmpv6");
+				} else {
+					push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
 				}
 			}
 		}
