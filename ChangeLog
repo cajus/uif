@@ -335,7 +335,3 @@ uif (1.0.0-1) unstable; urgency=low
   * Initial release.
 
  -- Cajus Pollmeier <pollmeier@gonicus.de>  Sun, 24 Feb 2002 17:35:29 +0200
-
-Local variables:
-mode: debian-changelog
-End:
