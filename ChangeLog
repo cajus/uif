@@ -1,10 +1,16 @@
-uif (1.1.2-0) UNRELEASED; urgency=low
+uif (1.1.2-0) unstable; urgency=low
 
   * New upstream version (1.1.2):
     - Provide new protocol: ipv6-icmp. Rework ICMP types in services file.
     - Add services "rdp" and "vnc-support" to services file.
+    - services file: Use more appropriate icmp packet type names.
+    - uif.conf: Enable inclusion of services file by default.
+  * debian/changelog:
+    + Use revison -0 in package version.
+  * uif.spec:
+    + Update Version: and Release: field.
 
- -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 28 Jan 2014 23:31:56 +0100
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 20 May 2014 16:26:18 +0200
 
 uif (1.1.1-0) unstable; urgency=low
 
