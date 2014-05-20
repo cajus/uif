@@ -1,7 +1,7 @@
 Summary: Tool for generating optimized packetfilter rules under GPL
 Name: uif
-Version: 1.1.0
-Release: 1
+Version: 1.2.0
+Release: 0
 License: GPL
 Group: System
 Source: https://github.com/cajus/uif/archive/%{version}.zip
