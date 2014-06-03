@@ -33,6 +33,7 @@ install:
 
 	@# install documentation
 	install -o root -g root -m 644 docs/uif.conf.IPv4.tmpl ${PREFIX}/usr/share/doc/uif
+	install -o root -g root -m 644 docs/uif.conf.IPv4+6.tmpl ${PREFIX}/usr/share/doc/uif
 	install -o root -g root -m 644 docs/examples.IPv4.txt ${PREFIX}/usr/share/doc/uif
 	install -o root -g root -m 644 uif.8 ${PREFIX}/usr/share/man/man8
 	install -o root -g root -m 644 uif.conf.5 ${PREFIX}/usr/share/man/man5
