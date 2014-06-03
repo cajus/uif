@@ -51,11 +51,11 @@ case "$RET" in
 		[ "$PINGS" = "1" -a "$TRACERT" = "1" ] && ICMP_RULE="${ICMP_RULE},"
 		[ "$TRACERT" = "1" ] && ICMP_RULE="${ICMP_RULE}traceroute"
 		if [ -n "$TRUSTED" ]; then
-			TRUSTED="trusted    $TRUSTED"
-			TRUSTED_RULE="in+  s=trusted(4)"
+			TRUSTED="trusted4    $TRUSTED"
+			TRUSTED_RULE="in+  s=trusted4(4)"
 		else
-			TRUSTED="#trusted    10.0.0.1"
-			TRUSTED_RULE="#in+  s=trusted(4)"
+			TRUSTED="#trusted4    10.0.0.1"
+			TRUSTED_RULE="#in+  s=trusted4(4)"
 		fi
 
 		if [ -f /etc/uif/uif.conf ]; then
@@ -107,7 +107,7 @@ EOF
 network {
     localhost   ::1
     all         ::/0
-#   trusted     fd00:1:2:3::/64
+#   trusted6     fd00:1:2:3::/64
 }
 EOF
 
@@ -142,9 +142,9 @@ EOF
 #  configuration file.
 #
 #  syntax:  "filename"
-#include {
-#    "/etc/uif/services"
-#}
+include {
+    "/etc/uif/services"
+}
 
 
 ## Services needed for workstation setup
@@ -158,10 +158,10 @@ EOF
 #            dns   tcp(/53) udp(/53)
 #            group http dns tcp(/443)
 #            ipsec esp(/) udp(/500)
-service {
-    traceroute  udp(32769:65535/33434:33523) icmp(11)
-    ping        icmp(8)
-}
+#service {
+#    traceroute  udp(32769:65535/33434:33523) icmp(11)
+#    ping        icmp(8)
+#}
 
 ## Network definitions needed for IPv4+6 workstation setup
 # The network definitions are included from two separate files.
@@ -239,8 +239,15 @@ filter {
     in+  i=loop    s=localhost
     out+ o=loop    d=localhost
 
+    # IPv4 rules
     $ICMP_RULE
     $TRUSTED_RULE
+
+    # ICMP is a must in IPv6, blocking breaks compliancy
+    # to RFC 4443 (http://tools.ietf.org/html/rfc4443)
+    in+  s=all(6) p=ping,pong,noroute,packet-too-big,time-exceeded,parameter-problem,neighbor-advertisement,neighbor-solicitation
+    #in+ s=trusted6(6)
+
     out+ d=all
 
     in-  f=log(input),reject
