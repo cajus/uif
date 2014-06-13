@@ -1,3 +1,17 @@
+uif (1.1.3-0) unstable; urgency=low
+
+  * New upstream version (1.1.3):
+    - Make ICMPv6 neighbor-solicitation (packet type 135) a MUST for the
+      incoming filter in uif.conf.
+    - Make ICMPv6 neighbor-advertisement (packet type 136) a MUST for the
+      incoming filter in uif.conf.
+    - Examples: Provide an IPv4+6 configuration file example.
+  * debian/uif.postinst:
+    + Provide a DebConf mediated workstation config that also protects
+      from IPv6 attacks.
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 03 Jun 2014 23:49:06 +0200
+
 uif (1.1.2-0) unstable; urgency=low
 
   * New upstream version (1.1.2):
