@@ -462,14 +462,26 @@ sub validateData {
 			my $action = $2;
 			$$rule{'Table'}='nat';
 			if ($type eq 'masq') {
-				$$rule{'Type'}='POSTROUTING';
+				if ($ipv6) {
+					$$rule{'Type'}='IGNORE-IPV6-POSTROUTING';
+				} else {
+					$$rule{'Type'}='POSTROUTING';
+				}
 				$$rule{'Action'}='MASQUERADE';
 			} elsif ($type =~ /^(s|d|)nat$/) {
 				if (exists($$rule{'TranslatedSource'})) {
-					$$rule{'Type'}='POSTROUTING';
+					if ($ipv6) {
+						$$rule{'Type'}='IGNORE-IPV6-POSTROUTING';
+					} else {
+						$$rule{'Type'}='POSTROUTING';
+					}
 					$$rule{'Action'}='SNAT';
 				} elsif (exists($$rule{'TranslatedDestination'})) {
-					$$rule{'Type'}='PREROUTING';
+					if ($ipv6) {
+						$$rule{'Type'}='IGNORE-IPV6-PREROUTING';
+					} else {
+						$$rule{'Type'}='PREROUTING';
+					}
 					$$rule{'Action'}='DNAT';
 				} else {
 					die "nat rule without address translation makes no sense:\n$$rule{'Rule'}\n";
@@ -556,6 +568,10 @@ sub validateData {
 							print "IPv4 setup: Skipping IPv6-only rule for network \"$position\"\n";
 							next;
 						}
+					}
+
+					if ($$rule{'Type'} =~ /^IGNORE\-IPV6\-.*$/) {
+						next;
 					}
 
 					if (exists($$Networks{$position})) {
