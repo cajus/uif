@@ -1,3 +1,10 @@
+uif (1.1.5-0) UNRELEASED; urgency=medium
+
+  * New upstream version (1.1.5):
+    - Fix spelling of Debian in error message. (Closes: Debian bug #772496).
+
+ -- Mike Gabriel <mike.gabriel@das-netzwerkteam.de>  Tue, 09 Dec 2014 13:12:11 +0100
+
 uif (1.1.4-0) unstable; urgency=medium
 
   * New upstream version (1.1.4):
