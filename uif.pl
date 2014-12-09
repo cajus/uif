@@ -1553,7 +1553,7 @@ sub readCommandLine {
 	}
 
 	if ($readldap || $writeldap) {
-		if ($LDAPENABLED == 0) { die "To use LDAP fatures be sure to install Net::LDAP from Debian package libnet-ldap-perl" } ;
+		if ($LDAPENABLED == 0) { die "To use LDAP features be sure to install Net::LDAP from the Debian package libnet-ldap-perl" } ;
 		$ldap = Net::LDAP->new($ldapserver) or die "$@";
 		if ($ldapbinddn && ($ldappassword eq "")) {
 			$mesg=$ldap->bind(	$ldapbinddn);
