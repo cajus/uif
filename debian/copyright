@@ -5,17 +5,17 @@ Source: https://github.com/cajus/uif
 
 Files: *
 Copyright:
- 2002-2014, Jörg Platte <jplatte@gmx.net>
- 2002-2014, Cajus Pollmeier <pollmeier@gonicus.de>
- 2013-2014, Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
- 2013-2014, Alex Owen <r.alex.owen@gmail.com>
+ 2002-2015, Jörg Platte <jplatte@gmx.net>
+ 2002-2015, Cajus Pollmeier <pollmeier@gonicus.de>
+ 2013-2015, Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+ 2013-2015, Alex Owen <r.alex.owen@gmail.com>
 License: GPL-2+
 
 Files: /debian/*
 Copyright:
  2002, Jörg Platte <jplatte@gmx.net>
  2002-2012, Cajus Pollmeier <pollmeier@gonicus.de>
- 2013-2014, Mike Gabriel <sunweaver@debian.org>
+ 2013-2015, Mike Gabriel <sunweaver@debian.org>
 License: GPL-2+
 
 License: GPL-2+

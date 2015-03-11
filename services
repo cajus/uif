@@ -1,8 +1,8 @@
 ## UIF 1.0 sample services file
-#  (C) 2002-2014, Cajus Pollmeier <pollmeier@gonicus.de>
-#  (C) 2002-2014, Jörg Platte <jplatte@gmx.net>
-#  (C) 2013-2014, Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
-#  (C) 2013-2014, Alex Owen <r.alex.owen@gmail.com>
+#  (C) 2002-2015, Cajus Pollmeier <pollmeier@gonicus.de>
+#  (C) 2002-2015, Jörg Platte <jplatte@gmx.net>
+#  (C) 2013-2015, Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+#  (C) 2013-2015, Alex Owen <r.alex.owen@gmail.com>
 
 service {
 	# ICMP & Routing

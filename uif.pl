@@ -1,9 +1,9 @@
 #!/usr/bin/perl -w
 
-# Copyright (C) 2002-2014 Jörg Platte <joergplatte@gmx.de>
-# Copyright (C) 2002-2014 Cajus Pollmeier <pollmeier@gonicus.de>
-# Copyright (C) 2013-2014 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
-# Copyright (C) 2013-2014 Alex Owen <r.alex.owen@gmail.com>
+# Copyright (C) 2002-2015 Jörg Platte <joergplatte@gmx.de>
+# Copyright (C) 2002-2015 Cajus Pollmeier <pollmeier@gonicus.de>
+# Copyright (C) 2013-2015 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+# Copyright (C) 2013-2015 Alex Owen <r.alex.owen@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
