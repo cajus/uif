@@ -563,9 +563,11 @@ sub validateData {
 						$position =~ s/\((.+)\)$//;
 						if (($ipv6) && ($only_proto eq "4")) {
 							print "IPv6 setup: Skipping IPv4-only rule for network \"$position\"\n";
+							$$rule{'Type'} = 'IGNORE-IPV4-ONLY';
 							next;
 						} elsif ((! $ipv6) && ($only_proto eq "6")) {
 							print "IPv4 setup: Skipping IPv6-only rule for network \"$position\"\n";
+							$$rule{'Type'} = 'IGNORE-IPV6-ONLY';
 							next;
 						}
 					}
@@ -960,6 +962,11 @@ sub genRuleDump {
 	my $chains;
 
 	foreach $rule (@$Rules) {
+
+		if ( ($$rule{'Type'} eq "IGNORE-IPV4-ONLY") || ($$rule{'Type'} eq "IGNORE-IPV6-ONLY") ) {
+			next;
+		}
+
 		my @protocol;
 		my @source;
 		my @destination;
