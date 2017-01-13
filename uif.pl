@@ -1137,7 +1137,7 @@ sub genRuleDump {
 			$source=${$$rule{'TranslatedSource'}}[0];
 			$source =~ /([^=]+)/;
 			$source=$1;
-			my $ip = new NetAddr::IP ($source) || die "not a valid network: $source\n";
+			my $ip = NetAddr::IP->new($source) || die "not a valid network: $source\n";
 			my $net=$ip->network();
 			my $bcast = $ip->broadcast();
 			if ($net ne $bcast) {
@@ -1152,7 +1152,7 @@ sub genRuleDump {
 			$destination=${$$rule{'TranslatedDestination'}}[0];
 			$destination =~ /([^=]+)/;
 			$destination=$1;
-			my $ip = new NetAddr::IP ($destination) || die "not a valid network: $destination\n";
+			my $ip = NetAddr::IP->new($destination) || die "not a valid network: $destination\n";
 			my $net=$ip->network();
 			my $bcast = $ip->broadcast();
 			if ($net ne $bcast) {
@@ -1908,7 +1908,12 @@ sub writeLdap {
 			$nethost =~ s/\/255.255.255.255//g;
 			if ($nethost =~ /\//) {
 				@entry = ("cn", "$network$counter", "objectClass", "ipNetwork");
-				my $ip = new NetAddr::IP ($nethost) || die "not a valid network: $nethost\n";
+				my $ip;
+				if ($ipv6) {
+					$ip = NetAddr::IP->new6($nethost) || die "not a valid network: $nethost\n";
+				} else {
+					$ip = NetAddr::IP->new($nethost) || die "not a valid network: $nethost\n";
+				}
 				push (@entry, "ipNetworkNumber");
 				push (@entry, $ip->addr());
 				push (@entry, "ipNetmaskNumber");
@@ -1928,9 +1933,17 @@ sub writeLdap {
 				my $mac;
 				if ($nethost =~ /^(.+)=(.+)$/) {
 					$mac=$2;
-					$ip = new NetAddr::IP ($1) || die "not a valid network: $1\n";
+					if ($ipv6) {
+						$ip = NetAddr::IP->new6($1) || die "not a valid network: $1\n";
+					} else {
+						$ip = NetAddr::IP->new($1) || die "not a valid network: $1\n";
+					}
 				} else {
-					$ip = new NetAddr::IP ($nethost) || die "not a valid network: $nethost\n";
+					if ($ipv6) {
+						$ip = NetAddr::IP->new6($nethost) || die "not a valid network: $nethost\n";
+					} else {
+						$ip = NetAddr::IP->new($nethost) || die "not a valid network: $nethost\n";
+					}
 				}
 				push (@entry, "ipHostNumber");
 				push (@entry, $ip->addr());
