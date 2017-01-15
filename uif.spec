@@ -56,5 +56,5 @@ rm -rf %{_builddir}/%{buildsubdir}
 * Wed Jan 22 2014 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
  - update version, update download source and project URL
 
-* Sun Jan 17 2017 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+* Sun Jan 15 2017 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
  - bump upstream release to 1.1.8
