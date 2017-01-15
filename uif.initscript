@@ -9,7 +9,7 @@
 # Description:       Start the firewall defined in /etc/uif/uif.conf.
 ### END INIT INFO
 #
-# Version:      @(#)/etc/init.d/uif  1.0.9  June-2013 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
+# Version:      @(#)/etc/init.d/uif  1.1.6  January-2017 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 #
 
 # RedHat specific settings - ignore for real systems ---------------------------

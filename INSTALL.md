@@ -1,4 +1,4 @@
-# UIF 1.1.5
+# UIF 1.1.6
 
 This file contains some quick installation hints for
 the uif package.
