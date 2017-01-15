@@ -1,4 +1,4 @@
-# IPv6 support for UIF 1.1.6
+# IPv6 support for UIF 1.1.7
 
 Starting with version 1.1.0 UIF is able to handle IPv6 iptables as well
 as IPv4 iptables. The IPv6 support was originally provided by Alex Owen

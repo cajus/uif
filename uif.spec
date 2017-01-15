@@ -1,6 +1,6 @@
 Summary: Tool for generating optimized packetfilter rules under GPL
 Name: uif
-Version: 1.1.6
+Version: 1.1.7
 Release: 0
 License: GPL
 Group: System
@@ -57,4 +57,4 @@ rm -rf %{_builddir}/%{buildsubdir}
  - update version, update download source and project URL
 
 * Sun Jan 17 2017 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
- - bump upstream release to 1.1.6
+ - bump upstream release to 1.1.7

@@ -1,6 +1,20 @@
-2017-01-15 14:54:24 +0100 Mike Gabriel (cef7677)
+2017-01-15 16:05:54 +0100 Mike Gabriel (7f2c3a3)
 
-	* release 1.1.6 (HEAD, master)
+	* release 1.1.7 (HEAD, master)
+
+2017-01-15 16:05:07 +0100 Mike Gabriel (bd85804)
+
+	* MAC-source filtering, regression fix: Re-add push of $ip to
+          @netobjects if network object contains a MAC address.
+
+2017-01-15 15:12:33 +0100 Mike Gabriel (36d6d86)
+
+	* UIF: Allow MAC syntax in network items only with real IP addresses,
+          not with DNS resolvable host names.
+
+2017-01-15 14:54:24 +0100 Mike Gabriel (3435812)
+
+	* release 1.1.6 (tag: 1.1.6, origin/master)
 
 2017-01-15 14:56:59 +0100 Mike Gabriel (0038831)
 
@@ -27,7 +41,7 @@
 2017-01-15 14:23:26 +0100 Mike Gabriel (577cc6b)
 
 	* ChangeLog: Convert to GNU ChangeLog style, generated from Git
-          history. (origin/master)
+          history.
 
 2017-01-15 14:22:41 +0100 Mike Gabriel (d75e0ed)
 
