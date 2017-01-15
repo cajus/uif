@@ -286,37 +286,50 @@ sub simplifyNetworks {
 	my $network;
 	if (@networks) {
 		my $ip;
-		my $onlymacs=1;
+		my $no_macs=1;
 		foreach (@networks) {
 
-			if ( ($_ =~ /(^[^\/]+)\/([^\/]+)$/) || (($ipv6) && is_ipv6($_)) || ((!$ipv6) && is_ipv4($_)) ) {
+			my $netaddr = '';
+			my $network = '';
+			my $macaddr = '';
+			if ( ($_ =~ /(^[^\/]+)\/([^\/^=]+)$/) || (($ipv6) && is_ipv6($_)) || ((!$ipv6) && is_ipv4($_)) ) {
 
 				if ($ipv6) {
 					$ip=NetAddr::IP->new6($_) || die "not a valid address or network: $_\n";
 				} else {
 					$ip=NetAddr::IP->new($_) || die "not a valid address or network: $_\n";
 				}
-				$onlymacs=0;
 				push(@netobjects, $ip);
 
 			}
 			elsif ( $_ =~ /(^[^=]+)=([^=]+)$/ ) {
-				if ( (($ipv6) && is_ipv6($1)) || ((!$ipv6) && is_ipv4($1)) ) {
+
+				$netaddr = $1;
+				$macaddr = $2;
+				if ($netaddr =~ /(^[^\/]+)\/([^\/]+)$/) {
+					$network = $1;
+					# FIXME: netmask = $2; TODO: validate netmask
+				} else {
+					$network = $netaddr;
+				}
+
+				if ( (($ipv6) && is_ipv6($network)) || ((!$ipv6) && is_ipv4($network)) ) {
 
 					if ($ipv6) {
-						$ip=NetAddr::IP->new6($1) || die "not a valid address: $1\n";
+						$ip=NetAddr::IP->new6($netaddr) || die "not a valid address or network: $netaddr\n";
 					} else {
-						$ip=NetAddr::IP->new($1) || die "not a valid address: $1\n";
+						$ip=NetAddr::IP->new($netaddr) || die "not a valid address or network: $netaddr\n";
 					}
 					if (!exists($macs{$ip})) {
 						$macs{$ip}=[];
 					}
-					push (@{$macs{$ip}}, $2);
+					$no_macs = 0;
+					push (@{$macs{$ip}}, $macaddr);
 					push (@netobjects, $ip);
 
 				} else {
 
-					die "Cannot use <dns-name>=<mac-addr> syntax, must be <ip-addr>=<mac-addr>"
+					die "Cannot use <dns-name>=<mac-addr> syntax, must be <network-or-ip-addr>=<mac-addr>"
 
 				}
 			}
@@ -344,26 +357,28 @@ sub simplifyNetworks {
 						$ip=NetAddr::IP->new($ipaddr) || die "not a valid address: $ipaddr\n";
 					}
 
-					$onlymacs=0;
 					push (@netobjects, $ip);
 				}
 			}
 
 		}
 
-		if ($onlymacs==0) {
-			$netref = NetAddr::IP::compactref(\@netobjects);
+		# if we don't handle individual MAC addresses on any of the networks, then
+		# we can compact the list of networks
+		if ($no_macs == 1) {
+			@netobjects = NetAddr::IP::Compact(@netobjects);
+		}
 
-			@networks=();
-			foreach $network (@$netref) {
-				if (exists($macs{$network})) {
-					foreach $mac (@{$macs{$network}}) {
-						push (@networks, $network."=".$mac);
-					}
-				} else {
-					push (@networks, $network);
+		@networks=();
+		foreach $network (@netobjects) {
+			if (exists($macs{$network})) {
+				foreach $mac (@{$macs{$network}}) {
+					push (@networks, $network."=".$mac);
 				}
-			};
+			}
+			else {
+				push (@networks, $network);
+			}
 		}
 	}
 	return (@networks);
