@@ -300,18 +300,24 @@ sub simplifyNetworks {
 				push(@netobjects, $ip);
 
 			}
-			elsif ($_ =~ /(^[^=]+)=([^=]+)$/ ) {
+			elsif ( $_ =~ /(^[^=]+)=([^=]+)$/ ) {
+				if ( (($ipv6) && is_ipv6($1)) || ((!$ipv6) && is_ipv4($1)) ) {
 
-				if ($ipv6) {
-					$ip=NetAddr::IP->new6($1) || die "not a valid address: $1\n";
+					if ($ipv6) {
+						$ip=NetAddr::IP->new6($1) || die "not a valid address: $1\n";
+					} else {
+						$ip=NetAddr::IP->new($1) || die "not a valid address: $1\n";
+					}
+					if (!exists($macs{$ip})) {
+						$macs{$ip}=[];
+					}
+					push (@{$macs{$ip}}, $2);
+
 				} else {
-					$ip=NetAddr::IP->new($1) || die "not a valid address: $1\n";
-				}
-				if (!exists($macs{$ip})) {
-					$macs{$ip}=[];
-				}
-				push (@{$macs{$ip}}, $2);
 
+					die "Cannot use <dns-name>=<mac-addr> syntax, must be <ip-addr>=<mac-addr>"
+
+				}
 			}
 			else {
 
