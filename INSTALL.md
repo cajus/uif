@@ -16,8 +16,8 @@ NetAddr::IP (>=3.0), Socket, Data::Validata::IP and optionally Net::LDAP.
 
 Well - there's nothing to build. Just change the PREFIX on top of the
 Makefile and do a "make install". If you want to start uif during bootup
-you should add the needed links in /etc/rc*. See file "uif" for a working
-init script.
+you should add the needed links in /etc/rc*. See file "uif.initscript"
+for a working init script.
 
 ## Debian
 
