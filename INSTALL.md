@@ -10,7 +10,7 @@ You can get the newest version at https://github.com/cajus/uif.
 ## Dependencies
 
 In order to use the script, you need iptables, ip6tables, Perl,
-NetAddr::IP (>=3.0), Socket, Data::Validata::IP and optionally Net::LDAP.
+NetAddr::IP (>=3.0), Socket, Data::Validate::IP and optionally Net::LDAP.
 
 ## Build
 
