@@ -1,18 +1,49 @@
-2017-01-15 14:22:41 +0100 Mike Gabriel (d6d71d4)
+2017-01-15 14:54:24 +0100 Mike Gabriel (cef7677)
 
-	* INSTALL.md: Typo fix in Perl module name. (HEAD, master)
+	* release 1.1.6 (HEAD, master)
 
-2017-01-15 14:21:55 +0100 Mike Gabriel (903c46f)
+2017-01-15 14:56:59 +0100 Mike Gabriel (0038831)
+
+	* Makefile: Fix installation of uif.initscript.
+
+2017-01-15 14:53:29 +0100 Mike Gabriel (9c01c91)
+
+	* uif.conf.5: Add some hints and notes about IPv6 support.
+
+2017-01-15 14:44:23 +0100 Mike Gabriel (6d01761)
+
+	* doc files: consistently use UIF in capital letters.
+
+2017-01-15 14:42:10 +0100 Mike Gabriel (868ac44)
+
+	* services file: Add some more services (kerberos5 et al., ldaps,
+          swat, openvpn, mysql, munin, cfenging, xmpp-client,
+          xmpp-server, icinga2, webmin and puppet).
+
+2017-01-15 14:26:03 +0100 Mike Gabriel (cfee841)
+
+	* COPYRIGHT: Update copyright date for Mike Gabriel.
+
+2017-01-15 14:23:26 +0100 Mike Gabriel (577cc6b)
+
+	* ChangeLog: Convert to GNU ChangeLog style, generated from Git
+          history. (origin/master)
+
+2017-01-15 14:22:41 +0100 Mike Gabriel (d75e0ed)
+
+	* INSTALL.md: Typo fix in Perl module name.
+
+2017-01-15 14:21:55 +0100 Mike Gabriel (8766e7b)
 
 	* Drop former uif initscript, replaced by new uif.initscript file.
 
-2017-01-15 14:15:33 +0100 Mike Gabriel (3b0af16)
-
-	* Rename README.IPv6 -> README.IPv6.md
-
-2017-01-15 14:19:13 +0100 Mike Gabriel (d250150)
+2017-01-15 14:19:13 +0100 Mike Gabriel (26c5c19)
 
 	* Revert "release 1.1.6"
+
+2017-01-15 14:15:33 +0100 Mike Gabriel (465c6da)
+
+	* Rename README.IPv6 -> README.IPv6.md
 
 2017-01-15 14:13:04 +0100 Mike Gabriel (ed896f4)
 

@@ -1,4 +1,4 @@
-# README.LDAP for UIF 1.1.5
+# README.LDAP for UIF 1.1.6
 
 ## Documentation / LDAP
 
