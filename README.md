@@ -1,8 +1,6 @@
-README for uif
-==============
+# UIF 1.1.5
 
-
-DOCUMENTATION
+## Documentation
 
 The uif project has been developed for a diskless router system and provides
 a mechanism to create and simplify packet filter rules. It forces you to
@@ -17,7 +15,7 @@ of diskles router configurations. Use uif(8) and information provided in
 the doc/ directory to configure the firewall fitting your needs.
 
 
-BUGS/WISHLIST
+## Bugs / Wishlist
 
 uif is on Github. If you've found a bug, or have suggestions for future
 versions please report it via the project's issue tracker:
