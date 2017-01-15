@@ -138,6 +138,10 @@ and
 define rules to modify the source
 or destination address or the destination port.
 .Pp
+\fBNote:\fR The identifiers nat and masq are non-operational in IPv6
+mode. They simply get ignored as NAT and Masquerading are not supported by
+the IPv6 protocol.
+.Pp
 The plus and minus signs specify the type of the rule: '+' accepts matching
 packets and '\-' drops them. As a special case the identifier out and fw
 accept the greater than (>) sign to modify the MSS depending on the PMTU
@@ -156,9 +160,9 @@ one or more previously defined identifiers (in the corresponding sections)
 separated by commas. The following parameters are valid:
 .Bl -tag -width Ds
 .It Cm s
-The source address or network.
+The source address or network. Append "(4)" or "(6)" to the network name to make this rule apply to IPv4 or IPv6 only.
 .It Cm d
-The destination address or network.
+The destination address or network. Append "(4)" or "(6)" to the network name to make this rule apply to IPv4 or IPv6 only.
 .It Cm i
 The input interface.
 .It Cm o
@@ -172,9 +176,9 @@ The service description (protocol).
 .It Cm m
 The mark field associated with a packet.
 .It Cm S
-The the new source address in nat rules.
+The the new source address in nat rules. Supported in IPv4 mode only. Ignored in IPv6 mode.
 .It Cm D
-The the new destination address in nat rules.
+The the new destination address in nat rules. Supported in IPv4 mode only. Ignored in IPv6 mode.
 .It Cm P
 The the new service description in nat rules. This is only valid with tcp or
 udp packets.
