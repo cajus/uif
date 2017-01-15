@@ -1,6 +1,19 @@
-2017-01-15 16:05:54 +0100 Mike Gabriel (7f2c3a3)
+2017-01-15 23:48:57 +0100 Mike Gabriel (204599c)
 
-	* release 1.1.7 (HEAD, master)
+	* release 1.1.8 (HEAD, master)
+
+2017-01-15 23:48:02 +0100 Mike Gabriel (d913b96)
+
+	* validateData: Prevent from using networks with MAC addresses
+          neither for outward bound nor for destination networks.
+
+2017-01-15 23:24:33 +0100 Mike Gabriel (477c55b)
+
+	* Better test and fix MAC address based source filtering.
+
+2017-01-15 16:05:54 +0100 Mike Gabriel (9d20e8e)
+
+	* release 1.1.7 (tag: 1.1.7, origin/master)
 
 2017-01-15 16:05:07 +0100 Mike Gabriel (bd85804)
 
@@ -14,7 +27,7 @@
 
 2017-01-15 14:54:24 +0100 Mike Gabriel (3435812)
 
-	* release 1.1.6 (tag: 1.1.6, origin/master)
+	* release 1.1.6 (tag: 1.1.6)
 
 2017-01-15 14:56:59 +0100 Mike Gabriel (0038831)
 

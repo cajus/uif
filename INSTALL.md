@@ -1,4 +1,4 @@
-# Installation Guide for UIF 1.1.7
+# Installation Guide for UIF 1.1.8
 
 This file contains some quick installation hints for
 the UIF package.
