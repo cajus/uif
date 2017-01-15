@@ -27,6 +27,8 @@ my $LDAPENABLED = eval "use Net::LDAP; 1" ? '1' : '0';
 
 use Getopt::Std;
 use NetAddr::IP;
+use Data::Validate::IP qw(is_ipv6 is_ipv4);
+use Socket qw(:addrinfo SOCK_RAW AF_INET AF_INET6);
 
 my $SignalCatched=0;
 
@@ -286,27 +288,62 @@ sub simplifyNetworks {
 		my $ip;
 		my $onlymacs=1;
 		foreach (@networks) {
-			my $ip;
-			if ($_ =~ /(^[^=]+)=([^=]+)$/ ) {
+
+			if ( ($_ =~ /(^[^\/]+)\/([^\/]+)$/) || (($ipv6) && is_ipv6($_)) || ((!$ipv6) && is_ipv4($_)) ) {
+
 				if ($ipv6) {
-					$ip=NetAddr::IP->new6($1) || die "not a valid network: $1\n";
+					$ip=NetAddr::IP->new6($_) || die "not a valid address or network: $_\n";
 				} else {
-					$ip=NetAddr::IP->new($1) || die "not a valid network: $1\n";
+					$ip=NetAddr::IP->new($_) || die "not a valid address or network: $_\n";
+				}
+				$onlymacs=0;
+				push(@netobjects, $ip);
+
+			}
+			elsif ($_ =~ /(^[^=]+)=([^=]+)$/ ) {
+
+				if ($ipv6) {
+					$ip=NetAddr::IP->new6($1) || die "not a valid address: $1\n";
+				} else {
+					$ip=NetAddr::IP->new($1) || die "not a valid address: $1\n";
 				}
 				if (!exists($macs{$ip})) {
 					$macs{$ip}=[];
 				}
 				push (@{$macs{$ip}}, $2);
-			} else {
-				if ($ipv6) {
-					$ip=NetAddr::IP->new6($_) || die "not a valid network: $1\n";
-				} else {
-					$ip=NetAddr::IP->new($_) || die "not a valid network: $1\n";
-				}
-				$onlymacs=0;
+
 			}
-			push(@netobjects, $ip);
-		};
+			else {
+
+				# resolv "address" that actually is a DNS host name, not an IP address...
+				my $err;
+				my @res;
+
+				if ($ipv6) {
+					( $err, @res ) = getaddrinfo( $_, "", { socktype => SOCK_RAW, family => AF_INET6 } );
+				} else {
+					( $err, @res ) = getaddrinfo( $_, "", { socktype => SOCK_RAW, family => AF_INET } );
+				}
+				die "Cannot getaddrinfo for name '".$_."'- ".$err if $err;
+
+				while ( my $ai = shift @res ) {
+
+					my ( $err, $ipaddr ) = getnameinfo( $ai->{addr}, NI_NUMERICHOST, NIx_NOSERV );
+					die "Cannot getnameinfo - $err" if $err;
+
+					if ($ipv6) {
+						$ip=NetAddr::IP->new6($ipaddr) || die "not a valid address: $ipaddr\n";
+					} else {
+						$ip=NetAddr::IP->new($ipaddr) || die "not a valid address: $ipaddr\n";
+					}
+
+					$onlymacs=0;
+					push (@netobjects, $ip);
+				}
+			}
+
+		}
+
 		if ($onlymacs==0) {
 			$netref = NetAddr::IP::compactref(\@netobjects);
 
