@@ -312,6 +312,7 @@ sub simplifyNetworks {
 						$macs{$ip}=[];
 					}
 					push (@{$macs{$ip}}, $2);
+					push (@netobjects, $ip);
 
 				} else {
 
