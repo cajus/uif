@@ -646,7 +646,19 @@ sub validateData {
 					}
 				}
 				@simplenetwork = simplifyNetworks (@simplenetwork);
+
+				my $network;
+				for $network (@simplenetwork) {
+					if  ( ( $network =~ /(^[^=]+)=([^=]+)$/ ) && ( ! ( $hashentry =~ /^.*Source$/ ) ) ) {
+						die "MAC address sources don't make sense on destination networks";
+					}
+					if  ( ( $network =~ /(^[^=]+)=([^=]+)$/ ) && ( $$rule{'Type'} eq 'OUTPUT' ) ) {
+						die "MAC address sources don't make sense for outward bound rules";
+					}
+				}
+
 				$$rule{$hashentry} = \@simplenetwork;
+
 			}
 		}
 		foreach (qw(TranslatedSource TranslatedDestination)) {
