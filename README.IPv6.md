@@ -1,11 +1,11 @@
-# IPv6 support for uif
+# IPv6 support for UIF 1.1.5
 
-Starting with version 1.1.0 uif is able to handle IPv6 iptables as well
+Starting with version 1.1.0 UIF is able to handle IPv6 iptables as well
 as IPv4 iptables. The IPv6 support was originally provided by Alex Owen
 via a patch sent to the Debian bug tracker. Awesome thanks to Alex for
 this initial piece of work!!!
 
-With IPv6 support added, uif can now also produce IPv6 firewall rules.
+With IPv6 support added, UIF can now also produce IPv6 firewall rules.
 The init script can, by setting IPV6MODE=1 in /etc/default/uif, be made
 to install the IPv4 rules from /etc/uif/uif.conf and the IPv6 rules from
 /etc/uif/uif6.conf.

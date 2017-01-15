@@ -1,8 +1,8 @@
-# README.LDAP for uif
+# README.LDAP for UIF 1.1.5
 
 ## Documentation / LDAP
 
-There is some LDAP support built into uif, with that you can handle a big
+There is some LDAP support built into UIF, with that you can handle a big
 farm of diskles router configurations. Use uif(8) and information
 provided in the doc/ directory to configure the firewall fitting your
 needs.

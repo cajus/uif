@@ -1,7 +1,7 @@
-# UIF 1.1.5
+# Installation Guide for UIF 1.1.5
 
 This file contains some quick installation hints for
-the uif package.
+the UIF package.
 
 ## Download
 
@@ -15,7 +15,7 @@ NetAddr::IP (>=3.0), Socket, Data::Validate::IP and optionally Net::LDAP.
 ## Build
 
 Well - there's nothing to build. Just change the PREFIX on top of the
-Makefile and do a "make install". If you want to start uif during bootup
+Makefile and do a "make install". If you want to start UIF during bootup
 you should add the needed links in /etc/rc*. See file "uif.initscript"
 for a working init script.
 

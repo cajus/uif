@@ -1,8 +1,8 @@
-# UIF 1.1.5
+# README for UIF 1.1.5
 
 ## Documentation
 
-The uif project has been developed for a diskless router system and provides
+The UIF project has been developed for a diskless router system and provides
 a mechanism to create and simplify packet filter rules. It forces you to
 provide names for every value you use in order to make firewalls less
 confusing.
@@ -17,12 +17,12 @@ the doc/ directory to configure the firewall fitting your needs.
 
 ## Bugs / Wishlist
 
-uif is on Github. If you've found a bug, or have suggestions for future
+UIF is on Github. If you've found a bug, or have suggestions for future
 versions please report it via the project's issue tracker:
 https://github.com/cajus/uif/issues
 
-If you have installed uif on Debian, you can also use the Debian BTS for
-reporting bugs. As the Debian maintainer of uif is a member of the uif
+If you have installed UIF on Debian, you can also use the Debian BTS for
+reporting bugs. As the Debian maintainer of UIF is a member of the UIF
 upstream development team, the Debian bugs will also reach upstream quickly.
 
 
