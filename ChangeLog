@@ -1,6 +1,18 @@
-2017-01-15 23:48:57 +0100 Mike Gabriel (204599c)
+2018-08-20 12:13:55 +0200 Mike Gabriel (8df67cb)
 
-	* release 1.1.8 (HEAD, master)
+	* release 1.1.9 (HEAD -> master, tag: 1.1.9)
+
+2018-08-20 12:10:13 +0200 Mike Gabriel (1448fd3)
+
+	* Makefile: Fix flawed usage of DESTDIR and PREFIX.
+
+2017-01-16 00:07:28 +0100 Mike Gabriel (ee38674)
+
+	* uif.spec: Date fix in changelog.
+
+2017-01-15 23:50:03 +0100 Mike Gabriel (1123e0c)
+
+	* release 1.1.8 (tag: 1.1.8)
 
 2017-01-15 23:48:02 +0100 Mike Gabriel (d913b96)
 
@@ -13,7 +25,7 @@
 
 2017-01-15 16:05:54 +0100 Mike Gabriel (9d20e8e)
 
-	* release 1.1.7 (tag: 1.1.7, origin/master)
+	* release 1.1.7 (tag: 1.1.7)
 
 2017-01-15 16:05:07 +0100 Mike Gabriel (bd85804)
 
@@ -109,7 +121,7 @@
 
 2016-04-16 14:33:51 +0200 klemens (ae13340)
 
-	* spelling fix, as of lintian.debian.org (ka7-spelling_fix)
+	* spelling fix, as of lintian.debian.org
 
 2015-03-11 10:00:49 +0100 Mike Gabriel (01892a9)
 
