@@ -72,7 +72,6 @@ sub readConfig {
 	my $state='NONE';
 	my $line;
 
-
 	unless (defined($$Protocols{'OK'})) {
 		$$Protocols{'OK'}=1;
 		open (PROT, '/etc/protocols') || die "Can't read '/etc/protocols'\n";
@@ -461,7 +460,6 @@ sub validateSysconfig {
 		}
 	}
 }
-
 
 sub toRange {
 	my ($range, $proto, $rule) = @_;
@@ -1468,6 +1466,7 @@ sub printRules {
 sub signalCatcher {
 	$SignalCatched=1;
 }
+
 sub applyRules {
 	my ($timeout, $Listing) = @_;
 	my @oldrules;
@@ -1800,7 +1799,6 @@ sub readLdap {
 		}
 	}
 
-
 	$mesg = $ldap->search (	base => $ldapbase,
 				filter => "objectClass=ipNetwork");
 	if ($mesg->is_error) {
@@ -2101,7 +2099,6 @@ sub addLdap {
 		die "adding rule failed: ".$mesg->error."\n";
 	}
 }
-
 
 sub writeConfig {
 	my ($configfile, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Sysconfig, $Marker) = @_;
