@@ -1309,22 +1309,22 @@ sub genRuleDump {
 			} else {
 				$logid=$name;
 			}
-			push (@$table, "-A $chain -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
-			push (@$table, "-A $chain $action");
-			$action="-j $chain";
+			push (@$table, "-A CHAIN_$chain -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
+			push (@$table, "-A CHAIN_$chain $action");
+			$action="-j CHAIN_$chain";
 		}
 		if (exists($$rule{'Accounting'})) {
 			my $accountchain="$$Sysconfig{'AccountPrefix'}$$rule{'Accounting'}";
 			unless (exists($$chains{"$accountchain"})) {
 				$$chains{"$accountchain"}=1;
-				push (@$table, "-A $accountchain $action");
+				push (@$table, "-A CHAIN_$accountchain $action");
 			}
 			my $accountrules="${id}_ACCOUNTING_$$rule{'Accounting'}";
 			$$chains{$accountrules}=1;
 			push (@$table, "$type -j $accountrules");
-			push (@$table, "-A ACCOUNTING$$rule{'Type'} -j $accountrules");
+			push (@$table, "-A ACCOUNTING$$rule{'Type'} -j CHAIN_$accountrules");
 			$type="-A $accountrules ";
-			$action=" -j $accountchain";
+			$action=" -j CHAIN_$accountchain";
 		}
 		if (exists($$rule{'Limit'})) {
 			$action=" -m limit --limit $$rule{'Limit'} --limit-burst $$rule{'Limit-burst'} $action";
@@ -1364,7 +1364,7 @@ sub genRuleDump {
 			}
 			my $jumpto;
 			if ($again) {
-				$jumpto="-j ${id}_$level";
+				$jumpto="-j CHAIN_${id}_$level";
 			} else {
 				$jumpto=$action;
 			}
@@ -1382,7 +1382,7 @@ sub genRuleDump {
 				push (@$table, "$type $jumpto");
 			}
 			if ($again) {
-				$type="-A ${id}_$level";
+				$type="-A CHAIN_${id}_$level";
 				$$chains{"${id}_$level"}=1;
 				$level++;
 			}
@@ -1438,7 +1438,7 @@ sub genRuleDump {
 			}
 		}
 		foreach (keys(%$chains)) {
-			push (@$Listing, ":$_ - [0:0]");
+			push (@$Listing, ":CHAIN_$_ - [0:0]");
 		}
 		push (@$Listing, "#");
 		push (@$Listing, "# beginning of user generated $entry rules");
