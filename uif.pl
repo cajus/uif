@@ -455,6 +455,21 @@ sub validateSysconfig {
 			} else {
 				die "invalid account prefix: $prefix\n";
 			}
+		} elsif ("\L$syskey" eq "filtercommand") {
+			my $filter_command=$$Sysconfig{$syskey};
+			delete $$Sysconfig{$syskey};
+			$filter_command =~ s/\s+//g;
+			if ($filter_command eq 'nft') {
+				$$Sysconfig{'filtercommand'} = 'nft';
+			} elsif ($filter_command eq 'iptables') {
+				$$Sysconfig{'filtercommand'} = 'iptables';
+			} elsif ($filter_command eq 'iptables-nft') {
+				$$Sysconfig{'filtercommand'} = 'iptables-nft';
+			} elsif ($filter_command eq 'iptables-legacy') {
+				$$Sysconfig{'filtercommand'} = 'iptables-legacy';
+			} else {
+				die "invalid packet filter command, use 'nft', 'iptables', 'iptables-nft' or 'iptables-legacy'";
+			}
 		} else {
 			die "unknown sysconfig parameter: $syskey\n";
 		}
@@ -1017,7 +1032,447 @@ sub validateData {
 	}
 }
 
-sub genRuleDump {
+sub genRuleDump_NFT {
+	my ($Rules, $Listing, $Sysconfig) = @_;
+	my @partial;
+	my $rule;
+	my %nat;
+	my %filter;
+	my %mangle;
+	my @nat;
+	my @filter;
+	my @mangle;
+	my $table;
+	my $chains;
+
+	foreach $rule (@$Rules) {
+
+		if ( ($$rule{'Type'} eq "IGNORE-IPV4-ONLY") || ($$rule{'Type'} eq "IGNORE-IPV6-ONLY") ) {
+			next;
+		}
+
+		my @protocol;
+		my @source;
+		my @destination;
+		my @inputinterface;
+		my @outputinterface;
+		my @physicalinputinterface;
+		my @physicaloutputinterface;
+		my @mark;
+		my $action;
+		my $logaction;
+		my $type;
+		my $name;
+		my $proto;
+		my $id;
+		my $not;
+
+		if ($$rule{'Table'} eq 'filter') {
+			$table=\@filter;
+			$chains=\%filter;
+		} elsif ($$rule{'Table'} eq 'nat') {
+			$table=\@nat;
+			$chains=\%nat;
+		} elsif ($$rule{'Table'} eq 'mangle') {
+			$table=\@mangle;
+			$chains=\%mangle;
+		} else {
+			die "$$rule{'Table'} is not implemented!\n";
+		}
+
+		$type="-A $$rule{'Type'}";
+		if (exists($$rule{'Name'})) {
+			$name=$$rule{'Name'};
+			$name=~s/\s+//g;
+		} else {
+			$name="-";
+		}
+		$id=$$rule{'Id'};
+
+		if (exists($$rule{'Reject'})) {
+			if ($$rule{'Reject'} ne '1') {
+				if ($$rule{'Reject'} =~ /tcp/) {
+					$action="-p tcp -m tcp -j REJECT --reject-with $$rule{'Reject'}";
+				} else {
+					$action="-j REJECT --reject-with $$rule{'Reject'}";
+				}
+			} else {
+				$action="-j MYREJECT";
+
+			}
+			$logaction="REJECT";
+		} elsif ($$rule{'Action'} eq "TCPMSS") {
+			$action="-p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu";
+			$logaction="TCPMSS";
+		} elsif ($$rule{'Action'} eq "MARK") {
+			$action="-j MARK --set-mark $$rule{'Mark'}";
+			$logaction="MARK";
+		} else {
+			$action="-j $$rule{'Action'}";
+			$logaction=$$rule{'Action'};
+		}
+
+		if (exists($$rule{"Service-not"})) {
+			$not='!';
+		} else {
+			$not='';
+		}
+
+		foreach $proto (qw(tcp udp)) {
+			if (exists($$rule{"\u$proto"})) {
+				my $string;
+				my $entry;
+				foreach $entry (qw(0 1)) {
+					my $multiport;
+					my $count=0;
+					foreach $multiport (@{$$rule{"\u$proto"}[$entry]}) {
+						if ($count==0) {
+							$string='';
+						}
+						$string.="$multiport,";
+						$count++;
+						if ($count==15) {
+							$string =~ s/,$//;
+							$string="-p $proto -m multiport --".($entry==1?"d":"s")."port ".$string;
+							push (@protocol, $string);
+							$string='';
+							$count=0;
+						}
+					}
+					if (defined($string) && $count) {
+						$string =~ s/,$//;
+						if ($count > 1) {
+							$string="-p $proto -m multiport --".($entry==1?"d":"s")."port ".$string;
+						} else {
+							$string="-p $proto -m $proto --".($entry==1?"d":"s")."port ".$string;
+						}
+						push (@protocol, $string);
+					}
+				}
+				my $range;
+				foreach $range (@{$$rule{"\u$proto"}[2]}) {
+					push (@protocol, "-p $proto -m $proto $not --sport $range");
+				}
+				foreach $range (@{$$rule{"\u$proto"}[3]}) {
+					push (@protocol, "-p $proto -m $proto $not --dport $range");
+				}
+				foreach $range (@{$$rule{"\u$proto"}[4]}) {
+					$range =~ /^(.+)\/(.+)$/;
+					push (@protocol, "-p $proto -m $proto $not --sport $1 $not --dport $2");
+				}
+			}
+		}
+		if (exists($$rule{'ICMP'}) && (! $ipv6)) {
+			my $type;
+			foreach $type (@{$$rule{'ICMP'}}) {
+				if ($type eq 'all') {
+					push (@protocol, "$not -p icmp");
+				} else {
+					push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
+				}
+			}
+		}
+		if (exists($$rule{'ICMP6'}) and ($ipv6)) {
+			my $type;
+			foreach $type (@{$$rule{'ICMP6'}}) {
+				if ($type eq 'all') {
+					push (@protocol, "$not -p icmpv6");
+				} else {
+					push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
+				}
+			}
+		}
+		if (exists($$rule{'OtherProtocols'})) {
+			my $proto;
+			foreach $proto (@{$$rule{'OtherProtocols'}}) {
+				push (@protocol, "$not -p $proto");
+			}
+		}
+		if (exists($$rule{'Source'})) {
+			if (exists($$rule{'Source-not'})) {
+				$not='!';
+			} else {
+				$not='';
+			}
+			my $source;
+			foreach $source (@{$$rule{'Source'}}) {
+				if ($source =~ /(.+)=(.+)/ && ($$rule{'Table'} eq 'filter')) {
+					push (@source, "$not -s $1 -m mac $not --mac-source $2");
+				} else {
+					$source =~ /([^=]+)/;
+					push (@source, "$not -s $1");
+				}
+			}
+		}
+		if (exists($$rule{'Destination'})) {
+			if (exists($$rule{'Destination-not'})) {
+				$not='!';
+			} else {
+				$not='';
+			}
+			my $destination;
+			foreach $destination (@{$$rule{'Destination'}}) {
+				$destination =~ /([^=]+)/;
+				push (@destination, "$not -d $1");
+			}
+		}
+		if (exists($$rule{'TranslatedSource'})) {
+			my $source;
+			$source=${$$rule{'TranslatedSource'}}[0];
+			$source =~ /([^=]+)/;
+			$source=$1;
+			my $ip = NetAddr::IP->new($source) || die "not a valid network: $source\n";
+			my $net=$ip->network();
+			my $bcast = $ip->broadcast();
+			if ($net ne $bcast) {
+				$source="$net-$bcast";
+			}
+			$source =~ s/\/[^-]+//g;
+#			$action="-t nat ".$action;
+			$action.=" --to-source $source";
+		}
+		if (exists($$rule{'TranslatedDestination'})) {
+			my $destination;
+			$destination=${$$rule{'TranslatedDestination'}}[0];
+			$destination =~ /([^=]+)/;
+			$destination=$1;
+			my $ip = NetAddr::IP->new($destination) || die "not a valid network: $destination\n";
+			my $net=$ip->network();
+			my $bcast = $ip->broadcast();
+			if ($net ne $bcast) {
+				$destination="$net-$bcast";
+			}
+			$destination =~ s/\/[^-]+//g;
+#			$action="-t nat ".$action;
+			$action.=" --to-destination $destination";
+		}
+
+		foreach $proto (qw(tcp udp)) {
+			if (exists($$rule{"Translated\u$proto"})) {
+				my $ref = $$rule{"Translated\u$proto"};
+				if (defined($$ref[1][0])) {
+					$action.=":$$ref[1][0]";
+					$action="-p $proto -m $proto ".$action;
+				}
+				if (defined($$ref[3][0])) {
+					$action.=":$$ref[3][0]";
+					$action="-p $proto -m $proto ".$action;
+				}
+				last;
+			}
+		}
+
+		if (exists($$rule{'InputInterface'})) {
+			if (exists($$rule{'InputInterface-not'})) {
+				$not='!';
+			} else {
+				$not='';
+			}
+			my $input;
+			foreach $input (@{$$rule{'InputInterface'}}) {
+				push (@inputinterface, "$not -i $input");
+			}
+		}
+		if (exists($$rule{'OutputInterface'})) {
+			if (exists($$rule{'OutputInterface-not'})) {
+				$not='!';
+			} else {
+				$not='';
+			}
+			my $output;
+			foreach $output (@{$$rule{'OutputInterface'}}) {
+				push (@outputinterface, "$not -o $output");
+			}
+		}
+		if (exists($$rule{'PhysicalInputInterface'})) {
+			if (exists($$rule{'PhysicalInputInterface-not'})) {
+				$not='!';
+			} else {
+				$not='';
+			}
+			my $input;
+			foreach $input (@{$$rule{'PhysicalInputInterface'}}) {
+				push (@physicalinputinterface, "-m physdev $not --physdev-in $input");
+			}
+		}
+		if (exists($$rule{'PhysicalOutputInterface'})) {
+			if (exists($$rule{'PhysicalOutputInterface-not'})) {
+				$not='!';
+			} else {
+				$not='';
+			}
+			my $output;
+			foreach $output (@{$$rule{'PhysicalOutputInterface'}}) {
+				push (@physicaloutputinterface, "-m physdev $not --physdev-out $output");
+			}
+		}
+		if (exists($$rule{'MarkMatch'})) {
+			my $mark;
+			foreach $mark (@{$$rule{'MarkMatch'}}) {
+				push (@mark, "-m mark --mark $mark");
+			}
+		}
+
+		if (exists($$rule{'Log'})) {
+			my $chain = "${id}$$rule{'Action'}log";
+			$$chains{$chain}=1;
+			my $logid;
+			if ($$rule{'Log'}) {
+				$logid=$$rule{'Log'};
+			} else {
+				$logid=$name;
+			}
+			push (@$table, "-A CHAIN_$chain -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
+			push (@$table, "-A CHAIN_$chain $action");
+			$action="-j CHAIN_$chain";
+		}
+		if (exists($$rule{'Accounting'})) {
+			my $accountchain="$$Sysconfig{'AccountPrefix'}$$rule{'Accounting'}";
+			unless (exists($$chains{"$accountchain"})) {
+				$$chains{"$accountchain"}=1;
+				push (@$table, "-A CHAIN_$accountchain $action");
+			}
+			my $accountrules="${id}_ACCOUNTING_$$rule{'Accounting'}";
+			$$chains{$accountrules}=1;
+			push (@$table, "$type -j $accountrules");
+			push (@$table, "-A ACCOUNTING$$rule{'Type'} -j CHAIN_$accountrules");
+			$type="-A $accountrules ";
+			$action=" -j CHAIN_$accountchain";
+		}
+		if (exists($$rule{'Limit'})) {
+			$action=" -m limit --limit $$rule{'Limit'} --limit-burst $$rule{'Limit-burst'} $action";
+		}
+		my @rulearray = (\@inputinterface, \@outputinterface, \@physicalinputinterface, \@physicaloutputinterface, \@protocol, \@source, \@destination, \@mark);
+
+		my $level=1;
+		my $again=1;
+		while ($again) {
+			@partial = ();
+			$again=0;
+			my $array;
+			# adjust if you have many entries...
+			my $depth=0xFFFF;
+			foreach $array (@rulearray) {
+				if (@$array && $depth>@$array) {
+					$depth=@$array;
+				}
+			}
+			foreach $array (@rulearray) {
+				if (@$array==$depth) {
+					my $i;
+					for ($i=0; $i<@$array; $i++) {
+						$partial[$i].=" $$array[$i]";
+					}
+					@$array = ();
+					if ($depth != 1) {
+						last;
+					}
+				}
+			}
+			foreach $array (@rulearray) {
+				if (@$array) {
+					$again=1;
+					last;
+				}
+			}
+			my $jumpto;
+			if ($again) {
+				$jumpto="-j CHAIN_${id}_$level";
+			} else {
+				$jumpto=$action;
+			}
+			if (@partial) {
+				my $newjumpto;
+				my $part;
+				foreach $part (@partial) {
+					$newjumpto=$jumpto;
+					if ($part =~ /-p (udp|tcp)/ && $jumpto =~ /-p (udp|tcp)/) {
+						$newjumpto =~ s/-p (udp|tcp) -m (udp|tcp)//;
+					}
+					push (@$table, $type." $part $newjumpto");
+				}
+			} else {
+				push (@$table, "$type $jumpto");
+			}
+			if ($again) {
+				$type="-A CHAIN_${id}_$level";
+				$$chains{"${id}_$level"}=1;
+				$level++;
+			}
+		}
+	}
+
+	my $entry;
+	foreach $entry (qw(mangle filter nat)) {
+		if ($entry eq "nat" && $ipv6 == 1) {next};
+		my $chain;
+		push (@$Listing, "*$entry");
+		if ($entry eq 'filter') {
+			$table=\@filter;
+			$chains=\%filter;
+			push (@$Listing, ":MYREJECT - [0:0]");
+			push (@$Listing, ":STATENOTNEW - [0:0]");
+			foreach (qw(INPUT OUTPUT FORWARD)) {
+				push (@$Listing, ":ACCOUNTING$_ - [0:0]");
+				push (@$Listing, ":ACCOUNTINGSTATELESS$_ - [0:0]");
+				push (@$Listing, ":STATE$_ - [0:0]");
+				push (@$Listing, ":STATELESS$_ - [0:0]");
+				push (@$Listing, ":$_ DROP [0:0]");
+				push (@$Listing, "-A $_ -j STATE$_");
+				push (@$Listing, "-A STATE$_ -m state --state INVALID -j STATELESS$_");
+				push (@$Listing, "-A STATE$_ -j ACCOUNTING$_");
+				push (@$Listing, "-A STATE$_ -m state --state ESTABLISHED,RELATED -j ACCEPT");
+				if ($ipv6) {
+					push (@$Listing, "-A STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
+				} else {
+					push (@$Listing, "-A STATE$_ -m state ! --state NEW -j STATENOTNEW");
+				}
+				push (@$Listing, "-A STATELESS$_ -j ACCOUNTINGSTATELESS$_");
+			}
+			push (@$Listing, "-A STATENOTNEW -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \"  --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
+			push (@$Listing, "-A STATENOTNEW -j DROP");
+			push (@$Listing, "-A MYREJECT -m tcp -p tcp -j REJECT --reject-with tcp-reset");
+			if ($ipv6) {
+				push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp6-port-unreachable");
+			} else {
+				push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp-port-unreachable");
+			}
+		} elsif ($entry eq 'nat') {
+			$table=\@nat;
+			$chains=\%nat;
+			foreach (qw(POSTROUTING PREROUTING OUTPUT)) {
+				push (@$Listing, ":$_ ACCEPT [0:0]");
+			}
+		} else {
+			$table=\@mangle;
+			$chains=\%mangle;
+			foreach (qw(PREROUTING OUTPUT)) {
+				push (@$Listing, ":$_ ACCEPT [0:0]");
+			}
+		}
+		foreach (keys(%$chains)) {
+			push (@$Listing, ":CHAIN_$_ - [0:0]");
+		}
+		push (@$Listing, "#");
+		push (@$Listing, "# beginning of user generated $entry rules");
+		push (@$Listing, "#");
+		foreach (@$table) {
+			push (@$Listing, $_);
+		}
+		push (@$Listing, "#");
+		push (@$Listing, "# end of user generated $entry rules");
+		push (@$Listing, "#");
+		if ($entry eq 'filter') {
+			foreach (qw(INPUT OUTPUT FORWARD)) {
+				push (@$Listing, "-A STATELESS$_ -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} INVALID STATE: \"  --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
+				push (@$Listing, "-A STATELESS$_ -j DROP");
+			}
+		}
+		push (@$Listing, "COMMIT");
+	}
+}
+
+sub genRuleDump_IPTABLES {
 	my ($Rules, $Listing, $Sysconfig) = @_;
 	my @partial;
 	my $rule;
@@ -1467,17 +1922,76 @@ sub signalCatcher {
 	$SignalCatched=1;
 }
 
-sub applyRules {
-	my ($timeout, $Listing) = @_;
+sub applyRules_NFT {
+	my ($timeout, $Listing, $Sysconfig) = @_;
 	my @oldrules;
 	my $error;
 
 	@$Listing=map { $_."\n" } @$Listing;
-	if ($ipv6) {
-		open (IPT, '/usr/sbin/ip6tables-legacy-save|');
-	} else {
-		open (IPT, '/usr/sbin/iptables-legacy-save|');
+	open (NFT, '/usr/sbin/nft list ruleset|');
+	@oldrules = <NFT>;
+	close (NFT);
+
+	$SIG{'INT'} = 'signalCatcher';
+	$SIG{'KILL'} = 'signalCatcher';
+	$SIG{'QUIT'} = 'signalCatcher';
+	$SIG{'TERM'} = 'signalCatcher';
+
+#	open (NFT, '|/usr/sbin/nft -f -');
+#	print NFT @$Listing;
+#	close (NFT);
+#	$error=$?;
+
+	if ($timeout && !$error) {
+		sleep $timeout;
 	}
+	if ($timeout || $SignalCatched || $error) {
+		open (NFT, '|/usr/sbin/nft -f -');
+		print NFT @oldrules;
+		close (NFT);
+		if ($SignalCatched) {
+			die "aborted. old rules restored.\n";
+		} elsif ($error) {
+			die "error in generated rules\n";
+		}
+	}
+}
+
+sub applyRules_IPTABLES {
+	my ($timeout, $Listing, $Sysconfig) = @_;
+	my @oldrules;
+	my $error;
+	my $save_cmd;
+	my $restore_cmd;
+
+	if (%$Sysconfig{'filtercommand'} eq 'iptables') {
+		if ($ipv6) {
+			$save_cmd    = "/usr/sbin/ip6tables-save";
+			$restore_cmd = "/usr/sbin/ip6tables-restore";
+		} else {
+			$save_cmd    = "/usr/sbin/iptables-save";
+			$restore_cmd = "/usr/sbin/iptables-restore";
+		}
+	} elsif (%$Sysconfig{'filtercommand'} eq 'iptables-nft') {
+		if ($ipv6) {
+			$save_cmd    = "/usr/sbin/ip6tables-nft-save";
+			$restore_cmd = "/usr/sbin/ip6tables-nft-restore";
+		} else {
+			$save_cmd    = "/usr/sbin/iptables-nft-save";
+			$restore_cmd = "/usr/sbin/iptables-nft-restore";
+		}
+	} elsif (%$Sysconfig{'filtercommand'} eq 'iptables-legacy') {
+		if ($ipv6) {
+			$save_cmd    = "/usr/sbin/ip6tables-legacy-save";
+			$restore_cmd = "/usr/sbin/ip6tables-legacy-restore";
+		} else {
+			$save_cmd    = "/usr/sbin/iptables-legacy-save";
+			$restore_cmd = "/usr/sbin/iptables-legacy-restore";
+		}
+	}
+
+	@$Listing=map { $_."\n" } @$Listing;
+	open (IPT, "$save_cmd|");
 	@oldrules = <IPT>;
 	close (IPT);
 
@@ -1486,11 +2000,7 @@ sub applyRules {
 	$SIG{'QUIT'} = 'signalCatcher';
 	$SIG{'TERM'} = 'signalCatcher';
 
-	if ($ipv6) {
-		open (IPT, '|/usr/sbin/ip6tables-legacy-restore');
-	} else {
-		open (IPT, '|/usr/sbin/iptables-legacy-restore');
-	}
+	open (IPT, "|$restore_cmd");
 	print IPT @$Listing;
 	close (IPT);
 	$error=$?;
@@ -1499,11 +2009,7 @@ sub applyRules {
 		sleep $timeout;
 	}
 	if ($timeout || $SignalCatched || $error) {
-		if ($ipv6) {
-			open (IPT, '|/usr/sbin/ip6tables-legacy-restore');
-		} else {
-			open (IPT, '|/usr/sbin/iptables-legacy-restore');
-		}
+		open (IPT, "|$restore_cmd");
 		print IPT @oldrules;
 		close (IPT);
 		if ($SignalCatched) {
@@ -1539,6 +2045,11 @@ sub readCommandLine {
 	my $ldappassword;
 	my $timeout=0;
 
+	if (exists($ENV{'FILTER_COMMAND'})) {
+		$Sysconfig{'FilterCommand'}=$ENV{'FILTER_COMMAND'};
+	} else {
+		$Sysconfig{'FilterCommand'}='nft';
+	}
 	if (exists($ENV{'LOGLIMIT'})) {
 		$Sysconfig{'LogLimit'}=$ENV{'LOGLIMIT'};
 	} else {
@@ -1661,21 +2172,44 @@ sub readCommandLine {
 			exit 0;
 		} else {
 			validateData (\%Networks, \%Services, \%Interfaces, \%Protocols, \@Rules, \%Sysconfig, \%Marker);
-			genRuleDump (\@Rules, \@Listing, \%Sysconfig);
+			if ($Sysconfig{'filtercommand'} eq 'nft') {
+				genRuleDump_NFT (\@Rules, \@Listing, \%Sysconfig);
+			} else {
+				genRuleDump_IPTABLES (\@Rules, \@Listing, \%Sysconfig);
+			}
 		}
 	} else {
-		clearAllRules (\@Listing);
+		validateSysconfig (\%Sysconfig);
+		if ($Sysconfig{'filtercommand'} eq 'nft') {
+			clearAllRules_NFT (\@Listing);
+		} else {
+			clearAllRules_IPTABLES (\@Listing);
+		}
 	}
 
 	if ($print) {
 		printRules (\@Listing);
 	}
 	if ($test==0) {
-		applyRules ($timeout, \@Listing);
+		if ($Sysconfig{'filtercommand'} eq 'nft') {
+			applyRules_NFT ($timeout, \@Listing, \%Sysconfig);
+		} else {
+			applyRules_IPTABLES ($timeout, \@Listing, \%Sysconfig);
+		}
 	}
 }
 
-sub clearAllRules {
+sub clearAllRules_NFT {
+	my ($Listing) = @_;
+
+	if ($ipv6) {
+		push (@$Listing,"flush ruleset ip6");
+	} else {
+		push (@$Listing,"flush ruleset ip");
+	}
+}
+
+sub clearAllRules_IPTABLES {
 	my ($Listing) = @_;
 
 	push (@$Listing,"*mangle");

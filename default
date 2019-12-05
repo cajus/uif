@@ -3,6 +3,9 @@
 
 ### UIF settings, these need to be exported to the environment
 
+# 'nft', 'iptables', 'iptables-nft' or 'iptables-legacy'?
+export FILTER_COMMAND="nft"
+
 # the iptables loglevel
 export LOGLEVEL="crit"
 
