@@ -1,31 +1,35 @@
 ## Debian firewall package standard values
 #  See "man 8 uif" for details.
 
+### UIF settings, these need to be exported to the environment
+
 # the iptables loglevel
-LOGLEVEL="crit"
+export LOGLEVEL="crit"
 
 # prefix for all logged incidents 
-LOGPREFIX="FW"
+export LOGPREFIX="FW"
 
 # iptables log specific options
-LOGLIMIT="20/minute"
-LOGBURST="5"
+export LOGLIMIT="20/minute"
+export LOGBURST="5"
 
 # iptables limit specific options
-LIMIT="20/minute"
-BURST="5"
+export LIMIT="20/minute"
+export BURST="5"
 
 # firewall testing timeout
-TIMEOUT=30
+export TIMEOUT=30
+
+# prefix for accounting rules
+export ACCOUNTPREFIX="ACC_"
+
+### UIF init script setting, need not be exported to the environment
 
 # specify modules to load before startup
 MODULES="ip_conntrack_ftp"
 
 # who should get the mails when the script fails
 MAILTO="root"
-
-# prefix for accounting rules
-ACCOUNTPREFIX="ACC_"
 
 # IPV6MODE can be set to 0 or 1. By default it is 0
 # If set to 1 then both an IPv4 and an IPv6 firewall will be started
