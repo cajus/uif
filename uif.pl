@@ -1475,9 +1475,9 @@ sub applyRules {
 
 	@$Listing=map { $_."\n" } @$Listing;
 	if ($ipv6) {
-		open (IPT, '/sbin/ip6tables-save|');
+		open (IPT, '/usr/sbin/ip6tables-legacy-save|');
 	} else {
-		open (IPT, '/sbin/iptables-save|');
+		open (IPT, '/usr/sbin/iptables-legacy-save|');
 	}
 	@oldrules = <IPT>;
 	close (IPT);
@@ -1488,9 +1488,9 @@ sub applyRules {
 	$SIG{'TERM'} = 'signalCatcher';
 
 	if ($ipv6) {
-		open (IPT, '|/sbin/ip6tables-restore');
+		open (IPT, '|/usr/sbin/ip6tables-legacy-restore');
 	} else {
-		open (IPT, '|/sbin/iptables-restore');
+		open (IPT, '|/usr/sbin/iptables-legacy-restore');
 	}
 	print IPT @$Listing;
 	close (IPT);
@@ -1501,9 +1501,9 @@ sub applyRules {
 	}
 	if ($timeout || $SignalCatched || $error) {
 		if ($ipv6) {
-			open (IPT, '|/sbin/ip6tables-restore');
+			open (IPT, '|/usr/sbin/ip6tables-legacy-restore');
 		} else {
-			open (IPT, '|/sbin/iptables-restore');
+			open (IPT, '|/usr/sbin/iptables-legacy-restore');
 		}
 		print IPT @oldrules;
 		close (IPT);
