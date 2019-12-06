@@ -1111,7 +1111,7 @@ sub genRuleDump_NFT {
 			$action="<FIXME>-j MARK --set-mark $$rule{'Mark'}</FIXME>";
 			$logaction="MARK";
 		} else {
-			if ( $$rule{'Action'} =~ /^(ACCEPT|DROP|RETURN|MASQUERADE)$/) {
+			if ( $$rule{'Action'} =~ /^(ACCEPT|DROP|RETURN|MASQUERADE|DNAT|SNAT)$/) {
 				$action="counter ".lc $$rule{'Action'};
 			} else {
 				$action="counter jump $$rule{'Action'}";
@@ -1238,8 +1238,7 @@ sub genRuleDump_NFT {
 				$source="$net-$bcast";
 			}
 			$source =~ s/\/[^-]+//g;
-#			$action="-t nat ".$action;
-			$action.="<FIXME> --to-source $source</FIXME>";
+			$action.=" to $source";
 		}
 		if (exists($$rule{'TranslatedDestination'})) {
 			my $destination;
@@ -1253,8 +1252,7 @@ sub genRuleDump_NFT {
 				$destination="$net-$bcast";
 			}
 			$destination =~ s/\/[^-]+//g;
-#			$action="-t nat ".$action;
-			$action.="<FIXME>> --to-destination $destination</FIXME>";
+			$action.=" to $destination";
 		}
 
 		foreach $proto (qw(tcp udp)) {
@@ -1262,11 +1260,9 @@ sub genRuleDump_NFT {
 				my $ref = $$rule{"Translated\u$proto"};
 				if (defined($$ref[1][0])) {
 					$action.=":$$ref[1][0]";
-					$action="$proto ".$action;
 				}
 				if (defined($$ref[3][0])) {
 					$action.=":$$ref[3][0]";
-					$action="$proto ".$action;
 				}
 				last;
 			}
