@@ -1044,6 +1044,13 @@ sub genRuleDump_NFT {
 	my @mangle;
 	my $table;
 	my $chains;
+	my $inet;
+
+	if ($ipv6) {
+		$inet = "ip6";
+	} else {
+		$inet = "ip";
+	}
 
 	foreach $rule (@$Rules) {
 
@@ -1080,7 +1087,7 @@ sub genRuleDump_NFT {
 			die "$$rule{'Table'} is not implemented!\n";
 		}
 
-		$type="-A $$rule{'Type'}";
+		$type="add rule $inet $$rule{'Table'} $$rule{'Type'}";
 		if (exists($$rule{'Name'})) {
 			$name=$$rule{'Name'};
 			$name=~s/\s+//g;
@@ -1091,14 +1098,10 @@ sub genRuleDump_NFT {
 
 		if (exists($$rule{'Reject'})) {
 			if ($$rule{'Reject'} ne '1') {
-				if ($$rule{'Reject'} =~ /tcp/) {
-					$action="-p tcp -m tcp -j REJECT --reject-with $$rule{'Reject'}";
-				} else {
-					$action="-j REJECT --reject-with $$rule{'Reject'}";
-				}
+				$action="counter reject with $$rule{'Reject'}";
+				$action =~ s/-/ /g;
 			} else {
-				$action="-j MYREJECT";
-
+				$action="counter jump MYREJECT";
 			}
 			$logaction="REJECT";
 		} elsif ($$rule{'Action'} eq "TCPMSS") {
@@ -1108,7 +1111,11 @@ sub genRuleDump_NFT {
 			$action="-j MARK --set-mark $$rule{'Mark'}";
 			$logaction="MARK";
 		} else {
-			$action="-j $$rule{'Action'}";
+			if ( $$rule{'Action'} =~ /^(ACCEPT|DROP|RETURN|MASQUERADE)$/) {
+				$action="counter ".lc $$rule{'Action'};
+			} else {
+				$action="counter jump $$rule{'Action'}";
+			}
 			$logaction=$$rule{'Action'};
 		}
 
@@ -1133,7 +1140,7 @@ sub genRuleDump_NFT {
 						$count++;
 						if ($count==15) {
 							$string =~ s/,$//;
-							$string="-p $proto -m multiport --".($entry==1?"d":"s")."port ".$string;
+							$string="$proto multiport ".($entry==1?"d":"s")."port ".$string;
 							push (@protocol, $string);
 							$string='';
 							$count=0;
@@ -1142,23 +1149,26 @@ sub genRuleDump_NFT {
 					if (defined($string) && $count) {
 						$string =~ s/,$//;
 						if ($count > 1) {
-							$string="-p $proto -m multiport --".($entry==1?"d":"s")."port ".$string;
+							$string="$proto multiport ".($entry==1?"d":"s")."port ".$string;
 						} else {
-							$string="-p $proto -m $proto --".($entry==1?"d":"s")."port ".$string;
+							$string="$proto ".($entry==1?"d":"s")."port ".$string;
 						}
 						push (@protocol, $string);
 					}
 				}
 				my $range;
 				foreach $range (@{$$rule{"\u$proto"}[2]}) {
-					push (@protocol, "-p $proto -m $proto $not --sport $range");
+					$range =~ s/\:/-/g;
+					push (@protocol, "$not $proto sport $range");
 				}
 				foreach $range (@{$$rule{"\u$proto"}[3]}) {
-					push (@protocol, "-p $proto -m $proto $not --dport $range");
+					$range =~ s/\:/-/g;
+					push (@protocol, "$not $proto dport $range");
 				}
 				foreach $range (@{$$rule{"\u$proto"}[4]}) {
+					$range =~ s/\:/-/g;
 					$range =~ /^(.+)\/(.+)$/;
-					push (@protocol, "-p $proto -m $proto $not --sport $1 $not --dport $2");
+					push (@protocol, "$not $proto sport $1 $not $proto dport $2");
 				}
 			}
 		}
@@ -1166,9 +1176,9 @@ sub genRuleDump_NFT {
 			my $type;
 			foreach $type (@{$$rule{'ICMP'}}) {
 				if ($type eq 'all') {
-					push (@protocol, "$not -p icmp");
+					push (@protocol, "$not icmp");
 				} else {
-					push (@protocol, "-p icmp -m icmp $not --icmp-type $type");
+					push (@protocol, "icmp $not type $type");
 				}
 			}
 		}
@@ -1176,16 +1186,16 @@ sub genRuleDump_NFT {
 			my $type;
 			foreach $type (@{$$rule{'ICMP6'}}) {
 				if ($type eq 'all') {
-					push (@protocol, "$not -p icmpv6");
+					push (@protocol, "$not icmpv6");
 				} else {
-					push (@protocol, "-p icmpv6 -m icmpv6 $not --icmpv6-type $type");
+					push (@protocol, "icmpv6 $not $type");
 				}
 			}
 		}
 		if (exists($$rule{'OtherProtocols'})) {
 			my $proto;
 			foreach $proto (@{$$rule{'OtherProtocols'}}) {
-				push (@protocol, "$not -p $proto");
+				push (@protocol, "$not $proto");
 			}
 		}
 		if (exists($$rule{'Source'})) {
@@ -1197,10 +1207,10 @@ sub genRuleDump_NFT {
 			my $source;
 			foreach $source (@{$$rule{'Source'}}) {
 				if ($source =~ /(.+)=(.+)/ && ($$rule{'Table'} eq 'filter')) {
-					push (@source, "$not -s $1 -m mac $not --mac-source $2");
+					push (@source, "$not ip saddr $1 mac $not --mac-source $2");
 				} else {
 					$source =~ /([^=]+)/;
-					push (@source, "$not -s $1");
+					push (@source, "$not ip saddr $1");
 				}
 			}
 		}
@@ -1213,7 +1223,7 @@ sub genRuleDump_NFT {
 			my $destination;
 			foreach $destination (@{$$rule{'Destination'}}) {
 				$destination =~ /([^=]+)/;
-				push (@destination, "$not -d $1");
+				push (@destination, "$not $inet daddr $1");
 			}
 		}
 		if (exists($$rule{'TranslatedSource'})) {
@@ -1252,11 +1262,11 @@ sub genRuleDump_NFT {
 				my $ref = $$rule{"Translated\u$proto"};
 				if (defined($$ref[1][0])) {
 					$action.=":$$ref[1][0]";
-					$action="-p $proto -m $proto ".$action;
+					$action="$proto ".$action;
 				}
 				if (defined($$ref[3][0])) {
 					$action.=":$$ref[3][0]";
-					$action="-p $proto -m $proto ".$action;
+					$action="$proto ".$action;
 				}
 				last;
 			}
@@ -1270,7 +1280,7 @@ sub genRuleDump_NFT {
 			}
 			my $input;
 			foreach $input (@{$$rule{'InputInterface'}}) {
-				push (@inputinterface, "$not -i $input");
+				push (@inputinterface, "$not iifname \"$input\"");
 			}
 		}
 		if (exists($$rule{'OutputInterface'})) {
@@ -1281,7 +1291,7 @@ sub genRuleDump_NFT {
 			}
 			my $output;
 			foreach $output (@{$$rule{'OutputInterface'}}) {
-				push (@outputinterface, "$not -o $output");
+				push (@outputinterface, "$not oifname \"$output\"");
 			}
 		}
 		if (exists($$rule{'PhysicalInputInterface'})) {
@@ -1322,25 +1332,25 @@ sub genRuleDump_NFT {
 			} else {
 				$logid=$name;
 			}
-			push (@$table, "-A CHAIN_$chain -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
-			push (@$table, "-A CHAIN_$chain $action");
-			$action="-j CHAIN_$chain";
+			push (@$table, "add rule $inet $$rule{'Table'} CHAIN_$chain limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
+			push (@$table, "add rule $inet $$rule{'Table'} CHAIN_$chain $action");
+			$action="counter jump CHAIN_$chain";
 		}
 		if (exists($$rule{'Accounting'})) {
 			my $accountchain="$$Sysconfig{'AccountPrefix'}$$rule{'Accounting'}";
 			unless (exists($$chains{"$accountchain"})) {
 				$$chains{"$accountchain"}=1;
-				push (@$table, "-A CHAIN_$accountchain $action");
+				push (@$table, "add rule $inet $$rule{'Table'} CHAIN_$accountchain $action");
 			}
 			my $accountrules="${id}_ACCOUNTING_$$rule{'Accounting'}";
 			$$chains{$accountrules}=1;
 			push (@$table, "$type -j $accountrules");
-			push (@$table, "-A ACCOUNTING$$rule{'Type'} -j CHAIN_$accountrules");
-			$type="-A $accountrules ";
-			$action=" -j CHAIN_$accountchain";
+			push (@$table, "add rule $inet $$rule{'Table'} ACCOUNTING$$rule{'Type'} counter jump CHAIN_$accountrules");
+			$type="add rule $inet $$rule{'Table'} $accountrules ";
+			$action=" counter jump CHAIN_$accountchain";
 		}
 		if (exists($$rule{'Limit'})) {
-			$action=" -m limit --limit $$rule{'Limit'} --limit-burst $$rule{'Limit-burst'} $action";
+			$action=" limit rate $$rule{'Limit'} burst $$rule{'Limit-burst'} packets $action";
 		}
 		my @rulearray = (\@inputinterface, \@outputinterface, \@physicalinputinterface, \@physicaloutputinterface, \@protocol, \@source, \@destination, \@mark);
 
@@ -1377,7 +1387,7 @@ sub genRuleDump_NFT {
 			}
 			my $jumpto;
 			if ($again) {
-				$jumpto="-j CHAIN_${id}_$level";
+				$jumpto="counter jump CHAIN_${id}_$level";
 			} else {
 				$jumpto=$action;
 			}
@@ -1395,63 +1405,66 @@ sub genRuleDump_NFT {
 				push (@$table, "$type $jumpto");
 			}
 			if ($again) {
-				$type="-A CHAIN_${id}_$level";
+				$type="add rule $inet $$rule{'Table'} CHAIN_${id}_$level";
 				$$chains{"${id}_$level"}=1;
 				$level++;
 			}
 		}
 	}
 
+	# make sure, all rules get dropped before populating tables anew
+	push (@$Listing, "flush ruleset $inet");
+
 	my $entry;
 	foreach $entry (qw(mangle filter nat)) {
 		if ($entry eq "nat" && $ipv6 == 1) {next};
 		my $chain;
-		push (@$Listing, "*$entry");
+		push (@$Listing, "add table $inet $entry");
 		if ($entry eq 'filter') {
 			$table=\@filter;
 			$chains=\%filter;
-			push (@$Listing, ":MYREJECT - [0:0]");
-			push (@$Listing, ":STATENOTNEW - [0:0]");
+			push (@$Listing, "add chain $inet filter MYREJECT");
+			push (@$Listing, "add chain $inet filter STATENOTNEW");
 			foreach (qw(INPUT OUTPUT FORWARD)) {
-				push (@$Listing, ":ACCOUNTING$_ - [0:0]");
-				push (@$Listing, ":ACCOUNTINGSTATELESS$_ - [0:0]");
-				push (@$Listing, ":STATE$_ - [0:0]");
-				push (@$Listing, ":STATELESS$_ - [0:0]");
-				push (@$Listing, ":$_ DROP [0:0]");
-				push (@$Listing, "-A $_ -j STATE$_");
-				push (@$Listing, "-A STATE$_ -m state --state INVALID -j STATELESS$_");
-				push (@$Listing, "-A STATE$_ -j ACCOUNTING$_");
-				push (@$Listing, "-A STATE$_ -m state --state ESTABLISHED,RELATED -j ACCEPT");
+				push (@$Listing, "add chain $inet filter ACCOUNTING$_");
+				push (@$Listing, "add chain $inet filter ACCOUNTINGSTATELESS$_");
+				push (@$Listing, "add chain $inet filter STATE$_");
+				push (@$Listing, "add chain $inet filter STATELESS$_");
+				push (@$Listing, "add chain $inet filter $_ { type filter hook ".lc $_." priority 0; policy drop; }");
+				push (@$Listing, "add rule $inet filter $_ counter jump STATE$_");
+				push (@$Listing, "add rule $inet filter STATE$_ ct state invalid counter jump STATELESS$_");
+				push (@$Listing, "add rule $inet filter STATE$_ counter jump ACCOUNTING$_");
+				push (@$Listing, "add rule $inet filter STATE$_ ct state related,established counter accept");
 				if ($ipv6) {
-					push (@$Listing, "-A STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
+					push (@$Listing, "add rule ip6 filter STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
 				} else {
-					push (@$Listing, "-A STATE$_ -m state ! --state NEW -j STATENOTNEW");
+					push (@$Listing, "add rule ip filter STATE$_ ct state != new counter jump STATENOTNEW");
 				}
-				push (@$Listing, "-A STATELESS$_ -j ACCOUNTINGSTATELESS$_");
+				push (@$Listing, "add rule $inet filter STATELESS$_ counter jump ACCOUNTINGSTATELESS$_");
 			}
-			push (@$Listing, "-A STATENOTNEW -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \"  --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
-			push (@$Listing, "-A STATENOTNEW -j DROP");
-			push (@$Listing, "-A MYREJECT -m tcp -p tcp -j REJECT --reject-with tcp-reset");
+			push (@$Listing, "add rule $inet filter STATENOTNEW limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
+			push (@$Listing, "add rule $inet filter STATENOTNEW counter drop");
+			push (@$Listing, "add rule $inet filter MYREJECT counter reject with tcp reset");
 			if ($ipv6) {
-				push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp6-port-unreachable");
+				push (@$Listing, "add rule $inet filter MYREJECT counter reject --reject-with icmp6-port-unreachable");
 			} else {
-				push (@$Listing, "-A MYREJECT -j REJECT --reject-with icmp-port-unreachable");
+				push (@$Listing, "add rule $inet filter MYREJECT counter reject");
 			}
 		} elsif ($entry eq 'nat') {
 			$table=\@nat;
 			$chains=\%nat;
-			foreach (qw(POSTROUTING PREROUTING OUTPUT)) {
-				push (@$Listing, ":$_ ACCEPT [0:0]");
+			push (@$Listing, "add chain $inet nat POSTROUTING { type nat hook postrouting priority 100; policy accept; }");
+			foreach (qw(PREROUTING OUTPUT)) {
+				push (@$Listing, "add chain $inet nat $_ { type nat hook ".lc $_." priority -100; policy accept; }");
 			}
 		} else {
 			$table=\@mangle;
 			$chains=\%mangle;
-			foreach (qw(PREROUTING OUTPUT)) {
-				push (@$Listing, ":$_ ACCEPT [0:0]");
-			}
+			push (@$Listing, "add chain $inet mangle PREROUTING { type filter hook prerouting priority -150; policy accept; }");
+			push (@$Listing, "add chain $inet mangle OUTPUT { type route hook output priority -150; policy accept; }");
 		}
 		foreach (keys(%$chains)) {
-			push (@$Listing, ":CHAIN_$_ - [0:0]");
+			push (@$Listing, "add chain $inet filter CHAIN_$_");
 		}
 		push (@$Listing, "#");
 		push (@$Listing, "# beginning of user generated $entry rules");
@@ -1464,11 +1477,10 @@ sub genRuleDump_NFT {
 		push (@$Listing, "#");
 		if ($entry eq 'filter') {
 			foreach (qw(INPUT OUTPUT FORWARD)) {
-				push (@$Listing, "-A STATELESS$_ -m limit --limit $$Sysconfig{'LogLimit'} --limit-burst $$Sysconfig{'LogBurst'} -j LOG --log-prefix \"$$Sysconfig{'LogPrefix'} INVALID STATE: \"  --log-level $$Sysconfig{'LogLevel'} --log-tcp-options --log-ip-options");
-				push (@$Listing, "-A STATELESS$_ -j DROP");
+				push (@$Listing, "add rule $inet filter STATELESS$_ limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} INVALID STATE: \"  level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
+				push (@$Listing, "add rule $inet filter STATELESS$_ counter drop");
 			}
 		}
-		push (@$Listing, "COMMIT");
 	}
 }
 
@@ -1937,10 +1949,14 @@ sub applyRules_NFT {
 	$SIG{'QUIT'} = 'signalCatcher';
 	$SIG{'TERM'} = 'signalCatcher';
 
-#	open (NFT, '|/usr/sbin/nft -f -');
-#	print NFT @$Listing;
-#	close (NFT);
-#	$error=$?;
+	open (NFT_DISK, '>/tmp/nftrules');
+	print NFT_DISK @$Listing;
+	close (NFT_DISK);
+
+	open (NFT, '|/usr/sbin/nft -f -');
+	print NFT @$Listing;
+	close (NFT);
+	$error=$?;
 
 	if ($timeout && !$error) {
 		sleep $timeout;
