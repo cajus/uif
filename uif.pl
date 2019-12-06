@@ -619,11 +619,11 @@ sub validateData {
 						my $only_proto = $1;
 						$position =~ s/\((.+)\)$//;
 						if (($ipv6) && ($only_proto eq "4")) {
-							print "IPv6 setup: Skipping IPv4-only rule for network \"$position\"\n";
+							print STDERR "IPv6 setup: Skipping IPv4-only rule for network \"$position\"\n";
 							$$rule{'Type'} = 'IGNORE-IPV4-ONLY';
 							next;
 						} elsif ((! $ipv6) && ($only_proto eq "6")) {
-							print "IPv4 setup: Skipping IPv6-only rule for network \"$position\"\n";
+							print STDERR "IPv4 setup: Skipping IPv6-only rule for network \"$position\"\n";
 							$$rule{'Type'} = 'IGNORE-IPV6-ONLY';
 							next;
 						}
