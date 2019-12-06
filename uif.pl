@@ -1399,7 +1399,7 @@ sub genRuleDump_NFT {
 					if ($part =~ /-p (udp|tcp)/ && $jumpto =~ /-p (udp|tcp)/) {
 						$newjumpto =~ s/-p (udp|tcp) -m (udp|tcp)//;
 					}
-					push (@$table, "<FIXME>$type." $part $newjumpto</FIXME>");
+					push (@$table, $type." $part $newjumpto");
 				}
 			} else {
 				push (@$table, "$type $jumpto");
