@@ -1105,10 +1105,10 @@ sub genRuleDump_NFT {
 			}
 			$logaction="REJECT";
 		} elsif ($$rule{'Action'} eq "TCPMSS") {
-			$action="-p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu";
+			$action="<FIXME>-p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu</FIXME>";
 			$logaction="TCPMSS";
 		} elsif ($$rule{'Action'} eq "MARK") {
-			$action="-j MARK --set-mark $$rule{'Mark'}";
+			$action="<FIXME>-j MARK --set-mark $$rule{'Mark'}</FIXME>";
 			$logaction="MARK";
 		} else {
 			if ( $$rule{'Action'} =~ /^(ACCEPT|DROP|RETURN|MASQUERADE)$/) {
@@ -1207,7 +1207,7 @@ sub genRuleDump_NFT {
 			my $source;
 			foreach $source (@{$$rule{'Source'}}) {
 				if ($source =~ /(.+)=(.+)/ && ($$rule{'Table'} eq 'filter')) {
-					push (@source, "$not ip saddr $1 mac $not --mac-source $2");
+					push (@source, "<FIXME>$not ip saddr $1 mac $not --mac-source $2</FIXME>");
 				} else {
 					$source =~ /([^=]+)/;
 					push (@source, "$not ip saddr $1");
@@ -1239,7 +1239,7 @@ sub genRuleDump_NFT {
 			}
 			$source =~ s/\/[^-]+//g;
 #			$action="-t nat ".$action;
-			$action.=" --to-source $source";
+			$action.="<FIXME> --to-source $source</FIXME>";
 		}
 		if (exists($$rule{'TranslatedDestination'})) {
 			my $destination;
@@ -1254,7 +1254,7 @@ sub genRuleDump_NFT {
 			}
 			$destination =~ s/\/[^-]+//g;
 #			$action="-t nat ".$action;
-			$action.=" --to-destination $destination";
+			$action.="<FIXME>> --to-destination $destination</FIXME>";
 		}
 
 		foreach $proto (qw(tcp udp)) {
@@ -1302,7 +1302,7 @@ sub genRuleDump_NFT {
 			}
 			my $input;
 			foreach $input (@{$$rule{'PhysicalInputInterface'}}) {
-				push (@physicalinputinterface, "-m physdev $not --physdev-in $input");
+				push (@physicalinputinterface, "<FIXME>-m physdev $not --physdev-in $input</FIXME>");
 			}
 		}
 		if (exists($$rule{'PhysicalOutputInterface'})) {
@@ -1313,13 +1313,13 @@ sub genRuleDump_NFT {
 			}
 			my $output;
 			foreach $output (@{$$rule{'PhysicalOutputInterface'}}) {
-				push (@physicaloutputinterface, "-m physdev $not --physdev-out $output");
+				push (@physicaloutputinterface, "<FIXME>-m physdev $not --physdev-out $output</FIXME>");
 			}
 		}
 		if (exists($$rule{'MarkMatch'})) {
 			my $mark;
 			foreach $mark (@{$$rule{'MarkMatch'}}) {
-				push (@mark, "-m mark --mark $mark");
+				push (@mark, "<FIXME>-m mark --mark $mark</FIXME>");
 			}
 		}
 
@@ -1399,7 +1399,7 @@ sub genRuleDump_NFT {
 					if ($part =~ /-p (udp|tcp)/ && $jumpto =~ /-p (udp|tcp)/) {
 						$newjumpto =~ s/-p (udp|tcp) -m (udp|tcp)//;
 					}
-					push (@$table, $type." $part $newjumpto");
+					push (@$table, "<FIXME>$type." $part $newjumpto</FIXME>");
 				}
 			} else {
 				push (@$table, "$type $jumpto");
@@ -1436,7 +1436,7 @@ sub genRuleDump_NFT {
 				push (@$Listing, "add rule $inet filter STATE$_ counter jump ACCOUNTING$_");
 				push (@$Listing, "add rule $inet filter STATE$_ ct state related,established counter accept");
 				if ($ipv6) {
-					push (@$Listing, "add rule ip6 filter STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW");
+					push (@$Listing, "<FIXME>add rule ip6 filter STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW</FIXME>");
 				} else {
 					push (@$Listing, "add rule ip filter STATE$_ ct state != new counter jump STATENOTNEW");
 				}
@@ -1446,7 +1446,7 @@ sub genRuleDump_NFT {
 			push (@$Listing, "add rule $inet filter STATENOTNEW counter drop");
 			push (@$Listing, "add rule $inet filter MYREJECT counter reject with tcp reset");
 			if ($ipv6) {
-				push (@$Listing, "add rule $inet filter MYREJECT counter reject --reject-with icmp6-port-unreachable");
+				push (@$Listing, "<FIXME>add rule $inet filter MYREJECT counter reject --reject-with icmp6-port-unreachable</FIXME>");
 			} else {
 				push (@$Listing, "add rule $inet filter MYREJECT counter reject");
 			}
