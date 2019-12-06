@@ -36,6 +36,13 @@ my $configfile="/etc/uif/uif.conf";
 my $configfile6="/etc/uif/uif6.conf";
 my $ipv6=0;
 
+my @icmpv6_types_mapping = ( [ 'neighbor-advertisement',  'nd-neighbor-advert'  ],
+                             [ 'neighbour-advertisement', 'nd-neighbor-advert'  ],
+                             [ 'neighbor-solicitation',   'nd-neighbor-solicit' ],
+                             [ 'neighbour-solicitation',  'nd-neighbor-solicit' ],
+                             [ 'router-advertisement',    'nd-router-advert' ],
+                             [ 'router-solicitation',     'nd-router-solicit' ]);
+
 my @mapping = (	[ 'n', 'uifid', 'Name' ],
 		[ 's', 'uifsource', 'Source'],
 		[ 'i', 'uifindevice', 'InputInterface'],
@@ -1032,6 +1039,18 @@ sub validateData {
 	}
 }
 
+sub icmpv6_types_IPTABLES_to_NFT {
+	my ($type) = @_;
+	my $nft_type = $type;
+	foreach my $map (@icmpv6_types_mapping) {
+		if ( "@$map[0]" eq "$type" ) {
+			$nft_type = "@$map[1]";
+			last;
+		}
+	}
+	return $nft_type;
+}
+
 sub genRuleDump_NFT {
 	my ($Rules, $Listing, $Sysconfig) = @_;
 	my @partial;
@@ -1186,9 +1205,10 @@ sub genRuleDump_NFT {
 			my $type;
 			foreach $type (@{$$rule{'ICMP6'}}) {
 				if ($type eq 'all') {
-					push (@protocol, "$not icmpv6");
+					push (@protocol, "meta l4proto $not ipv6-icmp");
 				} else {
-					push (@protocol, "icmpv6 $not $type");
+					my $nft_type = icmpv6_types_IPTABLES_to_NFT($type);
+					push (@protocol, "meta l4proto ipv6-icmp icmpv6 type $not $nft_type");
 				}
 			}
 		}
@@ -1207,10 +1227,10 @@ sub genRuleDump_NFT {
 			my $source;
 			foreach $source (@{$$rule{'Source'}}) {
 				if ($source =~ /(.+)=(.+)/ && ($$rule{'Table'} eq 'filter')) {
-					push (@source, "<FIXME>$not ip saddr $1 mac $not --mac-source $2</FIXME>");
+					push (@source, "<FIXME>$not $inet saddr $1 mac $not --mac-source $2</FIXME>");
 				} else {
 					$source =~ /([^=]+)/;
-					push (@source, "$not ip saddr $1");
+					push (@source, "$not $inet saddr $1");
 				}
 			}
 		}
@@ -1432,7 +1452,7 @@ sub genRuleDump_NFT {
 				push (@$Listing, "add rule $inet filter STATE$_ counter jump ACCOUNTING$_");
 				push (@$Listing, "add rule $inet filter STATE$_ ct state related,established counter accept");
 				if ($ipv6) {
-					push (@$Listing, "<FIXME>add rule ip6 filter STATE$_ ! -p ipv6-icmp -m state ! --state NEW -j STATENOTNEW</FIXME>");
+					push (@$Listing, "add rule ip6 filter STATE$_ meta l4proto != ipv6-icmp ct state != new counter jump STATENOTNEW");
 				} else {
 					push (@$Listing, "add rule ip filter STATE$_ ct state != new counter jump STATENOTNEW");
 				}
@@ -1441,11 +1461,7 @@ sub genRuleDump_NFT {
 			push (@$Listing, "add rule $inet filter STATENOTNEW limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
 			push (@$Listing, "add rule $inet filter STATENOTNEW counter drop");
 			push (@$Listing, "add rule $inet filter MYREJECT counter reject with tcp reset");
-			if ($ipv6) {
-				push (@$Listing, "<FIXME>add rule $inet filter MYREJECT counter reject --reject-with icmp6-port-unreachable</FIXME>");
-			} else {
-				push (@$Listing, "add rule $inet filter MYREJECT counter reject");
-			}
+			push (@$Listing, "add rule $inet filter MYREJECT counter reject");
 		} elsif ($entry eq 'nat') {
 			$table=\@nat;
 			$chains=\%nat;
