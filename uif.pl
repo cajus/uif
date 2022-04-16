@@ -1360,7 +1360,7 @@ sub genRuleDump_NFT {
 			}
 			my $accountrules="${id}_ACCOUNTING_$$rule{'Accounting'}";
 			$$chains{$accountrules}=1;
-			push (@$table, "$type -j $accountrules");
+			push (@$table, "$type counter jump $accountrules");
 			push (@$table, "add rule $inet $$rule{'Table'} ACCOUNTING$$rule{'Type'} counter jump CHAIN_$accountrules");
 			$type="add rule $inet $$rule{'Table'} $accountrules ";
 			$action=" counter jump CHAIN_$accountchain";
