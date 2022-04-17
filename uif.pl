@@ -1942,6 +1942,15 @@ sub printRules {
 	print @$Listing;
 }
 
+sub printRulesWithLinenumbers {
+	my ($Listing) = @_;
+	@$Listing=map { $_."\n" } @$Listing;
+	my $i = 1;
+	for (@$Listing) {
+		print $i++,":","\t",$_ if $_ ne '';
+	}
+}
+
 sub signalCatcher {
 	$SignalCatched=1;
 }
@@ -2059,6 +2068,7 @@ sub readCommandLine {
 	my @Listing;
 	my $test=0;
 	my $print=0;
+	my $linenumbers=0;
 	my $disable=0;
 	my $writeconfigfile;
 	my $writeldapruleset;
@@ -2114,13 +2124,14 @@ sub readCommandLine {
 		$Sysconfig{'AccountPrefix'}='ACC_';
 	}
 	my %opt;
-	getopts('6c:tpds:b:r:T:C:R:D:w:W', \%opt) || uifUsg ();
+	getopts('6c:tplds:b:r:T:C:R:D:w:W', \%opt) || uifUsg ();
 
 	$ipv6 = 1 if $opt{'6'};
 	$configfile=$configfile6 if $opt{'6'};
 	$configfile = $opt{'c'} if $opt{'c'};
 	$test = 1 if $opt{'t'};
 	$print = 1 if $opt{'p'};
+	$linenumbers = 1 if $opt{'l'};
 	$disable = 1 if $opt{'d'};
 	if ($opt{'T'}) {
 		if ($opt{'T'} =~ /^(\d+)$/) {
@@ -2215,7 +2226,9 @@ sub readCommandLine {
 		}
 	}
 
-	if ($print) {
+	if ($print && $linenumbers) {
+		printRulesWithLinenumbers (\@Listing);
+	} elsif ($print) {
 		printRules (\@Listing);
 	}
 	if ($test==0) {
@@ -2264,6 +2277,7 @@ sub uifUsg {
 	print "-c  read <configfile> instead of $configfile (or in ipv6 mode $configfile6)\n";
 	print "-t  test rules\n";
 	print "-p  print rules to stdout\n";
+	print "-l  if '-p' is used, prepend line numbers to the rules printout\n";
 	print "-d  disable firewall (clear all rules)\n";
 	print "-s  LDAP-server (default: localhost)\n";
 	print "-b  LDAP-base\n";
