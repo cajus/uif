@@ -1117,10 +1117,10 @@ sub genRuleDump_NFT {
 
 		if (exists($$rule{'Reject'})) {
 			if ($$rule{'Reject'} ne '1') {
-				$action="counter reject with $$rule{'Reject'}";
+				$action="counter packets 0 bytes 0 reject with $$rule{'Reject'}";
 				$action =~ s/-/ /g;
 			} else {
-				$action="counter jump MYREJECT";
+				$action="counter packets 0 bytes 0 jump MYREJECT";
 			}
 			$logaction="REJECT";
 		} elsif ($$rule{'Action'} eq "TCPMSS") {
@@ -1131,9 +1131,9 @@ sub genRuleDump_NFT {
 			$logaction="MARK";
 		} else {
 			if ( $$rule{'Action'} =~ /^(ACCEPT|DROP|RETURN|MASQUERADE|DNAT|SNAT)$/) {
-				$action="counter ".lc $$rule{'Action'};
+				$action="counter packets 0 bytes 0 ".lc $$rule{'Action'};
 			} else {
-				$action="counter jump $$rule{'Action'}";
+				$action="counter packets 0 bytes 0 jump $$rule{'Action'}";
 			}
 			$logaction=$$rule{'Action'};
 		}
@@ -1348,9 +1348,9 @@ sub genRuleDump_NFT {
 			} else {
 				$logid=$name;
 			}
-			push (@$table, "add rule $inet $$rule{'Table'} CHAIN_$chain limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
+			push (@$table, "add rule $inet $$rule{'Table'} CHAIN_$chain limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter packets 0 bytes 0 log prefix \"$$Sysconfig{'LogPrefix'} $logaction ($logid): \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
 			push (@$table, "add rule $inet $$rule{'Table'} CHAIN_$chain $action");
-			$action="counter jump CHAIN_$chain";
+			$action="counter packets 0 bytes 0 jump CHAIN_$chain";
 		}
 		if (exists($$rule{'Accounting'})) {
 			my $accountchain="$$Sysconfig{'AccountPrefix'}$$rule{'Accounting'}";
@@ -1360,10 +1360,10 @@ sub genRuleDump_NFT {
 			}
 			my $accountrules="${id}_ACCOUNTING_$$rule{'Accounting'}";
 			$$chains{$accountrules}=1;
-			push (@$table, "$type counter jump $accountrules");
-			push (@$table, "add rule $inet $$rule{'Table'} ACCOUNTING$$rule{'Type'} counter jump CHAIN_$accountrules");
+			push (@$table, "$type counter packets 0 bytes 0 jump $accountrules");
+			push (@$table, "add rule $inet $$rule{'Table'} ACCOUNTING$$rule{'Type'} counter packets 0 bytes 0 jump CHAIN_$accountrules");
 			$type="add rule $inet $$rule{'Table'} $accountrules ";
-			$action=" counter jump CHAIN_$accountchain";
+			$action=" counter packets 0 bytes 0 jump CHAIN_$accountchain";
 		}
 		if (exists($$rule{'Limit'})) {
 			$action=" limit rate $$rule{'Limit'} burst $$rule{'Limit-burst'} packets $action";
@@ -1403,7 +1403,7 @@ sub genRuleDump_NFT {
 			}
 			my $jumpto;
 			if ($again) {
-				$jumpto="counter jump CHAIN_${id}_$level";
+				$jumpto="counter packets 0 bytes 0 jump CHAIN_${id}_$level";
 			} else {
 				$jumpto=$action;
 			}
@@ -1446,22 +1446,22 @@ sub genRuleDump_NFT {
 				push (@$Listing, "add chain $inet filter ACCOUNTINGSTATELESS$_");
 				push (@$Listing, "add chain $inet filter STATE$_");
 				push (@$Listing, "add chain $inet filter STATELESS$_");
-				push (@$Listing, "add chain $inet filter $_ { type filter hook ".lc $_." priority 0; policy drop; }");
-				push (@$Listing, "add rule $inet filter $_ counter jump STATE$_");
-				push (@$Listing, "add rule $inet filter STATE$_ ct state invalid counter jump STATELESS$_");
-				push (@$Listing, "add rule $inet filter STATE$_ counter jump ACCOUNTING$_");
-				push (@$Listing, "add rule $inet filter STATE$_ ct state related,established counter accept");
+				push (@$Listing, "add chain $inet filter $_ { type filter hook ".lc $_." priority filter; policy drop; }");
+				push (@$Listing, "add rule $inet filter $_ counter packets 0 bytes 0 jump STATE$_");
+				push (@$Listing, "add rule $inet filter STATE$_ ct state invalid counter packets 0 bytes 0 jump STATELESS$_");
+				push (@$Listing, "add rule $inet filter STATE$_ counter packets 0 bytes 0 jump ACCOUNTING$_");
+				push (@$Listing, "add rule $inet filter STATE$_ ct state related,established counter packets 0 bytes 0 accept");
 				if ($ipv6) {
-					push (@$Listing, "add rule ip6 filter STATE$_ meta l4proto != ipv6-icmp ct state != new counter jump STATENOTNEW");
+					push (@$Listing, "add rule ip6 filter STATE$_ meta l4proto != ipv6-icmp ct state != new counter packets 0 bytes 0 jump STATENOTNEW");
 				} else {
-					push (@$Listing, "add rule ip filter STATE$_ ct state != new counter jump STATENOTNEW");
+					push (@$Listing, "add rule ip filter STATE$_ ct state != new counter packets 0 bytes 0 jump STATENOTNEW");
 				}
-				push (@$Listing, "add rule $inet filter STATELESS$_ counter jump ACCOUNTINGSTATELESS$_");
+				push (@$Listing, "add rule $inet filter STATELESS$_ counter packets 0 bytes 0 jump ACCOUNTINGSTATELESS$_");
 			}
-			push (@$Listing, "add rule $inet filter STATENOTNEW limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
-			push (@$Listing, "add rule $inet filter STATENOTNEW counter drop");
-			push (@$Listing, "add rule $inet filter MYREJECT counter reject with tcp reset");
-			push (@$Listing, "add rule $inet filter MYREJECT counter reject");
+			push (@$Listing, "add rule $inet filter STATENOTNEW limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter packets 0 bytes 0 log prefix \"$$Sysconfig{'LogPrefix'} STATE NOT NEW: \" level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
+			push (@$Listing, "add rule $inet filter STATENOTNEW counter packets 0 bytes 0 drop");
+			push (@$Listing, "add rule $inet filter MYREJECT counter packets 0 bytes 0 reject with tcp reset");
+			push (@$Listing, "add rule $inet filter MYREJECT counter packets 0 bytes 0 reject");
 		} elsif ($entry eq 'nat') {
 			$table=\@nat;
 			$chains=\%nat;
@@ -1489,8 +1489,8 @@ sub genRuleDump_NFT {
 		push (@$Listing, "#");
 		if ($entry eq 'filter') {
 			foreach (qw(INPUT OUTPUT FORWARD)) {
-				push (@$Listing, "add rule $inet filter STATELESS$_ limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter log prefix \"$$Sysconfig{'LogPrefix'} INVALID STATE: \"  level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
-				push (@$Listing, "add rule $inet filter STATELESS$_ counter drop");
+				push (@$Listing, "add rule $inet filter STATELESS$_ limit rate $$Sysconfig{'LogLimit'} burst $$Sysconfig{'LogBurst'} packets counter packets 0 bytes 0 log prefix \"$$Sysconfig{'LogPrefix'} INVALID STATE: \"  level $$Sysconfig{'LogLevel'} flags tcp options flags ip options");
+				push (@$Listing, "add rule $inet filter STATELESS$_ counter packets 0 bytes 0 drop");
 			}
 		}
 	}
