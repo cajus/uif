@@ -467,13 +467,13 @@ sub validateSysconfig {
 			delete $$Sysconfig{$syskey};
 			$filter_command =~ s/\s+//g;
 			if ($filter_command eq 'nft') {
-				$$Sysconfig{'filtercommand'} = 'nft';
+				$$Sysconfig{'FilterCommand'} = 'nft';
 			} elsif ($filter_command eq 'iptables') {
-				$$Sysconfig{'filtercommand'} = 'iptables';
+				$$Sysconfig{'FilterCommand'} = 'iptables';
 			} elsif ($filter_command eq 'iptables-nft') {
-				$$Sysconfig{'filtercommand'} = 'iptables-nft';
+				$$Sysconfig{'FilterCommand'} = 'iptables-nft';
 			} elsif ($filter_command eq 'iptables-legacy') {
-				$$Sysconfig{'filtercommand'} = 'iptables-legacy';
+				$$Sysconfig{'FilterCommand'} = 'iptables-legacy';
 			} else {
 				die "invalid packet filter command, use 'nft', 'iptables', 'iptables-nft' or 'iptables-legacy'";
 			}
@@ -2001,7 +2001,7 @@ sub applyRules_IPTABLES {
 	my $save_cmd;
 	my $restore_cmd;
 
-	if (%$Sysconfig{'filtercommand'} eq 'iptables') {
+	if (%$Sysconfig{'FilterCommand'} eq 'iptables') {
 		if ($ipv6) {
 			$save_cmd    = "/usr/sbin/ip6tables-save";
 			$restore_cmd = "/usr/sbin/ip6tables-restore";
@@ -2009,7 +2009,7 @@ sub applyRules_IPTABLES {
 			$save_cmd    = "/usr/sbin/iptables-save";
 			$restore_cmd = "/usr/sbin/iptables-restore";
 		}
-	} elsif (%$Sysconfig{'filtercommand'} eq 'iptables-nft') {
+	} elsif (%$Sysconfig{'FilterCommand'} eq 'iptables-nft') {
 		if ($ipv6) {
 			$save_cmd    = "/usr/sbin/ip6tables-nft-save";
 			$restore_cmd = "/usr/sbin/ip6tables-nft-restore";
@@ -2017,7 +2017,7 @@ sub applyRules_IPTABLES {
 			$save_cmd    = "/usr/sbin/iptables-nft-save";
 			$restore_cmd = "/usr/sbin/iptables-nft-restore";
 		}
-	} elsif (%$Sysconfig{'filtercommand'} eq 'iptables-legacy') {
+	} elsif (%$Sysconfig{'FilterCommand'} eq 'iptables-legacy') {
 		if ($ipv6) {
 			$save_cmd    = "/usr/sbin/ip6tables-legacy-save";
 			$restore_cmd = "/usr/sbin/ip6tables-legacy-restore";
@@ -2211,7 +2211,7 @@ sub readCommandLine {
 			exit 0;
 		} else {
 			validateData (\%Networks, \%Services, \%Interfaces, \%Protocols, \@Rules, \%Sysconfig, \%Marker);
-			if ($Sysconfig{'filtercommand'} eq 'nft') {
+			if ($Sysconfig{'FilterCommand'} eq 'nft') {
 				genRuleDump_NFT (\@Rules, \@Listing, \%Sysconfig);
 			} else {
 				genRuleDump_IPTABLES (\@Rules, \@Listing, \%Sysconfig);
@@ -2219,7 +2219,7 @@ sub readCommandLine {
 		}
 	} else {
 		validateSysconfig (\%Sysconfig);
-		if ($Sysconfig{'filtercommand'} eq 'nft') {
+		if ($Sysconfig{'FilterCommand'} eq 'nft') {
 			clearAllRules_NFT (\@Listing);
 		} else {
 			clearAllRules_IPTABLES (\@Listing);
@@ -2232,7 +2232,7 @@ sub readCommandLine {
 		printRules (\@Listing);
 	}
 	if ($test==0) {
-		if ($Sysconfig{'filtercommand'} eq 'nft') {
+		if ($Sysconfig{'FilterCommand'} eq 'nft') {
 			applyRules_NFT ($timeout, \@Listing, \%Sysconfig);
 		} else {
 			applyRules_IPTABLES ($timeout, \@Listing, \%Sysconfig);
