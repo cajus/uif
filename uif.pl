@@ -1178,16 +1178,36 @@ sub genRuleDump_NFT {
 				my $range;
 				foreach $range (@{$$rule{"\u$proto"}[2]}) {
 					$range =~ s/\:/-/g;
+					$range =~ /^(.+)-(.+)$/;
+					if ( $1 eq $2 ) {
+						$range = $1;
+					}
 					push (@protocol, "$not $proto sport $range");
 				}
 				foreach $range (@{$$rule{"\u$proto"}[3]}) {
 					$range =~ s/\:/-/g;
+					$range =~ /^(.+)-(.+)$/;
+					if ( $1 eq $2 ) {
+						$range = $1;
+					}
 					push (@protocol, "$not $proto dport $range");
 				}
+				my $range_sport;
+				my $range_dport;
 				foreach $range (@{$$rule{"\u$proto"}[4]}) {
 					$range =~ s/\:/-/g;
 					$range =~ /^(.+)\/(.+)$/;
-					push (@protocol, "$not $proto sport $1 $not $proto dport $2");
+					$range_sport = $1;
+					$range_dport = $2;
+					$range_sport =~ /^(.+)-(.+)$/;
+					if ( $1 eq $2 ) {
+						$range_sport = $1;
+					}
+					$range_dport =~ /^(.+)-(.+)$/;
+					if ( $1 eq $2 ) {
+						$range_dport = $1;
+					}
+					push (@protocol, "$not $proto sport $range_sport $not $proto dport $range_dport");
 				}
 			}
 		}
