@@ -1485,15 +1485,18 @@ sub genRuleDump_NFT {
 		} elsif ($entry eq 'nat') {
 			$table=\@nat;
 			$chains=\%nat;
-			push (@$Listing, "add chain $inet nat POSTROUTING { type nat hook postrouting priority 100; policy accept; }");
-			foreach (qw(PREROUTING OUTPUT)) {
+			push (@$Listing, "add chain $inet nat POSTROUTING { type nat hook postrouting priority srcnat; policy accept; }");
+			foreach (qw(PREROUTING)) {
+				push (@$Listing, "add chain $inet nat $_ { type nat hook ".lc $_." priority dstnat; policy accept; }");
+			}
+			foreach (qw(OUTPUT)) {
 				push (@$Listing, "add chain $inet nat $_ { type nat hook ".lc $_." priority -100; policy accept; }");
 			}
 		} else {
 			$table=\@mangle;
 			$chains=\%mangle;
-			push (@$Listing, "add chain $inet mangle PREROUTING { type filter hook prerouting priority -150; policy accept; }");
-			push (@$Listing, "add chain $inet mangle OUTPUT { type route hook output priority -150; policy accept; }");
+			push (@$Listing, "add chain $inet mangle PREROUTING { type filter hook prerouting priority mangle; policy accept; }");
+			push (@$Listing, "add chain $inet mangle OUTPUT { type route hook output priority mangle; policy accept; }");
 		}
 		foreach (keys(%$chains)) {
 			push (@$Listing, "add chain $inet filter CHAIN_$_");
