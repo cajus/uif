@@ -1168,7 +1168,7 @@ sub genRuleDump_NFT {
 						$count++;
 						if ($count==15) {
 							$string =~ s/,$//;
-							$string="$inet protocol $proto ".($entry==1?"d":"s")."port {".$string."}";
+							$string="meta l4proto $proto ".($entry==1?"d":"s")."port {".$string."}";
 							push (@protocol, $string);
 							$string='';
 							$count=0;
@@ -1177,9 +1177,9 @@ sub genRuleDump_NFT {
 					if (defined($string) && $count) {
 						$string =~ s/,$//;
 						if ($count > 1) {
-							$string="$inet protocol $proto $proto ".($entry==1?"d":"s")."port {".$string."}";
+							$string="meta l4proto $proto $proto ".($entry==1?"d":"s")."port {".$string."}";
 						} else {
-							$string="$inet protocol $proto $proto ".($entry==1?"d":"s")."port {".$string."}";
+							$string="meta l4proto $proto $proto ".($entry==1?"d":"s")."port {".$string."}";
 						}
 						push (@protocol, $string);
 					}
