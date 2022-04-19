@@ -46,17 +46,19 @@ my @icmpv6_types_mapping = ( [ 'neighbor-advertisement',  'nd-neighbor-advert'  
 my @mapping = (	[ 'n', 'uifid', 'Name' ],
 		[ 's', 'uifsource', 'Source'],
 		[ 'i', 'uifindevice', 'InputInterface'],
-		[ 'pi', 'uifpindevice', 'PhysicalInputInterface'],
 		[ 'd', 'uifdest', 'Destination'],
 		[ 'o', 'uifoutdevice', 'OutputInterface'],
-		[ 'po', 'uifpoutdevice', 'PhysicalOutputInterface'],
 		[ 'p', 'uifservice', 'Service'],
 		[ 'm', 'uifmark', 'MarkMatch'],
 		[ 'S', 'uiftranssource', 'TranslatedSource'],
 		[ 'D', 'uiftransdest', 'TranslatedDestination'],
 		[ 'P', 'uiftransservice', 'TranslatedService'],
 		[ '',  'uiftype', 'Type'],
-		[ 'f', 'uifflag', 'Flags']);
+		[ 'f', 'uifflag', 'Flags'],
+# only supported with old iptables backend... deprecated with nftables
+# FIXME: disable these options in the uif.conf parser code at some point
+		[ 'pi', 'uifpindevice', 'PhysicalInputInterface'],
+		[ 'po', 'uifpoutdevice', 'PhysicalOutputInterface']);
 
 my %charstringmap;
 my %ldapstringmap;
@@ -1082,8 +1084,6 @@ sub genRuleDump_NFT {
 		my @destination;
 		my @inputinterface;
 		my @outputinterface;
-		my @physicalinputinterface;
-		my @physicaloutputinterface;
 		my @mark;
 		my $action;
 		my $logaction;
@@ -1124,10 +1124,10 @@ sub genRuleDump_NFT {
 			}
 			$logaction="REJECT";
 		} elsif ($$rule{'Action'} eq "TCPMSS") {
-			$action="<FIXME>-p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu</FIXME>";
+			$action="tcp flags & (syn|rst) == syn tcp option maxseg size >= 1400 counter tcp option maxseg size set rt mtu";
 			$logaction="TCPMSS";
 		} elsif ($$rule{'Action'} eq "MARK") {
-			$action="<FIXME>-j MARK --set-mark $$rule{'Mark'}</FIXME>";
+			$action="counter meta mark set $$rule{'Mark'}";
 			$logaction="MARK";
 		} else {
 			if ( $$rule{'Action'} =~ /^(ACCEPT|DROP|RETURN|MASQUERADE|DNAT|SNAT)$/) {
@@ -1247,7 +1247,7 @@ sub genRuleDump_NFT {
 			my $source;
 			foreach $source (@{$$rule{'Source'}}) {
 				if ($source =~ /(.+)=(.+)/ && ($$rule{'Table'} eq 'filter')) {
-					push (@source, "<FIXME>$not $inet saddr $1 mac $not --mac-source $2</FIXME>");
+					push (@source, "$not $inet saddr $1 mac $not ether saddr $2 counter");
 				} else {
 					$source =~ /([^=]+)/;
 					push (@source, "$not $inet saddr $1");
@@ -1330,32 +1330,11 @@ sub genRuleDump_NFT {
 				push (@outputinterface, "$not oifname \"$output\"");
 			}
 		}
-		if (exists($$rule{'PhysicalInputInterface'})) {
-			if (exists($$rule{'PhysicalInputInterface-not'})) {
-				$not='!';
-			} else {
-				$not='';
-			}
-			my $input;
-			foreach $input (@{$$rule{'PhysicalInputInterface'}}) {
-				push (@physicalinputinterface, "<FIXME>-m physdev $not --physdev-in $input</FIXME>");
-			}
-		}
-		if (exists($$rule{'PhysicalOutputInterface'})) {
-			if (exists($$rule{'PhysicalOutputInterface-not'})) {
-				$not='!';
-			} else {
-				$not='';
-			}
-			my $output;
-			foreach $output (@{$$rule{'PhysicalOutputInterface'}}) {
-				push (@physicaloutputinterface, "<FIXME>-m physdev $not --physdev-out $output</FIXME>");
-			}
-		}
 		if (exists($$rule{'MarkMatch'})) {
 			my $mark;
 			foreach $mark (@{$$rule{'MarkMatch'}}) {
-				push (@mark, "<FIXME>-m mark --mark $mark</FIXME>");
+				push (@mark, "meta mark set $mark");
+
 			}
 		}
 
@@ -1388,7 +1367,7 @@ sub genRuleDump_NFT {
 		if (exists($$rule{'Limit'})) {
 			$action=" limit rate $$rule{'Limit'} burst $$rule{'Limit-burst'} packets $action";
 		}
-		my @rulearray = (\@inputinterface, \@outputinterface, \@physicalinputinterface, \@physicaloutputinterface, \@protocol, \@source, \@destination, \@mark);
+		my @rulearray = (\@inputinterface, \@outputinterface, \@protocol, \@source, \@destination, \@mark);
 
 		my $level=1;
 		my $again=1;
