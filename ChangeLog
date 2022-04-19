@@ -1,549 +1,317 @@
-2018-08-20 12:13:55 +0200 Mike Gabriel (8df67cb)
+2022-04-19 Mike Gabriel
 
-	* release 1.1.9 (HEAD -> master, tag: 1.1.9)
+        * release 1.99.0 (HEAD -> master, tag: 1.99.0)
+        * uif.8: Update uif man page (esp. for nft support, but also convert
+          from nroff to groff). (c52a64c)
+        * uif.conf.5: Update uif.conf man page (esp. for nft support, but
+          also convert from nroff to groff). (fa7ba69)
+        * Makefile: Assure presence of new config dirs (for dropping
+          snippets). (574181c)
+        * uif.pl: With nft backend, fix port based rules. (4d74c0b)
+        * Support file globbing and introcuce conf.d directories for dropping
+          config snippets. (96ed4c7)
+        * Update copyright/license information. (bd7fe84)
+        * compare-v(4|6)-iptables+nft-results.sh: Add test scripts that
+          compare iptables-nft and nft results. (f76c2a8)
+        * uif.pl: With nft backend, resolve remaining FIXMEs. This complete
+          the nft backend support. (222559a)
+        * uif.pl: With nft backend, drop 'meta l4proto ipv6-icmp' prefix
+          before type-wise ICMPv6 packet accepts. (945c6e0)
+        * Revert "uif.pl: With nft backend, use proper counter expressions."
+          (f52b023)
 
-2018-08-20 12:10:13 +0200 Mike Gabriel (1448fd3)
+2022-04-18 Mike Gabriel
 
-	* Makefile: Fix flawed usage of DESTDIR and PREFIX.
+        * uif.pl: With nft backend, use pre-defined priority keywords instead
+          of hard-coded priority numbers. (7100eb4)
+        * uif.pl: With nft backend, use single ports only if ranges start and
+          end with the same port. (ff27dfe)
+        * uif.pl: Use camel-case key for 'FilterCommand' in $Sysconfig hash.
+          (26b0453)
+        * uif.pl: With nft backend, use proper counter expressions. (123c3c3)
 
-2017-01-16 00:07:28 +0100 Mike Gabriel (ee38674)
+2022-04-17 Mike Gabriel
 
-	* uif.spec: Date fix in changelog.
+        * uif.pl: Introduce line numbering in print mode, add cmdline option
+          '-l'. (97f5523)
 
-2017-01-15 23:50:03 +0100 Mike Gabriel (1123e0c)
+2022-04-16 Mike Gabriel
 
-	* release 1.1.8 (tag: 1.1.8)
+        * uif.pl: Convert another "-j" iptables option into "counter jump".
+          (8b830a7)
 
-2017-01-15 23:48:02 +0100 Mike Gabriel (d913b96)
+2019-12-07 Mike Gabriel
 
-	* validateData: Prevent from using networks with MAC addresses
+        * uif.pl: Fix snat/dnat multiport rules in nft. (6fcfd7a)
+
+2019-12-06 Mike Gabriel
+
+        * uif.pl: Fix icmpv6 rules for nftables. (7874781)
+        * uif.pl: Resolve one FIXME: snat/dnat rules for native nft command.
+          (c3edde5)
+        * uif.pl: Drop not required (and flawed) <FIXME> (8a85e2e)
+        * mark TODOs with FIXME tags (aae4ab1)
+        * Turn genRuleDump_NFT so that now generates a native nft command
+          set. (a1b95d1)
+
+2019-12-05 Mike Gabriel
+
+        * uif.pl: Introduce FILTER_COMMAND environment parameter and support
+          nft command sets as well as iptables* command sets.
+          (d598df0)
+
+2019-12-06 Mike Gabriel
+
+        * Send "Skipping..." messages to STDERR. (98a57ec)
+
+2019-12-05 Mike Gabriel
+
+        * default: Parameter that shall be perceived by the uif Perl script
+          need to be exported to the environment. (99d6e86)
+        * uif.pl: white lines removed / added (8f2746e)
+        * Prepend targets starting with ${id} by CHAIN_ (so that target names
+          work in nftables, too). (d72d1d7)
+        * The Linux firewall is shifting towards nftables, so let's prepare
+          for that (by using the legacy iptables commands).
+          (55ba357)
+
+2018-08-20 Mike Gabriel
+
+        * release 1.1.9 (a7ec235) (tag: 1.1.9)
+        * Makefile: Fix flawed usage of DESTDIR and PREFIX. (1448fd3)
+
+2017-01-16 Mike Gabriel
+
+        * uif.spec: Date fix in changelog. (ee38674)
+
+2017-01-15 Mike Gabriel
+
+        * release 1.1.8 (1123e0c) (tag: 1.1.8)
+        * validateData: Prevent from using networks with MAC addresses
           neither for outward bound nor for destination networks.
-
-2017-01-15 23:24:33 +0100 Mike Gabriel (477c55b)
-
-	* Better test and fix MAC address based source filtering.
-
-2017-01-15 16:05:54 +0100 Mike Gabriel (9d20e8e)
-
-	* release 1.1.7 (tag: 1.1.7)
-
-2017-01-15 16:05:07 +0100 Mike Gabriel (bd85804)
-
-	* MAC-source filtering, regression fix: Re-add push of $ip to
+          (d913b96)
+        * Better test and fix MAC address based source filtering. (477c55b)
+        * release 1.1.7 (9d20e8e) (tag: 1.1.7)
+        * MAC-source filtering, regression fix: Re-add push of $ip to
           @netobjects if network object contains a MAC address.
-
-2017-01-15 15:12:33 +0100 Mike Gabriel (36d6d86)
-
-	* UIF: Allow MAC syntax in network items only with real IP addresses,
-          not with DNS resolvable host names.
-
-2017-01-15 14:54:24 +0100 Mike Gabriel (3435812)
-
-	* release 1.1.6 (tag: 1.1.6)
-
-2017-01-15 14:56:59 +0100 Mike Gabriel (0038831)
-
-	* Makefile: Fix installation of uif.initscript.
-
-2017-01-15 14:53:29 +0100 Mike Gabriel (9c01c91)
-
-	* uif.conf.5: Add some hints and notes about IPv6 support.
-
-2017-01-15 14:44:23 +0100 Mike Gabriel (6d01761)
-
-	* doc files: consistently use UIF in capital letters.
-
-2017-01-15 14:42:10 +0100 Mike Gabriel (868ac44)
-
-	* services file: Add some more services (kerberos5 et al., ldaps,
+          (bd85804)
+        * UIF: Allow MAC syntax in network items only with real IP addresses,
+          not with DNS resolvable host names. (36d6d86)
+        * release 1.1.6 (3435812) (tag: 1.1.6)
+        * Makefile: Fix installation of uif.initscript. (0038831)
+        * uif.conf.5: Add some hints and notes about IPv6 support. (9c01c91)
+        * doc files: consistently use UIF in capital letters. (6d01761)
+        * services file: Add some more services (kerberos5 et al., ldaps,
           swat, openvpn, mysql, munin, cfenging, xmpp-client,
-          xmpp-server, icinga2, webmin and puppet).
+          xmpp-server, icinga2, webmin and puppet). (868ac44)
+        * COPYRIGHT: Update copyright date for Mike Gabriel. (cfee841)
+        * ChangeLog: Convert to GNU ChangeLog style, generated from Git
+          history. (577cc6b)
+        * INSTALL.md: Typo fix in Perl module name. (d75e0ed)
+        * Drop former uif initscript, replaced by new uif.initscript file.
+          (8766e7b)
+        * Revert "release 1.1.6" (26c5c19)
+        * Rename README.IPv6 -> README.IPv6.md (465c6da)
+        * release 1.1.6 (ed896f4)
+        * Update most documentation files and convert to markdown syntax.
+          (f2f7bf2)
+        * init script: Adopting Debian's init script as an example into
+          upstream code. (13adace)
+        * Add VERSION file (with last released version number). (402d8f5)
+        * Drop debian/ packaging folder, we are an upstream project.
+          (6aae291)
+        * IPv6 name resolution: Work around broken IPv6 name resolution in
+          NetAddr::IP (see: CPAN issue #119858). (91d3907)
 
-2017-01-15 14:26:03 +0100 Mike Gabriel (cfee841)
+2017-01-13 Mike Gabriel
 
-	* COPYRIGHT: Update copyright date for Mike Gabriel.
+        * IPv6 support: More locations in the code spotted, where we need to
+          differentiate between IPv4 and IPv6 mode. (2baab0e)
 
-2017-01-15 14:23:26 +0100 Mike Gabriel (577cc6b)
+2016-04-18 Mike Gabriel
 
-	* ChangeLog: Convert to GNU ChangeLog style, generated from Git
-          history.
+        * Merge branch 'ka7-spelling_fix' (91cb12b)
 
-2017-01-15 14:22:41 +0100 Mike Gabriel (d75e0ed)
+2016-04-16 klemens
 
-	* INSTALL.md: Typo fix in Perl module name.
+        * spelling fix, as of lintian.debian.org (ae13340)
 
-2017-01-15 14:21:55 +0100 Mike Gabriel (8766e7b)
+2015-03-11 Mike Gabriel
 
-	* Drop former uif initscript, replaced by new uif.initscript file.
-
-2017-01-15 14:19:13 +0100 Mike Gabriel (26c5c19)
-
-	* Revert "release 1.1.6"
-
-2017-01-15 14:15:33 +0100 Mike Gabriel (465c6da)
-
-	* Rename README.IPv6 -> README.IPv6.md
-
-2017-01-15 14:13:04 +0100 Mike Gabriel (ed896f4)
-
-	* release 1.1.6
-
-2017-01-15 14:09:15 +0100 Mike Gabriel (f2f7bf2)
-
-	* Update most documentation files and convert to markdown syntax.
-
-2017-01-15 13:59:11 +0100 Mike Gabriel (13adace)
-
-	* init script: Adopting Debian's init script as an example into
-          upstream code.
-
-2017-01-15 13:57:30 +0100 Mike Gabriel (402d8f5)
-
-	* Add VERSION file (with last released version number).
-
-2017-01-15 13:56:25 +0100 Mike Gabriel (6aae291)
-
-	* Drop debian/ packaging folder, we are an upstream project.
-
-2017-01-15 13:49:08 +0100 Mike Gabriel (91d3907)
-
-	* IPv6 name resolution: Work around broken IPv6 name resolution in
-          NetAddr::IP (see: CPAN issue #119858).
-
-2017-01-13 16:16:54 +0100 Mike Gabriel (2baab0e)
-
-	* IPv6 support: More locations in the code spotted, where we need to
-          differentiate between IPv4 and IPv6 mode.
-
-2016-04-18 11:52:59 +0200 Mike Gabriel (91cb12b)
-
-	* Merge branch 'ka7-spelling_fix'
-
-2016-04-16 14:33:51 +0200 klemens (ae13340)
-
-	* spelling fix, as of lintian.debian.org
-
-2015-03-11 10:00:49 +0100 Mike Gabriel (01892a9)
-
-	* release 1.1.5 (tag: 1.1.5)
-
-2015-03-11 10:00:16 +0100 Mike Gabriel (45b9141)
-
-	* bump version and dates
-
-2015-03-11 09:56:51 +0100 Mike Gabriel (d8c8700)
-
-	* Fix severe flaw in IPv4-only/IPv6-only rule setup. Don't open IPv4
+        * release 1.1.5 (01892a9) (tag: 1.1.5)
+        * bump version and dates (45b9141)
+        * Fix severe flaw in IPv4-only/IPv6-only rule setup. Don't open IPv4
           wholes when setting up IPv6-only rules and vice versa.
+          (d8c8700)
 
-2014-12-09 13:52:24 +0100 Mike Gabriel (3ffeb89)
+2014-12-09 Mike Gabriel
 
-	* Fix another typo in same error message.
+        * Fix another typo in same error message. (3ffeb89)
+        * Fix spelling of Debian in error message. (Closes: Debian bug
+          #772496). (5cb7c81)
 
-2014-12-09 13:13:29 +0100 Mike Gabriel (5cb7c81)
+2014-07-01 Mike Gabriel
 
-	* Fix spelling of Debian in error message. (Closes: Debian bug
-          #772496).
+        * release 1.1.4 (2754565) (tag: 1.1.4)
+        * debian/rules: Update from Debian package. (47e10a2)
+        * debian/copyright: Update from Debian package. (da54e44)
+        * Make sure that masq|snat|dnat|nat rules get ignored in IPv6 mode.
+          (2a5b7ae)
 
-2014-07-01 10:31:49 +0200 Mike Gabriel (2754565)
+2014-06-13 Mike Gabriel
 
-	* release 1.1.4 (tag: 1.1.4)
+        * release 1.1.3 (f6505c5) (tag: 1.1.3)
 
-2014-07-01 10:27:32 +0200 Mike Gabriel (47e10a2)
+2014-06-03 Mike Gabriel
 
-	* debian/rules: Update from Debian package.
+        * uif.conf: Drop the fw+ filter for ICMPv6 rules. (23707ba)
+        * debian/uif.postinst: Provide a DebConf mediated workstation config
+          that also protects from IPv6 attacks. (244cbdd)
+        * IPv6: make neighbor-solicitation (packet type 135) a must for the
+          incoming filter (f888b00)
+        * examples: Provide an IPv4+6 config file example (d318892)
 
-2014-07-01 10:27:21 +0200 Mike Gabriel (da54e44)
+2014-05-20 Mike Gabriel
 
-	* debian/copyright: Update from Debian package.
+        * uif.conf: Allow packet type 136 (neighbor-advertisement). Allow
+          forwarding _and_ inbound ICMP messages. (76474e5)
+        * release 1.1.2 (a62ad68) (tag: 1.1.2)
+        * uif.spec: Update version+release field. (01513a7)
+        * debian/changelog: drop non-sense at EOF (d91cdce)
+        * uif.conf: Enable inclusion of services file by default. (f68c9e4)
+        * services: Use more appropriate icmp packet type names. (2fdbae3)
+        * debian/changelog: Use revison -0 in package version. (4bf5f76)
 
-2014-07-01 10:08:23 +0200 Mike Gabriel (2a5b7ae)
+2014-01-28 Mike Gabriel
 
-	* Make sure that masq|snat|dnat|nat rules get ignored in IPv6 mode.
+        * Add services "rdp" and "vnc-support" to services file. (3c10099)
+        * Provide new protocol: ipv6-icmp. Rework ICMP types in services
+          file. (5debe50)
 
-2014-06-13 21:24:00 +0200 Mike Gabriel (f6505c5)
+2014-01-22 Mike Gabriel
 
-	* release 1.1.3 (tag: 1.1.3)
-
-2014-06-03 23:48:36 +0200 Mike Gabriel (23707ba)
-
-	* uif.conf: Drop the fw+ filter for ICMPv6 rules.
-
-2014-06-03 23:44:42 +0200 Mike Gabriel (244cbdd)
-
-	* debian/uif.postinst: Provide a DebConf mediated workstation config
-          that also protects from IPv6 attacks.
-
-2014-06-03 23:40:34 +0200 Mike Gabriel (f888b00)
-
-	* IPv6: make neighbor-solicitation (packet type 135) a must for the
-          incoming filter
-
-2014-06-03 23:39:52 +0200 Mike Gabriel (d318892)
-
-	* examples: Provide an IPv4+6 config file example
-
-2014-05-20 17:01:41 +0200 Mike Gabriel (76474e5)
-
-	* uif.conf: Allow packet type 136 (neighbor-advertisement). Allow
-          forwarding _and_ inbound ICMP messages.
-
-2014-05-20 16:28:42 +0200 Mike Gabriel (a62ad68)
-
-	* release 1.1.2 (tag: 1.1.2)
-
-2014-05-20 16:28:08 +0200 Mike Gabriel (01513a7)
-
-	* uif.spec: Update version+release field.
-
-2014-05-20 16:26:06 +0200 Mike Gabriel (d91cdce)
-
-	* debian/changelog: drop non-sense at EOF
-
-2014-05-20 16:03:33 +0200 Mike Gabriel (f68c9e4)
-
-	* uif.conf: Enable inclusion of services file by default.
-
-2014-05-20 16:06:28 +0200 Mike Gabriel (2fdbae3)
-
-	* services: Use more appropriate icmp packet type names.
-
-2014-05-20 16:00:19 +0200 Mike Gabriel (4bf5f76)
-
-	* debian/changelog: Use revison -0 in package version.
-
-2014-01-28 23:33:51 +0100 Mike Gabriel (3c10099)
-
-	* Add services "rdp" and "vnc-support" to services file.
-
-2014-01-28 23:32:57 +0100 Mike Gabriel (5debe50)
-
-	* Provide new protocol: ipv6-icmp. Rework ICMP types in services
-          file.
-
-2014-01-22 16:31:46 +0100 Mike Gabriel (e384b5b)
-
-	* release 1.1.1 (tag: 1.1.1)
-
-2014-01-22 16:29:48 +0100 Mike Gabriel (2084ea5)
-
-	* Alioth-canonicalize Vcs-Git: field.
-
-2014-01-22 16:27:49 +0100 Mike Gabriel (46b887e)
-
-	* Install lintian overrides. Override issue false-positive issue
-          maintainer-script-should-not-use-service.
-
-2014-01-22 16:25:25 +0100 Mike Gabriel (3872ce4)
-
-	* Make sure that hostnames resolve to IPv6 addresses when setting up
-          the IPv6 filtering rules.
-
-2014-01-22 16:04:42 +0100 Mike Gabriel (9bac303)
-
-	* Default log level for iptables: crit (not debug).
-
-2014-01-22 16:03:42 +0100 Mike Gabriel (f12a8bb)
-
-	* debian/uif.init: Leave reporting startup failures to
+        * release 1.1.1 (e384b5b) (tag: 1.1.1)
+        * Alioth-canonicalize Vcs-Git: field. (2084ea5)
+        * Install lintian overrides. Override issue false-positive issue
+          maintainer-script-should-not-use-service. (46b887e)
+        * Make sure that hostnames resolve to IPv6 addresses when setting up
+          the IPv6 filtering rules. (3872ce4)
+        * Default log level for iptables: crit (not debug). (9bac303)
+        * debian/uif.init: Leave reporting startup failures to
           init-functions. Beautify init script when failures occur.
-
-2014-01-22 15:24:50 +0100 Mike Gabriel (25cee2a)
-
-	* Fix typos and mal-used minus signs in uif.conf.5 man page.
-
-2014-01-22 15:06:47 +0100 Mike Gabriel (a3ce0ba)
-
-	* Continue development... debian/rules: Add get-orig-source rule.
-
-2014-01-22 14:37:06 +0100 Mike Gabriel (1a2ffc9)
-
-	* release 1.1.0 (tag: 1.1.0)
-
-2014-01-22 14:36:33 +0100 Mike Gabriel (43a6cdc)
-
-	* Calls of update-rc.d are now handled by debhelper. Add #DEBHELPER#
+          (f12a8bb)
+        * Fix typos and mal-used minus signs in uif.conf.5 man page.
+          (25cee2a)
+        * Continue development... debian/rules: Add get-orig-source rule.
+          (a3ce0ba)
+        * release 1.1.0 (1a2ffc9) (tag: 1.1.0)
+        * Calls of update-rc.d are now handled by debhelper. Add #DEBHELPER#
           macro after the new uif configuration has been created.
-
-2014-01-22 14:35:38 +0100 Mike Gabriel (cfc350b)
-
-	* debian/uif.init: typo fix
-
-2014-01-22 14:25:49 +0100 Mike Gabriel (2afe691)
-
-	* Bump Standards: to 3.9.5. No changes needed.
-
-2014-01-22 14:24:52 +0100 Mike Gabriel (e99b29f)
-
-	* debian/rules: syntax fix
-
-2014-01-22 14:24:07 +0100 Mike Gabriel (44f01b3)
-
-	* debian/uif.init: Provide an LSB compliant init script for Debian.
+          (43a6cdc)
+        * debian/uif.init: typo fix (cfc350b)
+        * Bump Standards: to 3.9.5. No changes needed. (2afe691)
+        * debian/rules: syntax fix (e99b29f)
+        * debian/uif.init: Provide an LSB compliant init script for Debian.
           debian/uif.install: Don't install upstream's init script
-          on Debian system.
-
-2014-01-22 14:04:15 +0100 Mike Gabriel (2e5c2f0)
-
-	* cosmetic removals of "/" before debian/ folder name
-
-2014-01-22 14:03:34 +0100 Mike Gabriel (dc52d1b)
-
-	* debian/uif.postinst: Adapt Debianic configuration of workstation
+          on Debian system. (44f01b3)
+        * cosmetic removals of "/" before debian/ folder name (2e5c2f0)
+        * debian/uif.postinst: Adapt Debianic configuration of workstation
           profile to IPv6 capabilities. Enable IPv6 by default, as
-          well, on Debian systems.
-
-2014-01-22 14:02:02 +0100 Mike Gabriel (b7650fb)
-
-	* add EOL at EOF
-
-2014-01-22 14:01:40 +0100 Mike Gabriel (2ce5855)
-
-	* Enable IPv6 support by default.
-
-2014-01-22 14:00:11 +0100 Mike Gabriel (faf5264)
-
-	* remove Debian specific comment in upstream uif.conf, hint to
+          well, on Debian systems. (dc52d1b)
+        * add EOL at EOF (b7650fb)
+        * Enable IPv6 support by default. (2ce5855)
+        * remove Debian specific comment in upstream uif.conf, hint to
           IPv4-only / IPv6-only network names usage in uif.conf
+          (faf5264)
+        * Support filtering rules that apply to IPv4/IPv6 only. (fff07b9)
+        * Add /me and Alex Owen as copyright holders. (3c31d9d)
+        * uif.spec: update RPM build script (fdeef77)
+        * service: fix author name (convert to UTF-8) (5638602)
+        * README.IPv6: typo fix (96ad6d6)
+        * Keep lines in README below 80 characters. (207e3cd)
+        * Drop deb: rule vom Makefile. (a665b56)
+        * Update upstream download source in INSTALL file. Mark Net::LDAP as
+          optional dependency. (03b3a8f)
+        * Update COPYRIGHT file. Add /me as copyright co-holder and update
+          FSF address. (3645e5e)
 
-2014-01-22 13:52:45 +0100 Mike Gabriel (fff07b9)
+2013-10-31 Mike Gabriel
 
-	* Support filtering rules that apply to IPv4/IPv6 only.
+        * Init script: be more explicit on whether init script actions are
+          IPv4 or IPv6 actions. (2fbf3e6)
+        * debian/rules: run dh_link during (4a7215c)
 
-2014-01-22 12:46:40 +0100 Mike Gabriel (3c31d9d)
+2013-08-07 Mike Gabriel
 
-	* Add /me and Alex Owen as copyright holders.
-
-2014-01-22 12:45:53 +0100 Mike Gabriel (fdeef77)
-
-	* uif.spec: update RPM build script
-
-2014-01-22 12:37:32 +0100 Mike Gabriel (5638602)
-
-	* service: fix author name (convert to UTF-8)
-
-2014-01-22 12:36:15 +0100 Mike Gabriel (96ad6d6)
-
-	* README.IPv6: typo fix
-
-2014-01-22 12:34:42 +0100 Mike Gabriel (207e3cd)
-
-	* Keep lines in README below 80 characters.
-
-2014-01-22 12:32:55 +0100 Mike Gabriel (a665b56)
-
-	* Drop deb: rule vom Makefile.
-
-2014-01-22 12:32:00 +0100 Mike Gabriel (03b3a8f)
-
-	* Update upstream download source in INSTALL file. Mark Net::LDAP as
-          optional dependency.
-
-2014-01-22 12:30:09 +0100 Mike Gabriel (3645e5e)
-
-	* Update COPYRIGHT file. Add /me as copyright co-holder and update
-          FSF address.
-
-2013-10-31 09:29:31 +0100 Mike Gabriel (2fbf3e6)
-
-	* Init script: be more explicit on whether init script actions are
-          IPv4 or IPv6 actions.
-
-2013-10-31 09:27:54 +0100 Mike Gabriel (4a7215c)
-
-	* debian/rules: run dh_link during
-
-2013-08-07 10:26:35 +0200 Mike Gabriel (16186ec)
-
-	* debian scripts: whitespace/tab fixes
-
-2013-08-07 10:23:56 +0200 Mike Gabriel (0be6dd8)
-
-	* /debian/uif.config: whitespace/tab fixes
-
-2013-08-07 10:21:35 +0200 Mike Gabriel (c7acd0b)
-
-	* Makefile: fix installation of doc files
-
-2013-08-07 10:18:28 +0200 Mike Gabriel (019c78e)
-
-	* Provide IPv4/IPv6 capable set of default configuration files.
+        * debian scripts: whitespace/tab fixes (16186ec)
+        * /debian/uif.config: whitespace/tab fixes (0be6dd8)
+        * Makefile: fix installation of doc files (c7acd0b)
+        * Provide IPv4/IPv6 capable set of default configuration files.
           Rename example files to denote that they show IPv4-only
-          examples.
-
-2013-08-07 10:10:40 +0200 Mike Gabriel (2b99d66)
-
-	* fix encoding in copyright file
-
-2013-08-06 21:30:33 +0200 Mike Gabriel (9f3554a)
-
-	* /debian/control: Drop separate package uif-ldap again. Sync in
-          packaging folder from Debian.
-
-2013-06-11 23:02:20 +0200 Mike Gabriel (cd1fd5a)
-
-	* /debian/rules: Run dh_link during install.
-
-2013-06-11 22:54:01 +0200 Mike Gabriel (7fbbaad)
-
-	* version fix, encoding fix, whitespace fix in Makefile
-
-2013-06-11 22:52:24 +0200 Mike Gabriel (61a192d)
-
-	* /debian/*.docs: Install README* files into bin:packages.
-
-2013-06-11 22:47:35 +0200 Mike Gabriel (17225ff)
-
-	* whitespace cleanup
-
-2013-06-11 22:36:57 +0200 Mike Gabriel (9e77348)
-
-	* coherent spelling of IPv4 and IPv6 in man page
-
-2013-06-11 22:34:57 +0200 Mike Gabriel (2336ea3)
-
-	* coherent spelling of IPv4 and IPv6 in init script
-
-2013-06-11 22:33:23 +0200 Mike Gabriel (9f7f2bb)
-
-	* propely tab'ify init script
-
-2013-06-11 22:27:21 +0200 Mike Gabriel (341e532)
-
-	* Create README.IPv6 as upstream file.
-
-2013-06-11 22:26:29 +0200 Mike Gabriel (b51cf05)
-
-	* /debian/rules: Leaving clean-up to dh_clean.
-
-2013-06-11 22:25:23 +0200 Mike Gabriel (a4fd6bf)
-
-	* Update README, mention issue trackers.
-
-2013-06-11 01:12:08 +0200 Mike Gabriel (6b40a6e)
-
-	* update changelog
-
-2013-06-11 01:10:09 +0200 Alex Owen (0ffa361)
-
-	* IPv6 patch
-
-2013-06-11 01:08:27 +0200 Mike Gabriel (a374f15)
-
-	* import packaging from Debian package
-
-2013-06-11 01:03:24 +0200 Mike Gabriel (48c887d)
-
-	* now really fix umlaut in uif.pl
-
-2013-06-11 00:30:41 +0200 Mike Gabriel (d0b9dbf)
-
-	* Continue development...
-
-2013-06-11 00:29:02 +0200 Mike Gabriel (44a1201)
-
-	* release 1.0.8 (tag: 1.0.8)
-
-2013-06-11 00:28:45 +0200 Mike Gabriel (e694cb0)
-
-	* update ChangeLog
-
-2013-06-11 00:26:50 +0200 Mike Gabriel (2ee8df9)
-
-	* convert Umlaut to UTF-8, fix FSF address
-
-2013-06-11 00:25:07 +0200 Mike Gabriel (bc4d0f9)
-
-	* fix hyphens and spelling errors in man pages
-
-2013-06-11 00:24:37 +0200 Mike Gabriel (1cccc49)
-
-	* import packaging files from Debian package
-
-2013-06-11 00:12:25 +0200 Mike Gabriel (1d3bc90)
-
-	* Continue development...
-
-2013-06-11 00:09:47 +0200 Mike Gabriel (327a5ba)
-
-	* add Description: keyword to LSB header
-
-2013-06-10 23:39:10 +0200 Mike Gabriel (d1f04b6)
-
-	* release 1.0.7
-
-2013-06-10 23:38:42 +0200 Mike Gabriel (234f4f6)
-
-	* add myself to the list of upstream people
-
-2013-06-10 23:31:02 +0200 Mike Gabriel (f3f6a1a)
-
-	* /debian/control: Add uif-ldap to Suggests: field
-
-2013-06-10 23:17:04 +0200 Mike Gabriel (15ef174)
-
-	* split uif into bin:packages uif and uif-ldap
-
-2013-06-10 13:50:59 +0200 Mike Gabriel (c1d0f4d)
-
-	* Provide a default (nothing-in/all-out) uif.conf.
-
-2013-06-10 13:43:29 +0200 Mike Gabriel (c7606c1)
-
-	* ChangeLog: moving credits over to Alex Owen
-
-2013-06-10 13:40:52 +0200 Mike Gabriel (2573ad5)
-
-	* abusing /debian/changelog as upstream changelog
-
-2013-06-10 13:32:17 +0200 Mike Gabriel (252c79a)
-
-	* Run dh_clean in clean stanza.
-
-2013-06-10 13:31:43 +0200 Mike Gabriel (d86b092)
-
-	* fix mailadress in changelog footer
-
-2013-06-10 13:31:04 +0200 Mike Gabriel (3ba49af)
-
-	* remove build cruft from /debian folder
-
-2013-06-10 13:28:18 +0200 Mike Gabriel (7775ed3)
-
-	* remove stray templates files: templates.de
-
-2013-06-10 13:26:34 +0200 Mike Gabriel (7b14060)
-
-	* upstream projects are easier to handle with source format 3.0
-          (native)
-
-2013-06-10 13:24:52 +0200 Mike Gabriel (5907709)
-
-	* Make LDAP dependency optional.
-
-2013-06-10 13:23:57 +0200 Mike Gabriel (1a74530)
-
-	* use my NWT address for this upstream project, set changelog to
-          UNRELEASED
-
-2013-06-10 13:22:05 +0200 Mike Gabriel (16f44c2)
-
-	* rewrite /debian/changelog, use as upstream changelog from now on
-
-2013-06-10 13:18:09 +0200 Mike Gabriel (369914e)
-
-	* import all gains from the latest Debian package of uif
-          (debian/1.0.6-3)
-
-2011-08-24 08:25:53 +0200 Cajus Pollmeier (78811fa)
-
-	* Fixed mail (tag: 1.0.6)
-
-2011-08-24 08:24:59 +0200 Cajus Pollmeier (f97ce59)
-
-	* Fixed encoding
-
-2011-08-24 08:23:16 +0200 Cajus Pollmeier (d15aeda)
-
-	* Initial checkin
-
+          examples. (019c78e)
+        * fix encoding in copyright file (2b99d66)
+
+2013-08-06 Mike Gabriel
+
+        * /debian/control: Drop separate package uif-ldap again. Sync in
+          packaging folder from Debian. (9f3554a)
+
+2013-06-11 Mike Gabriel
+
+        * /debian/rules: Run dh_link during install. (cd1fd5a)
+        * version fix, encoding fix, whitespace fix in Makefile (7fbbaad)
+        * /debian/*.docs: Install README* files into bin:packages. (61a192d)
+        * whitespace cleanup (17225ff)
+        * coherent spelling of IPv4 and IPv6 in man page (9e77348)
+        * coherent spelling of IPv4 and IPv6 in init script (2336ea3)
+        * propely tab'ify init script (9f7f2bb)
+        * Create README.IPv6 as upstream file. (341e532)
+        * /debian/rules: Leaving clean-up to dh_clean. (b51cf05)
+        * Update README, mention issue trackers. (a4fd6bf)
+        * update changelog (6b40a6e)
+
+2013-06-11 Alex Owen
+
+        * IPv6 patch (0ffa361)
+
+2013-06-11 Mike Gabriel
+
+        * import packaging from Debian package (a374f15)
+        * now really fix umlaut in uif.pl (48c887d)
+        * Continue development... (d0b9dbf)
+        * release 1.0.8 (44a1201) (tag: 1.0.8)
+        * update ChangeLog (e694cb0)
+        * convert Umlaut to UTF-8, fix FSF address (2ee8df9)
+        * fix hyphens and spelling errors in man pages (bc4d0f9)
+        * import packaging files from Debian package (1cccc49)
+        * Continue development... (1d3bc90)
+        * add Description: keyword to LSB header (327a5ba)
+
+2013-06-10 Mike Gabriel
+
+        * release 1.0.7 (d1f04b6)
+        * add myself to the list of upstream people (234f4f6)
+        * /debian/control: Add uif-ldap to Suggests: field (f3f6a1a)
+        * split uif into bin:packages uif and uif-ldap (15ef174)
+        * Provide a default (nothing-in/all-out) uif.conf. (c1d0f4d)
+        * ChangeLog: moving credits over to Alex Owen (c7606c1)
+        * abusing /debian/changelog as upstream changelog (2573ad5)
+        * Run dh_clean in clean stanza. (252c79a)
+        * fix mailadress in changelog footer (d86b092)
+        * remove build cruft from /debian folder (3ba49af)
+        * remove stray templates files: templates.de (7775ed3)
+        * upstream projects are easier to handle with source format 3.0
+          (native) (7b14060)
+        * Make LDAP dependency optional. (5907709)
+        * use my NWT address for this upstream project, set changelog to
+          UNRELEASED (1a74530)
+        * rewrite /debian/changelog, use as upstream changelog from now on
+          (16f44c2)
+        * import all gains from the latest Debian package of uif
+          (debian/1.0.6-3) (369914e)
+
+2011-08-24 Cajus Pollmeier
+
+        * Fixed mail (78811fa) (tag: 1.0.6)
+        * Fixed encoding (f97ce59)
+        * Initial checkin (d15aeda)
