@@ -2,8 +2,8 @@
 
 # Copyright (C) 2002-2015 Jörg Platte <joergplatte@gmx.de>
 # Copyright (C) 2002-2015 Cajus Pollmeier <pollmeier@gonicus.de>
-# Copyright (C) 2013-2015 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 # Copyright (C) 2013-2015 Alex Owen <r.alex.owen@gmail.com>
+# Copyright (C) 2013-2022 Mike Gabriel <mike.gabriel@das-netzwerkteam.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,9 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
-#
-# On Debian GNU/Linux systems, a copy of the GNU General Public License may be
-# found in the file /usr/share/common-licenses/GPL.
 
 use strict;
 my $LDAPENABLED = eval "use Net::LDAP; 1" ? '1' : '0';
