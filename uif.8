@@ -1,144 +1,146 @@
-.\"  -*- nroff -*-
-.TH UIF 8 "Aug 20th, 2018"
-.\" Please adjust this date whenever revising the manpage.
-.Dd Aug 20th, 2018
-.Dt UIF 8
-.Os
-.ds operating-system UIF(8)
-.Sh NAME
-.Nm uif
-.Nd Tool for generating optimized packetfilter rules
-.Sh SYNOPSIS
-.Nm uif
-.Op Fl 6
-.Op Fl dptW
-.Op Fl b Ar base
-.Op Fl c Ar config_file
-.Op Fl C Ar config_file
-.Op Fl D Ar bind_dn
-.Op Fl r Ar ruleset
-.Op Fl R Ar ruleset
-.Op Fl s Ar server
-.Op Fl T Ar time
-.Op Fl w Ar password
-.Sh DESCRIPTION
-.Pp
-This manual page documents  the
-.Nm
-command. It is used to generate optimized
-.Xr iptables 8
-packetfilter rules, using a simple description file specified
-by the user. Generated rules are provided in 
-.Xr iptables\-save 8
-style.
-.Nm
-can be used to read or write rulesets from or to LDAP servers in your
-network, which provides a global storing mechanism. (LDAP support is
-currently broken, note that you need to include the uif.schema to your
-slapd configuration in order to use it.)
-.Pp
-.Xr uif.conf 5
-provides an easy way to specify rules, without exact
-knowledge of the iptables syntax. It provides groups and aliases to make your
+.TH uif 8 "Aug 20th, 2018" "Version 1.1.9" "Universal Internet Firewall"
+.SH NAME
+uif \- Universal Internet Firewall
+.SH SYNOPSIS
+'nh
+.fi
+.ad l
+\fBuif\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[-c \fI<configfile>\fR] [-n] [-p [-l]] [\fI-6\fR]
+'in \n(.iu-\nxu
+\fBuif\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+-d [\fI-6\fR]
+'in \n(.iu-\nxu
+\fBuif\fR \kx
+.if (\nx>(\n(.l/2)) .nr x (\n(.l/5)
+'in \n(.iu+\nxu
+[<ldap-options>]
+'in \n(.iu-\nxu
+.ad b
+'hy
+
+.SH DESCRIPTION
+.PP
+This manual page documents the \fBuif\fR command. It is used to generate
+optimized
+.BR nft (8)
+or
+.BR iptables (8)
+packetfilter rules, using a simple description file specified by the
+user. Generated rules are provided in
+.BR nft (8)
+(with option \fI-f <filename>\fR) or
+.BR iptables\-save 8
+style. \fBuif\fR can be used to read or write rulesets from or to LDAP
+servers in your network, which provides a global storing mechanism (LDAP
+support hasn't been tested for a long time). Note that you need to
+include the \fIuif.schema\fR to your slapd configuration in order to use it.
+.PP
+.BR uif.conf (5)
+provides an easy way to specify rules, without exact knowledge of the nft
+/ iptables syntax. It provides groups and aliases to make your
 packetfilter human readable.
-.Pp
-Keep in mind that 
-.Nm uif
-is intended to assist you when designing firewalls, but will not
-tell you what to filter.
-.Sh Options
+.PP
+Keep in mind that \fBuif\fR uif is intended to assist you when designing
+firewalls, but will not tell you what to filter.
+
+.SH OPTIONS
 The options are as follows:
-.Bl -tag -width Ds
-.It Fl 6
-Turn on IPv6 mode so as to manipulate ip6tables rules. 
-Default configuration file is changed to
-.Ar /etc/uif/uif6.conf
-see 
-.Ar \-c 
-below. It should be noted that nat rules are silently ignored if 
-.Ar \-6
-is used.
-.It Fl b Ar base
-Specify the base to act on when using LDAP based firewall configuration.
-.Nm
-will look in the subtree
-.Ar ou=filter, ou=sysconfig, base
-for your rulesets.
-.It Fl c Ar config_file
+.TP
+\fI\-6\fR
+Turn on IPv6 mode so as to manipulate IPv6 rules.  Default configuration
+file is changed to /etc/uif/uif6.conf see \-c below. It should be noted
+that nat rules are silently ignored if \-6 is used.
+.TP
+\fI\-b <basedn>\fR
+Specify the base DN to act on when using LDAP based firewall
+configuration. \fBuif\fR will look in the subtree
+ou=filter,ou=sysconfig,<basedn> for your rulesets.
+.TP
+\fI\-c <configfile>\fR
 This option specifies the configuration file to be read by
-.Nm \.
+\fBuif\fR\.
 See
-.Xr uif.conf 5
-for detailed information on the fileformat. It defaults to
-.Ar /etc/uif/uif.conf.
-.It Fl C Ar config_file
+.BR uif.conf (5)
+for detailed information on the fileformat. It defaults to /etc/uif/uif.conf.
+.TP
+\fI\-C <configfile>\fR
 When reading configuration data from other sources than specified with
-.Ar \-c 
-you may want to convert this information into a textual configuration
-file. This options writes the parsed config back to the file specified by
-.Ar config_file.
-.It Fl d
+\-c  you may want to convert this information into a textual
+configuration file. This options writes the parsed config back to the
+file specified by <configfile>.
+.TP
+\fI\-d\fR
 Clears all firewall rules immediately.
-.It Fl D Ar bind_dn
-If a special account is needed to bind to the LDAP database, the account
-dn can be specified at this point. Note: you should use this when writing
-an existing configuration to the LDAP. Reading the configuration may be
-done with an anonymous bind.
-.It Fl p
+.TP
+\fI\-D <bind_dn>\fR
+If a special account is needed to bind to the LDAP database, the
+account's DN can be specified at this point. Note: you should use this
+when writing an existing configuration to the LDAP. Reading the
+configuration may be done with an anonymous bind.
+.TP
+\fI\-p\fR
 Prints rules specified in the configuration to stdout. This option is
 mainly used for debugging the rule simplifier.
-.It Fl r Ar ruleset
-Specifies the name of the ruleset to load from the LDAP database. Remember
-to use the
-.Ar \-b
-option to set the base. Rulesets are stored using the following dn:
-.Ar cn=name, ou=rulesets, ou=filter, ou=sysconfig, base,
-where name will be replaced by the ruleset specified.
-.It Fl R Ar ruleset
-Specifies the name of the ruleset to write to the LDAP database. This option
-can be used to convert i.e. a textual configuration to a LDAP based ruleset.
-Like using
-.Ar \-r
-you've to specify the LDAP base to use. Target is
-.Ar cn=name, ou=rulesets, ou=filter, ou=sysconfig, base,
-where name will be replaced by the ruleset specified.
-.It Fl s Ar server
-This option specified the LDAP server to be used.
-.It Fl t
+.TP
+\fI\-l\fR
+If printing rules (see \-p) prepend line numbers to the print-out.
+.TP
+\fI\-r <ruleset>\fR
+Specifies the name of the ruleset to load from the LDAP database.
+Remember to use the \-b option to set the base. Rulesets are stored using
+the following dn: \fIcn=<ruleset>, ou=rulesets, ou=filter, ou=sysconfig,
+basedn\fR, where <ruleset> will be replaced by the ruleset specified.
+.TP
+\fI\-R <ruleset>\fR
+Specifies the name of the ruleset to write to the LDAP database. This
+option can be used to convert i.e. a textual configuration to an LDAP
+based ruleset. Like with using \-r you've to specify the LDAP base to
+use. Target is \fIcn=<ruleset>, ou=rulesets, ou=filter, ou=sysconfig,
+<basedn>\fR, where <ruleset> will be replaced by the ruleset specified.
+.TP
+\fI\-s <server>\fR
+This option specifies the LDAP server to be used.
+.TP
+\fI\-t\fR
 This option is used to validate the packetfilter configuration without applying
-any rules.  Mainly used for debugging.
-.It Fl T Ar time
+any rules. Mainly used for debugging.
+.TP
+\fI\-T <time>\fR
 When changing your packetfiltering rules remotely, it is
 useful to have a test option. Specify this one to apply
-your rules for a period of time (in seconds). After that the original
+your rules for a period of <time> (in seconds). After that the original
 rules will be restored.
-.It Fl w Ar password
-When connecting to the LDAP server, you may need to 
-authenticate via passwords. If you really need to
-specify a password, use this option, otherwise use
+.TP
+\fI\-w <password>\fR
+When connecting to an LDAP server, you may need to  authenticate via a
+password. If you really need to specify a password on the command line
+(discouraged!), use this option, otherwise use
 .Ar \-W
-and enter it interactivly.
-.It Fl W
+and enter it interactively.
+.TP
+\fI\-W\fR
 Activate interactive password query for LDAP authentication.
-.El
-.Pp
-.Nm
-is meant to leave the packetfilter rules in a defined state,
-so if something went wrong during the initialisation, or
-.Nm
-is aborted by the user, the rules that were active before
-starting will be restored.
-.Pp
-Normally you will not need to call this binary directly. Use
-the init script instead, since it does the most common steps
-for you.
-.Sh FILES
+.PP
+\fBuif\fR
+is meant to leave the packetfilter rules in a defined state, so if
+something went wrong during the initialisation, or \fBuif\fR is aborted
+by the user, the rules that were active before starting will be restored.
+.PP
+Normally you will not need to call this binary directly. Use the init
+script instead, since it does the most common steps for you.
+.SH FILES
 Configuration files are located in /etc/uif.
-.Sh SEE ALSO
+.SH SEE ALSO
 uif.conf(5)
+nft(8)
 iptables(8)
-.Pp
-.Sh AUTHOR
-This manual page was written by Cajus Pollmeier <pollmeier@gonicus.de> and
-Jörg Platte <joerg.platte@gmx.de>, for the Debian GNU/Linux system (but may
-be used by others).
+.PP
+.SH AUTHOR
+This manual page was written by Cajus Pollmeier <pollmeier@gonicus.de>
+and Jörg Platte <joerg.platte@gmx.de> and adjusted to nft support by Mike
+Gabriel <mike.gabriel@das-netzwerkteam.de>.
