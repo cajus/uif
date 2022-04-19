@@ -1228,7 +1228,7 @@ sub genRuleDump_NFT {
 					push (@protocol, "meta l4proto $not ipv6-icmp");
 				} else {
 					my $nft_type = icmpv6_types_IPTABLES_to_NFT($type);
-					push (@protocol, "meta l4proto ipv6-icmp icmpv6 type $not $nft_type");
+					push (@protocol, "icmpv6 type $not $nft_type");
 				}
 			}
 		}
