@@ -123,16 +123,24 @@ sub readConfig {
 				}
 			} elsif ($state eq 'INCLUDE') {
 				if ($line =~ /^\s*\"(.+)\"$/) {
-					my $file = $1;
-					readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+					my $filename_pattern = $1;
+					my @filenames = glob($filename_pattern);
+					my $file;
+					foreach $file(@filenames) {
+						readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+					}
 				} else {
 					die "invalid line in section include: $line\n";
 				}
 			} elsif ($state eq 'INCLUDE6') {
 				if ($ipv6) {
 					if ($line =~ /^\s*\"(.+)\"$/) {
-						my $file = $1;
-						readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+						my $filename_pattern = $1;
+						my @filenames = glob($filename_pattern);
+						my $file;
+						foreach $file(@filenames) {
+							readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+						}
 					} else {
 						die "invalid line in section include6: $line\n";
 					}
@@ -140,8 +148,12 @@ sub readConfig {
 			} elsif ($state eq 'INCLUDE4') {
 				if ($ipv6) {} else {
 					if ($line =~ /^\s*\"(.+)\"$/) {
-						my $file = $1;
-						readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+						my $filename_pattern = $1;
+						my @filenames = glob($filename_pattern);
+						my $file;
+						foreach $file(@filenames) {
+							readConfig ($file, $Networks, $Services, $Interfaces, $Protocols, $Rules, $Id, $Sysconfig);
+						}
 					} else {
 						die "invalid line in section include4: $line\n";
 					}
