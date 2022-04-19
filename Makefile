@@ -31,6 +31,9 @@ install:
 
 	@# create directories
 	install -o root -g root -m 700 -d $(DESTDIR)/etc/uif
+	install -o root -g root -m 700 -d $(DESTDIR)/etc/uif/uif.conf.d
+	install -o root -g root -m 700 -d $(DESTDIR)/etc/uif/uif-ipv4-networks.inc.d
+	install -o root -g root -m 700 -d $(DESTDIR)/etc/uif/uif-ipv6-networks.inc.d
 	install -o root -g root -m 755 -d $(DESTDIR)/etc/default
 	install -o root -g root -m 755 -d $(DESTDIR)/etc/init.d
 	install -o root -g root -m 755 -d $(DESTDIR)/etc/ldap/schema
