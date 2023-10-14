@@ -530,7 +530,7 @@ sub validateData {
 		$$Interfaces{$key} = resolveHashentries($$Interfaces{$key}, $Interfaces);
 	}
 	foreach $key (keys (%$Interfaces)) {
-		if (!($$Interfaces{$key} =~ /^[a-zA-Z0-9+ ]+(:\d+)?$/)) {
+		if (!($$Interfaces{$key} =~ /^[\.a-zA-Z0-9+ ]+(:\d+)?$/)) {
 			die "invalid character in interface definition: $$Interfaces{$key}\n";
 		}
 	}
