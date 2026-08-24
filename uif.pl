@@ -578,9 +578,11 @@ sub validateData {
 					$$rule{'Action'}='ACCEPT';
 					if ($type =~ /^snat$/) {
 						$$rule{'Type'}='POSTROUTING';
-					}
-					elsif ($type =~ /^dnat$/) {
+					} elsif ($type =~ /^dnat$/) {
 						$$rule{'Type'}='PREROUTING';
+					} else {
+						# bare nat- -> don't NAT, accept in POSTROUTING (same as snat-)
+						$$rule{'Type'}='POSTROUTING';
 					}
 				}
 			}
