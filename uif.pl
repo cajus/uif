@@ -1164,7 +1164,7 @@ sub genRuleDump_NFT {
 		}
 
 		if (exists($$rule{"Service-not"})) {
-			$not='!';
+			$not='!=';
 		} else {
 			$not='';
 		}
@@ -1265,7 +1265,7 @@ sub genRuleDump_NFT {
 		}
 		if (exists($$rule{'Source'})) {
 			if (exists($$rule{'Source-not'})) {
-				$not='!';
+				$not='!=';
 			} else {
 				$not='';
 			}
@@ -1281,7 +1281,7 @@ sub genRuleDump_NFT {
 		}
 		if (exists($$rule{'Destination'})) {
 			if (exists($$rule{'Destination-not'})) {
-				$not='!';
+				$not='!=';
 			} else {
 				$not='';
 			}
@@ -1340,7 +1340,7 @@ sub genRuleDump_NFT {
 
 		if (exists($$rule{'InputInterface'})) {
 			if (exists($$rule{'InputInterface-not'})) {
-				$not='!';
+				$not='!=';
 			} else {
 				$not='';
 			}
@@ -1351,7 +1351,7 @@ sub genRuleDump_NFT {
 		}
 		if (exists($$rule{'OutputInterface'})) {
 			if (exists($$rule{'OutputInterface-not'})) {
-				$not='!';
+				$not='!=';
 			} else {
 				$not='';
 			}
