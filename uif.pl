@@ -1184,7 +1184,7 @@ sub genRuleDump_NFT {
 						$count++;
 						if ($count==15) {
 							$string =~ s/,$//;
-							$string="meta l4proto $proto ".($entry==1?"d":"s")."port {".$string."}";
+							$string="meta l4proto $proto $proto ".($entry==1?"d":"s")."port {".$string."}";
 							push (@protocol, $string);
 							$string='';
 							$count=0;
@@ -1207,7 +1207,7 @@ sub genRuleDump_NFT {
 					if ( $1 eq $2 ) {
 						$range = $1;
 					}
-					push (@protocol, "$not $proto sport $range");
+					push (@protocol, "meta l4proto $proto $not $proto sport $range");
 				}
 				foreach $range (@{$$rule{"\u$proto"}[3]}) {
 					$range =~ s/\:/-/g;
@@ -1215,7 +1215,7 @@ sub genRuleDump_NFT {
 					if ( $1 eq $2 ) {
 						$range = $1;
 					}
-					push (@protocol, "$not $proto dport $range");
+					push (@protocol, "meta l4proto $proto $not $proto dport $range");
 				}
 				my $range_sport;
 				my $range_dport;
@@ -1232,17 +1232,18 @@ sub genRuleDump_NFT {
 					if ( $1 eq $2 ) {
 						$range_dport = $1;
 					}
-					push (@protocol, "$not $proto sport $range_sport $not $proto dport $range_dport");
+					push (@protocol, "meta l4proto $proto $not $proto sport $range_sport $not $proto dport $range_dport");
 				}
 			}
 		}
+
 		if (exists($$rule{'ICMP'}) && (! $ipv6)) {
 			my $type;
 			foreach $type (@{$$rule{'ICMP'}}) {
 				if ($type eq 'all') {
-					push (@protocol, "$not icmp");
+					push (@protocol, "meta l4proto $not icmp");
 				} else {
-					push (@protocol, "icmp $not type $type");
+					push (@protocol, "meta l4proto $not icmp icmp type $type");
 				}
 			}
 		}
@@ -1253,7 +1254,7 @@ sub genRuleDump_NFT {
 					push (@protocol, "meta l4proto $not ipv6-icmp");
 				} else {
 					my $nft_type = icmpv6_types_IPTABLES_to_NFT($type);
-					push (@protocol, "icmpv6 type $not $nft_type");
+					push (@protocol, "meta l4proto $not ipv6-icmp icmpv6 type $nft_type");
 				}
 			}
 		}
@@ -1441,8 +1442,8 @@ sub genRuleDump_NFT {
 				my $part;
 				foreach $part (@partial) {
 					$newjumpto=$jumpto;
-					if ($part =~ /-p (udp|tcp)/ && $jumpto =~ /-p (udp|tcp)/) {
-						$newjumpto =~ s/-p (udp|tcp) -m (udp|tcp)//;
+					if ($part =~ /meta l4proto (udp|tcp)/ && $jumpto =~ /meta l4proto (udp|tcp)/) {
+						$newjumpto =~ s/meta l4proto (udp|tcp) (udp|tcp)//;
 					}
 					push (@$table, $type." $part $newjumpto");
 				}
